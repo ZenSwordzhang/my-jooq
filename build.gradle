@@ -1,0 +1,146 @@
+buildscript {
+    // buildscript中的声明是gradle脚本自身需要使用的资源
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url "https://jitpack.io" }
+        mavenLocal()
+    }
+    ext['jooq.version'] = '3.13.1'
+    dependencies {
+        // 在执行其余的build脚本时，class loader可以使用这些提供的依赖项
+        classpath group: 'org.postgresql', name: 'postgresql', version: '42.2.12'
+        classpath group: 'org.jooq', name: 'jooq-meta', version: '3.13.1'
+        classpath group: 'org.jooq', name: 'jooq-codegen', version: '3.13.1'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+    id "nu.studer.jooq" version "4.2"
+    id "org.flywaydb.flyway" version "6.4.0"
+}
+
+group = 'com.zsx'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '14'
+targetCompatibility = '14'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+// 项目自身需要的资源
+repositories {
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    mavenCentral()
+    jcenter()
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url "https://jitpack.io" }
+    mavenLocal()
+}
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    jooqRuntime 'org.postgresql:postgresql:42.2.12'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.13.1'
+    implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.13.1'
+    implementation group: 'org.springframework', name: 'spring-tx', version: '5.2.5.RELEASE'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+flyway {
+    url = 'jdbc:postgresql://127.0.0.1:5432/my-jooq'
+    locations = ['filesystem:src/main/resources/db/migration']
+    user = 'postgres'
+    password = '1234'
+    schemas = ['jooq']
+}
+
+jooq {
+    version = dependencyManagement.importedProperties["jooq.version"]
+//	edition = 'PRO'
+    generateSchemaSourceOnCompilation = true
+    myJooq(sourceSets.main) {
+        jdbc {
+            driver = 'org.postgresql.Driver'
+            url = 'jdbc:postgresql://localhost:5432/my-jooq'
+            user = 'postgres'
+        }
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+            strategy {
+                name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                // ...
+            }
+            database {
+                name = 'org.jooq.meta.postgres.PostgresDatabase'
+                inputSchema = 'jooq'
+                forcedTypes {
+                    forcedType {
+                        name = 'varchar'
+                        expression = '.*'
+                        types = 'JSONB?'
+                    }
+                    forcedType {
+                        name = 'varchar'
+                        expression = '.*'
+                        types = 'INET'
+                    }
+                }
+                // ...
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                immutablePojos = true
+                fluentSetters = true
+                // ...
+            }
+            target {
+                packageName = 'org.jooq.db'
+//                directory = 'src/main/java'
+            }
+        }
+    }
+}
+tasks.generateMyJooqJooqSchemaSource.with {
+    def out = new ByteArrayOutputStream()
+    javaExecSpec = { JavaExecSpec s ->
+        s.standardOutput = out
+        s.errorOutput = out
+        s.ignoreExitValue = true
+        s.jvmArgs '-Xmx512M'
+    }
+    execResultHandler = { ExecResult r ->
+        if (r.exitValue != 0) {
+            throw new RuntimeException('jOOQ source code generation failed: ' + out.toString())
+        }
+    }
+}
