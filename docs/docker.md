@@ -29,6 +29,7 @@ output {
 	stdout { codec => rubydebug }
 }
 ```
+
 #### 问题3：Attempted to resurrect connection to dead ES instance, but got an error. {:url=>"http://elasticsearch:9200/", :error_type=>LogStash::Outputs::ElasticSearch::HttpClient::Pool::HostUnreachableError, :error=>"Elasticsearch Unreachable: [http://elasticsearch:9200/][Manticore::ResolutionFailure] elasticsearch: Name or service not known"}
 * 背景：win10下docker容器运行logstash镜像报错
 ```docker
@@ -47,5 +48,18 @@ xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
     * 执行命令
 ```docker
 docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml -v /d/usr/share/logstash/pipeline:/usr/share/logstash/pipeline -p 9600:9600 -p 5044:5044 logstash:7.6.2
+```
+
+####问题4：400 Bad Request 'json' or 'msgpack' parameter is required
+背景：执行curl命令时报错
+原因：win10下curl命令无法识别单引号
+```
+curl -X POST -d 'json={"json":"message"}' http://localhost:9880/sample.test
+```
+命令修改为(将单引号改为双引号，单引号内的双引号通过反斜杠\转义)
+```
+curl -X POST --data "json={\"msgpack\":\"message\"}" http://localhost:9880/sample.test
+或
+curl -X POST --header "Content-Type:application/json" --data-raw "{\"json\":{\"msgpack\": \"message\"}}" http://localhost:9880/sample.test
 ```
 
