@@ -1,4 +1,4 @@
-### logstash [文档来源链接](https://www.jianshu.com/p/14b6ea9c6469)
+### logstash [文档来源链接1](https://www.jianshu.com/p/14b6ea9c6469)
 * input
 * filters
 * codecs
@@ -396,5 +396,47 @@ filter {
   }
 }
 ```
+[文档来源链接1到此结束]()
 
-### fluentd
+### fluentd 
+[文档来源链接2](https://www.jianshu.com/p/d60f2f286808)
+* fluentd是一个实时的数据收集系统，不仅可以收集日志，还可以收集定期执行的命令输出和HTTP请求内容。数据被收集后按照用户配置的解析规则，形成一系列event。每一个event包含如下内容：
+```
+tag = xxx
+time = xxx
+record = {
+    "key1": "value1",
+    "key2": "value2"
+}
+```
+* tag：为数据流的标记。fluentd中可以具有多个数据源，解析器，过滤器和数据输出。他们之前使用tag来对应。类似于数据流按照tag分组。数据流向下游的时候只会进入tag相匹配的处理器。
+* time：event产生的时间，该字段通常由日志内的时间字段解析出来。
+* record：日志的内容，为JSON格式。
+```
+tail输入：增量读取日志文件作为数据源，支持日志滚动。
+exec输入：定时执行命令，获取输出解析后作为数据源。
+syslog输出：解析标准的syslog日志作为输入。
+forward输入：接收其他fluentd转发来的数据作为数据源。
+dummy：虚拟数据源，可以定时产生假数据，用于测试。
+regexp解析器：使用正则表达式命名分组的方式提取出日志内容为JSON字段。
+record_transformer过滤器：人为修改record内的字段。
+file输出：用于将event落地为日志文件。
+stdout：将event输出到stdout。如果fluentd以daemon方式运行，输出到fluentd的运行日志中。
+forward：转发event到其他fluentd节点。
+copy：多路输出，复制event到多个输出端。
+kafka：输出event到Kafka。
+webhdfs：输出event到HDFS。
+elasticsearch：输出event到HDFS
+```
+[文档来源链接2到此结束]()
+#### Fluentd插件
+* Fluentd有七种类型的插件：输入(Input)，分析器(Parser)，过滤器(Filter)，输出(Output)，格式化(Formatter)，存储(Storage)，缓冲(Buffer)
+```
+Input：输入插件，内置的有tail、http、tcp、udp等
+Parser：解析器，可自定义解析规则，如解析nginx日志
+Filter：Filter插件，可过滤掉事件，或增加字段，删除字段
+Output：输出插件，内置的有file、hdfs、s3、kafka、elasticsearch、mongoDB、stdout等
+Formatter：Formatter插件，可自定义输出格式如json、csv等
+Storage：Storage插件可将各状态保存在文件或其他存储中，如Redis、MongoDB等
+Buffer：Buffer缓冲插件，缓冲插件由输出插件使用。在输出之前先缓冲，然后以如Kafka Producer Client的方式批量提交。有file、memory两种类型。flush_interval参数决定了提交的间隔，默认60秒刷新一次
+```
