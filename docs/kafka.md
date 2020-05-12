@@ -1,3 +1,9 @@
+## 问题
+
+### 问题1：this node is not a swarm manager. Use "docker swarm init" or "docker swarm join" to connect this node to swarm and try again
+* 背景：使用docker-compose命令启动kafka集群报错
+* 解决：docker swarm init
+
 ## kafka-manager界面
 ### 拉取镜像
 * docker pull solsson/kafka-manager
@@ -27,8 +33,12 @@ find / -name 'application.conf'
 * docker restart kafka-manager
 
 ## zookeeper集群
-### docker-compose-kafka.yml
-```docker-compose-kafka.yml
+
+### 拉取zookeeper镜像
+* docker pull zookeeper
+
+### 编写启动配置文件：docker-compose-zookeeper.yml
+```docker-compose-zookeeper.yml
 version: '3.1'
  
 services:
@@ -63,13 +73,40 @@ services:
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
 ```
 
-### 启动kafka集群
-* 命令二选一
-    * 命令1：docker-compose -f d:/usr/local/etc/kafka-cluster/docker-compose-kafka.yml up
-    * 命令2：docker stack deploy -c d:/usr/local/etc/kafka-cluster/docker-compose-kafka.yml zookeeper
+### 启动zookeeper集群
+* 方式1：docker-compose -f d:/usr/local/etc/zookeeper-cluster/docker-compose-zookeeper.yml up
+* 方式2：
+    * docker swarm init
+    * docker stack deploy -c d:/usr/local/etc/zookeeper-cluster/docker-compose-zookeeper.yml zookeeper
     
 ### 安装nc命令
 * apt-cyg install nc
 
 ### 连接集群
 * nc -vz 192.168.1.110 2181
+
+## kafka
+### 拉取kafka镜像
+* docker pull wurstmeister/kafka
+
+### 编写启动配置文件：docker-compose-kafka.yml
+```docker-compose-kafka.yml
+version: '2'
+services:
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2184:2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.110
+      KAFKA_ZOOKEEPER_CONNECT: 192.168.1.110:2184
+```
+
+#### 启动kafka
+* docker-compose -f d:/usr/local/etc/kafka/docker-compose-kafka.yml up -d
+
+
