@@ -109,4 +109,5 @@ services:
 #### 启动kafka
 * docker-compose -f d:/usr/local/etc/kafka/docker-compose-kafka.yml up -d
 
-
+### 删除容器
+* docker rm -f kafka-1 kafka-2 kafka-3 kafka-manager
