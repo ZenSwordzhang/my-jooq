@@ -15,7 +15,7 @@ docker run --rm -p 5601:5601 --name kibana --link elasticsearch -d kibana:7.6.2
 * docker rm -f elasticsearch logstash kibana
 
 #### logstash安装logstash-codec-json_lines插件
-* docker exec -it logstash
+* docker exec -it logstash bash
 * cd /bin
 * logstash-plugin install logstash-codec-json_lines
 * 退出容器: exit

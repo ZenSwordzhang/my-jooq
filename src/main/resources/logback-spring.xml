@@ -27,6 +27,7 @@
     <!-- 为logstash输出的JSON格式的Appender -->
     <appender name="logstash"
               class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!-- Logstash所在服务器IP:Logstash对外暴露的端口-->
         <destination>192.168.1.110:5044</destination>
         <!-- 日志输出编码 -->
         <encoder
