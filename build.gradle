@@ -63,6 +63,7 @@ dependencies {
     implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.13.1'
     implementation group: 'org.springframework', name: 'spring-tx', version: '5.2.5.RELEASE'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.3'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
