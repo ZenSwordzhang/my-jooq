@@ -4,7 +4,7 @@
 ```
 布尔值类型: ssl_enable => true
 字节类型: bytes => "1MiB"
-字符串类型: name => "xkops"
+字符串类型: name => "zsx"
 数值类型: port => 22
 数组: match => ["datetime","UNIX"]
 哈希: options => {key1 => "value1",key2 => "value2"}
