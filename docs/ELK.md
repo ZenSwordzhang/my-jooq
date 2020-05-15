@@ -21,6 +21,9 @@ docker run --rm -p 5601:5601 --name kibana --link elasticsearch -d kibana:7.6.2
 * 退出容器: exit
 * 重启logstash服务: docker restart logstash
 
+#### 安装logstash-input-file插件
+* logstash-plugin install logstash-input-file
+
 
 ### docker-compose构建ELK
 ```docker-compose-elk.yml
@@ -44,6 +47,7 @@ services:
         # 数据文件挂载
         - /d/usr/local/var/elasticsearch/data:/usr/share/elasticsearch/data
         - /d/usr/local/etc/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+        - /d/usr/local/logs:/usr/share/logstash/logs
     ports:
       - 9200:9200
       - 9300:9300

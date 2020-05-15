@@ -1,3 +1,9 @@
+## 问题
+
+### 问题1：Logstash not reading file in windows
+* 参考地址：[链接](https://discuss.elastic.co/t/logstash-not-reading-file-in-windows/41723 "链接")
+
+
 ## logstash.conf配置说明
 
 ### 数据类型： 
