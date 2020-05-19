@@ -135,3 +135,29 @@ target => #string（可选项）
     * logstash-plugin update logstash-output-kafka
 * 删除插件
     * logstash-plugin remove logstash-output-kafka
+    
+### input为udp
+* 1. 启动命令：docker run -it -v /d/usr/local/etc/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml -v /d/usr/local/etc/logstash/pipeline1:/usr/share/logstash/pipeline --name logstash1 -p 9601:9600 -p 5000:5000/udp logstash:7.7.0
+* 2. config目录下logstash.yml文件配置
+```
+http.host: "0.0.0.0"
+```
+* 3. pipeline目录下logstash.conf文件配置
+```
+input { 
+    stdin { } 
+    udp {
+        # 从5000端口获取日志
+        port => 5000
+    }
+}
+
+output {
+	stdout { codec => rubydebug }
+    elasticsearch {
+        hosts => ["192.168.1.110:9200"]
+        index => "logstash-udp-%{+YYYY.MM.dd}"
+    }
+}
+```
+* 4. udp数据模拟发送脚本[send-udp.js](../js/send-udp.js)
