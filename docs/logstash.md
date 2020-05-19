@@ -3,6 +3,10 @@
 ### 问题1：Logstash not reading file in windows
 * 参考地址：[链接](https://discuss.elastic.co/t/logstash-not-reading-file-in-windows/41723 "链接")
 
+### 问题2：Logstash接收不到udp/tcp发送的数据
+* 背景：用python脚本编写了udp/tcp服务器端与客户端，并启动了服务器端与客户端
+* 原因：消息优先被发送到服务端了，Logstash监听的端口无法收到数据
+* 解决：只能启动客户端，不能启动服务端
 
 ## logstash.conf配置说明
 
