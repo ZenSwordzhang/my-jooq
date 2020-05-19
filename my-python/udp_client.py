@@ -10,7 +10,7 @@ while True:
     if not msg:
         continue
 
-    client.sendto(msg.encode('utf-8'), ('192.168.1.110', 8080))
+    client.sendto(msg.encode('utf-8'), ('192.168.1.110', 5000))
 
     back_msg, addr = client.recvfrom(1024)
     print(back_msg.decode('utf-8'), addr)

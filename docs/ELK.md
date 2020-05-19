@@ -7,7 +7,6 @@
 #### logstash
 * docker run --rm -p 5044:5044 -p 9600:9600 --name logstash -d logstash:7.6.2
 * docker run -it -v /d/usr/local/etc/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml -v /d/usr/local/etc/logstash/pipeline:/usr/share/logstash/pipeline --name logstash -p 9600:9600 -p 5044:5044 logstash:7.6.2
-
 #### kibana
 docker run --rm -p 5601:5601 --name kibana --link elasticsearch -d kibana:7.6.2
 
@@ -24,6 +23,8 @@ docker run --rm -p 5601:5601 --name kibana --link elasticsearch -d kibana:7.6.2
 #### 安装logstash-input-file插件
 * logstash-plugin install logstash-input-file
 
+#### 安装logstash-input-udp插件
+* logstash-plugin install logstash-input-udp
 
 ### docker-compose构建ELK
 ```docker-compose-elk.yml

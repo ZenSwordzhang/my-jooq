@@ -45,3 +45,9 @@
 ### 查看ubuntu版本
 * lsb_release -a
 * cat /etc/issue
+
+### 显示正在监听的服务端口
+* netstat -lntup
+
+### 使用nc(NetCat)命令发送消息
+* echo "test nc command" | nc 192.168.1.110 8080

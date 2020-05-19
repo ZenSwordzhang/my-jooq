@@ -103,3 +103,35 @@ remove_tag => #array（可选项），默认[]
 source => #string（必选项）
 target => #string（可选项）
 ``` 
+
+## 命令
+
+### 显示节点级别的JVM统计信息
+* curl -XGET 'localhost:9600/_node/jvm?pretty'
+
+### 显示操作系统信息
+* curl -XGET 'localhost:9600/_node/os?pretty'
+
+### 显示指定管道信息
+* curl -XGET 'localhost:9600/_node/pipelines/test?pretty'
+
+### 显示管道信息
+* curl -XGET 'localhost:9600/_node/pipelines?pretty'
+
+### 检索节点信息
+* curl -XGET 'localhost:9600/_node/<types>'
+* types：pipelines、os、jvm
+* 例(用逗号分开)：curl -XGET 'localhost:9600/_node/pipelines,os,jvm?pretty'
+
+### 查看logstash插件信息
+* docker exec -it logstash bash
+* 列出所有已安装插件：bin/logstash-plugin list 
+* 列出所有已安装的插件，包括版本信息：bin/logstash-plugin list --verbose 
+* 列出所有包括namefragment的已安装插件：bin/logstash-plugin list '*namefragment*' 
+* 列出指定组的已安装插件(input, filter, codec, output)：bin/logstash-plugin list --group output 
+* 安装插件（容器bin目录下）
+    * logstash-plugin install logstash-output-kafka
+* 更新插件
+    * logstash-plugin update logstash-output-kafka
+* 删除插件
+    * logstash-plugin remove logstash-output-kafka
