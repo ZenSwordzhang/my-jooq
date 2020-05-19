@@ -65,6 +65,9 @@ curl -X POST --header "Content-Type:application/json" --data-raw "{\"json\":{\"m
 
 ### 相关命令
 
+#### 查看容器日志
+* docker logs -f --tail 10 container-name
+
 #### 取消容器总是重启
 * docker update --restart=no <container_id>
 
