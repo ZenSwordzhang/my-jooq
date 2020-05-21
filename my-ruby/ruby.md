@@ -91,14 +91,23 @@ message = format('Processing of the data has finished in %<first>d seconds',
                  first: time)
 ```
 
+### 问题10：Interpolated instance variable doesn't have braces
+原因：插入的实例变量没有花括号
+解决：
+```
+puts "Customer name #@cust_name"
+添加花括号，修改为
+puts "Customer name #{@cust_name}"
+```
+
 ## 语法
 ### 命名
 * Ruby 强制了一些命名约定：
-    * 大写字母开头的是一个常量；
+    * 常量使用大写；
     * 美元符号($)开头的是全局变量； 
     * @ 开头的是实例变量； 
     * @@ 开头的是类变量。 
-    * 然而函数的名字却可以大写字母开头
+    * 方法名总是以小写字母开头
 
 ### 函数
 * public是公开的。
@@ -113,6 +122,8 @@ message = format('Processing of the data has finished in %<first>d seconds',
 * 习惯上，以问号结尾的方法返回布尔值（如：如果接收者为空的话 Array#empty? 返回 true ）
 * 潜在“危险”方法（如修改 self 或参数的方法，exit! 等）以感叹号结尾。
 * 也不是所有修改参数的方法以感叹号结尾。 比如 Array#replace 方法将当前列表替换成另一个列表。
+* 类中的每个方法是以关键字 def 开始，后跟方法名。
+* 方法名总是以小写字母开头。在 Ruby 中，可以使用关键字 end 来结束一个方法。
 
 
 
