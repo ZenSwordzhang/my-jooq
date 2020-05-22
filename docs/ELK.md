@@ -92,3 +92,7 @@ services:
 
 
 ```
+
+## 补充插件
+### logstash
+* logstash-filter-multiline

@@ -65,6 +65,12 @@ curl -X POST --header "Content-Type:application/json" --data-raw "{\"json\":{\"m
 
 ### 相关命令
 
+#### 从docker中拷贝文件到宿主机
+* docker cp [OPTIONS] [CONTAINER_ID]:[SRC_PATH] [DEST_PATH]
+* docker cp <container_id | container_name>:/xxx/xxx/xxx/common.log /home/yyy.log
+* 例1： docker cp logstash:/usr/share/logstash/Gemfile d:/usr/local/opt/gem/Gemfile
+* 例2： docker cp logstash:/usr/share/logstash/Gemfile.lock d:/usr/local/opt/gem/Gemfile.lock
+
 #### 查看容器日志
 * docker logs -f --tail 10 container-name
 

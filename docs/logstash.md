@@ -8,6 +8,31 @@
 * 原因：消息优先被发送到服务端了，Logstash监听的端口无法收到数据
 * 解决：只能启动客户端，不能启动服务端
 
+### 问题3： Don't know how to handle `Java::JavaLang::IllegalStateException
+* 问题详情
+```
+[FATAL][logstash.runner          ] An unexpected error occurred! {:error=>#<LogStash::Error: Don't know how to handle `Java::JavaLang::IllegalStateException` for `PipelineAction::C
+reate<main>`>, :backtrace=>["org/logstash/execution/ConvergeResultExt.java:109:in `create'", "org/logstash/execution/ConvergeResultExt.java:37:in `add'", "/usr/share/logstash/logstash-core/lib/logstash/age
+nt.rb:339:in `block in converge_state'"]}
+```
+* 问题背景：在logstash.conf中添加了filter功能后，重启logstash失败
+```
+filter {
+   multiline {
+      pattern => "^(%{TIMESTAMP_ISO8601})"
+      negate => true
+      what => "previous"
+   }
+   grok {
+      # Do multiline matching with (?m) as the above mutliline filter may add newlines to the log messages.
+      match => [ "message", "(?m)^%{TIMESTAMP_ISO8601:log_time}%{SPACE}%{LOGLEVEL:log_level}%{SPACE}%{NUMBER:pid}%{SPACE}---%{SPACE}%{SYSLOG5424SD:thread_name}%{SPACE}%{NOTSPACE:logger_name}%{SPACE}:%{SPACE}%{GREEDYDATA:log_msg}" ]
+   }
+}
+```
+* 原因：logstash容器没有安装logstash-filter-multiline插件
+* 解决：
+    * 安装logstash-filter-multiline插件：logstash-plugin install logstash-filter-multiline
+
 ## logstash.conf配置说明
 
 ### 数据类型： 
@@ -135,6 +160,8 @@ target => #string（可选项）
 * 列出指定组的已安装插件(input, filter, codec, output)：bin/logstash-plugin list --group output 
 * 安装插件（容器bin目录下）
     * logstash-plugin install logstash-output-kafka
+* 查看插件
+    * logstash-plugin list --verbose | grep kafka
 * 更新插件
     * logstash-plugin update logstash-output-kafka
 * 删除插件
