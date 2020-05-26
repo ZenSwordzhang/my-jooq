@@ -33,6 +33,47 @@ filter {
 * 解决：
     * 安装logstash-filter-multiline插件：logstash-plugin install logstash-filter-multiline
 
+### 问题3：Could not execute action: PipelineAction::Create
+* 问题详情：
+```
+][ERROR][logstash.agent           ] Failed to execute action {:id=>:main, :action_type=>LogStash::ConvergeResult::FailedAction, :message=>"Could not execu
+te action: PipelineAction::Create<main>, action_result: false", :backtrace=>nil}
+```
+* 问题背景：logstash用filebeat收集日志时，logstash.conf文件中配置了codec为多行，logstash启动后自动退出
+```
+beats {
+    port => 5044
+    type => "filebeat"
+    codec => multiline {
+        pattern => "^(%{TIMESTAMP_ISO8601})"
+        negate => true
+        what => "previous"
+    }
+}
+```
+* 解决：注释掉logstash.conf文件中的codec配置，在filebeat.yml中添加多行匹配
+```
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /usr/share/filebeat/logs/*.log
+  # 自定义属性
+  fields:
+    env: test
+  # 设置为true，则自定义env字段将作为顶级字段存储在输出文档中，而不是分组在fields子词典下
+  fields_under_root: true
+  
+  # 多行合并参数，正则表达式，匹配时间格式：2020-05-25 03:39:08.167
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3}'
+  # true 或 false；默认是false，匹配pattern的行合并；true，不匹配pattern的行合并
+  multiline.negate: true
+  # after 或 before，合并到上一行的末尾或下一行的开头
+  multiline.match: after
+```
+
+
+
 ## logstash.conf配置说明
 
 ### 数据类型： 

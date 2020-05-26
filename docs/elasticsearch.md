@@ -5,3 +5,20 @@
 * 解决：
     * 1.在/etc/sysctl.conf文件中添加vm.max_map_count=262144
     * 2.执行命令重新加载配置：sudo sysctl --system
+
+## 命令操作
+
+### 删除索引
+* curl -X DELETE http://localhost:9200/{indexName}
+
+
+
+
+
+
+
+
+
+
+
+
