@@ -46,3 +46,25 @@ when 13..18
 else
   puts 'adult'
 end
+
+puts
+puts [].nil?
+puts [''].nil?
+puts nil.nil?
+puts ['abc'].nil?
+puts 'abc'.nil?
+puts ''.nil?
+puts ' '.nil?
+
+puts
+puts [].empty?
+puts [''].empty?
+puts ['abc'].empty?
+puts 'abc'.empty?
+puts ''.empty?
+puts ' '.empty?
+
+puts
+puts 1 != 2
+puts !1.nil?
+puts 1 != ''

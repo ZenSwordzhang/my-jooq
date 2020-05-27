@@ -28,6 +28,14 @@ puts format('a1: %<first>d, a2: %<second>d', first: a1, second: a2)
 
 puts format('%<first>d %<second>d', first: 20, second: 10)
 
+puts format('%<first>s %<second>s', first: '20', second: '10')
+
+msg1 = 'a'
+msg2 = 'b'
+msg3 = 'c'
+puts format('msg1 = %<msg1>s, msg2 = %<msg2>s, msg2 = %<msg3>s',
+            msg1: msg1, msg2: msg2, msg3: msg3)
+
 puts "相乘 : #{24 * 60 * 60}"
 
 name = 'Ruby'
@@ -47,3 +55,7 @@ end
 
 # 范围
 (10..15).each { |n| print n, ' ' }
+
+log = 'abs'
+msg1 = log.to_s
+puts format('msg1 = %<msg1>s', msg1: msg1)
