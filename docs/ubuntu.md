@@ -51,3 +51,15 @@
 
 ### 使用nc(NetCat)命令发送消息
 * echo "test nc command" | nc 192.168.1.110 8080
+
+### 查找目录
+* find / -name dir_name -type d
+
+### 查找文件
+* find / -name file_name
+
+### Linux vi 命令?
+* dd  --删除当前行
+* ndd  --删除n行数据
+* dG  --删除当前后之后的全部行
+

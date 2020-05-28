@@ -7,11 +7,16 @@ ERROR: Version in ".\create-certs.yml" is unsupported. You might be seeing this 
  or "3.3") and place your service definitions under the `services` key, or omit the `version` key and place your service definitions at the root of the file to use version 1.
 For more on the Compose file format versions, see https://docs.docker.com/compose/compose-file/
 ```
-* 背景：使用docker-compose3.8版本报错
+* 背景：win10下使用docker-compose3.8版本报错
     * Docker version 19.03.8,
     * docker-compose version 1.25.4
 * 原因：docker-compose版本等级不够，注：docker 19.03.0+、docker-compose 1.25.5+
-* 解决：升级docker-compose
+* 解决：升级docker-compose到1.25.5
+    * 1. 打开PowerShell
+    * 2. 执行命令：
+    ```
+    Invoke-WebRequest "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-Windows-x86_64.exe" -UseBasicParsing -OutFile $Env:ProgramFiles\Docker\Docker\resources\bin\docker-compose.exe
+    ```
 * 参考：
     * [docker-version](https://docs.docker.com/compose/compose-file/#volume-configuration-reference)
     * [docker-compose-version](https://github.com/docker/compose/releases/)
