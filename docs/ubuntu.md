@@ -63,3 +63,9 @@
 * ndd  --删除n行数据
 * dG  --删除当前后之后的全部行
 
+### 查看cpu使用情况
+* 方式1：使用top命令
+    * top
+* 方式2：使用htop命令
+    * sudo apt install htop
+    * htop
