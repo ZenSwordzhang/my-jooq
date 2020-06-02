@@ -69,3 +69,10 @@
 * 方式2：使用htop命令
     * sudo apt install htop
     * htop
+
+### 安装上传工具
+* sudo apt-get install lrzsz
+* 下载到本地命令：sz
+* 上传到Linux上命令：rz
+
+

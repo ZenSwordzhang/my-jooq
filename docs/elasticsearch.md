@@ -12,6 +12,14 @@
 * curl -X DELETE http://localhost:9200/{indexName}
 
 
+### 查看集群详细信息
+* http://localhost:9200/_cluster/stats
+
+### 查看节点详细信息
+* http://localhost:9200/_cat/nodes?v
+
+### 查看节点
+* http://localhost:9200/_cat/nodes
 
 
 
