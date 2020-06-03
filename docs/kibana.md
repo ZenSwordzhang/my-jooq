@@ -228,6 +228,298 @@ POST /library/_doc
 }
 ```
 
+### 获取索引映射信息
+* GET /library/_mapping
+
+### 获取集群内的所有映射信息
+* GET /_all/_mapping
+
+### 删除映射
+* DELETE /library/_doc/_mapping
+* DELETE /library/_doc/_mapping?pretty=true
+
+## 基本查询
+
+### 合并查询
+```
+GET /library/_mget
+{
+  "ids": ["1","2","3","4","5","6","7"]
+}
+```
+### 简单查询
+* 带索引：GET /library/_search?q=title:elasticsearch
+* 不带索引：GET /_search?q=title:elasticsearch
+
+## term查询
+
+### 查询某个字段里有某个关键词的文档
+```
+GET /library/_search
+{
+  "query": {
+    "term": {
+      "preview": "es"
+    }
+  }
+}
+```
+
+### 查询某个字段里有多个关键词的文档
+* minimum_should_match指定匹配数量
+* minimum_should_match值为1，表示只要匹配一个
+* minimum_should_match值为2，表示2个都要匹配
+```
+GET /library/_search
+{
+  "query": {
+    "bool": {
+      "minimum_should_match": 1,
+      "should": [
+        {
+          "term": {
+            "preview": "es"
+           }
+        },
+        {
+          "term": {
+            "preview": "php"
+          }
+        }
+      ]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "preview": {}
+    }
+  }
+}
+```
+
+### 控制查询返回的数量
+```
+GET /library/_search
+{
+  "from": 1,
+  "size": 2,
+  "query": {
+    "term": {
+      "title": "elasticsearch"
+    }
+  }
+}
+```
+## match查询
+* match跟term区别是,match查询的时候,elasticsearch会根据你给定的字段提供合适的分析器,而term查询不会有分析器分析过程
+
+### match
+```
+GET /library/_search
+{
+  "query": {
+    "match": {
+      "preview": "es"
+    }
+  }
+}
+```
+
+### match_phrase查询
+* slop表示关键词之间间隔多少个未知单词
+``` 
+GET /library/_search
+{
+  "query": {
+    "match_phrase": {
+      "preview": {
+        "query": "es,1",
+        "slop": 1
+      }
+    }
+  }
+}
+```
+
+### multi_match查询
+* 例：查询title或preview这两个字段里包含php关键词的文档
+```
+GET /library/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "php",
+      "fields": ["title","preview"]
+    }
+  }
+}
+```
+
+### _source指定返回的字段
+```
+GET /library/_search
+{
+  "_source": ["preview","title"],
+  "query": {
+    "match": {
+      "preview": "es"
+    }
+  }
+}
+```
+
+### stored_fields
+```
+GET /library/_search
+{
+  "stored_fields": ["preview","title"],
+  "query": {
+    "match": {
+      "preview": "es"
+    }
+  }
+}
+```
+
+### 控制加载字段
+* 不使用通配符
+```
+GET /library/_search?_source_includes=title,price&_source_excludes=preview
+{
+  "query": {
+    "match_all": {}
+  }
+}
+```
+* 使用通配符
+```
+GET /library/_search?_source_includes=tit*,pr*&_source_excludes=pre*
+{
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+### sort排序
+* desc降序、asc升序
+```
+GET /library/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "price.keyword": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+```
+
+### prefix前缀匹配查询
+```
+GET /library/_search
+{
+  "query": {
+    "prefix": {
+      "title": {
+        "value": "p"
+      }
+    }
+  }
+}
+
+```
+
+### range控制范围
+* nclude_lower: 是否包含范围的左边界,默认是true
+* include_upper: 是否包含范围的右边界,默认是true
+```
+GET /library/_search
+{
+  "query": {
+    "range": {
+      "price": {
+        "from": "10",
+        "to": "20",
+        "include_lower": true,
+        "include_upper": false
+      }
+    }
+  }
+}
+```
+
+### wildcard通配符查询
+``` 带*匹配
+GET /library/_search
+{
+  "query": {
+    "wildcard": {
+      "preview": "es*"
+    }
+  }
+}
+```
+``` 带?匹配
+GET /library/_search
+{
+  "query": {
+    "wildcard": {
+      "preview.keyword": "e?-1"
+    }
+  }
+}
+```
+
+### fuzzy模糊查询
+```
+GET /library/_search
+{
+  "query": {
+    "fuzzy": {
+      "preview": "php"
+    }
+  }
+}
+```
+* fuzziness（可选，字符串）匹配允许的最大编辑距离
+* max_expansions（可选，整数）创建的最大变体数。默认为50
+* 避免在max_expansions参数中使用较高的值，尤其是当prefix_length参数值为时0
+* max_expansions由于检查的变量数量过多，参数中的高值 可能导致性能不佳。
+* prefix_length（可选，整数）创建扩展时保留不变的开始字符数，默认为0
+* transpositions（可选，布尔值）指示编辑是否包括两个相邻字符的变位（ab→ba），默认为true。
+* rewrite（可选，字符串）用于重写查询的方法
+```
+GET /library/_search
+{
+  "query": {
+    "fuzzy": {
+      "preview": {
+        "value": "php",
+        "fuzziness": "AUTO",
+        "max_expansions": 50,
+        "prefix_length": 0,
+        "transpositions": true,
+        "rewrite": "constant_score"
+      }
+    }
+  }
+}
+```
+
+
+
+## 参考文档
+### 映射
+* [removal-of-types](https://www.elastic.co/guide/en/elasticsearch/reference/7.7/removal-of-types.html)
+
+### 查询
+* (query-dsl)[https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html]
+
 
 
 
