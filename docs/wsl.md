@@ -71,6 +71,9 @@ sudo service docker start
 ### 设置WSL2为默认体系结构
 * wsl --set-default-version 2
 
+### windows开机默认启动Ubuntu和ssh
+* wsl -d Ubuntu-20.04 -u root /etc/init.d/ssh start
+
 ### 启用虚拟机平台可选组件
 * Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 * dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
@@ -79,6 +82,10 @@ sudo service docker start
 * 方式1：Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 * 方式2：dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 
+### 重启子系统
+* net stop LxssManager
+* net start LxssManager
+
 ## ubuntu命令
 
 ### 查看服务状态
@@ -86,7 +93,7 @@ sudo service docker start
 
 ### 启动ssh服务
 * sudo /etc/init.d/ssh start
-* service ssh start
+* service ssh start(PowerShell命令)
 
 ### 查看端口是否连通
 * 方式1：telnet IP PORT
@@ -95,6 +102,9 @@ sudo service docker start
     * 例：ssh -v -p 2222 zsx@192.168.1.110
 * 方式3：wget ip:port
     * 例：wget 192.168.1.110:2222
+
+### 查看宿主机所在ip
+* cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }'
 
 ### 修改ubuntu镜像源
 * 备份：sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -129,6 +139,12 @@ EOF
 3. 重新加载守护进程：sudo systemctl daemon-reload
 4. 重启容器：sudo systemctl restart docker | sudo service docker restart | sudo /etc/init.d/docker restart
 * 查看[阿里云专用镜像加速地址](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors)
+
+## 文件
+
+### ip所在文件
+* /etc/resolv.conf
+
 
 ## 参考链接
 

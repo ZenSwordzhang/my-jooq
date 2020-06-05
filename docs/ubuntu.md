@@ -75,4 +75,137 @@
 * 下载到本地命令：sz
 * 上传到Linux上命令：rz
 
+### grep不区分大小写匹配
+* grep -i match_content
+
+### 强行设置某个用户所在组
+* usermod -g 用户组 用户名
+
+### 把某个用户改为 group(s) 
+* usermod -G 用户组 用户名
+
+### 把用户添加进入某个组(s）
+* usermod -a -G 用户组 用户名
+
+### 创建用户
+* useradd username
+    * 例1：useradd zhangsan
+    * 例2：useradd list -g zhangsan
+``` 参数
+-g groupname: 指定用户的基本组(事先存在), 没指定则使用与用户名相同的组名；
+-G group1,group2: 指定用户所属的附加组，要事先存在；
+-c "comment": 注释信息；
+-d HOME_DIR: 家目录；
+-s SHELL: 指定用户默认的shell，可用的所有shell列表在/etc/shells中；
+```
+
+### 显示用户默认创建信息
+* useradd -D
+
+### 修改用户信息
+* usermod username
+```
+-u UID: 修改用户id为新的；
+-g GID: 修改用户基本组为新的;
+-G group1, group2: 修改用户附加组，原来的被覆盖；
+```
+
+### 删除用户
+* userdel username
+```
+-r: 删除用户时，一起删除家目录
+```
+
+### 创建组
+* groupadd groupname
+
+### 
+* 修改组：groupmod -n new_name： 修改组名
+
+### 删除组
+* groupdel groupname
+
+### 更改组成员
+* groupmems -g groupname [action]
+```
+-a,--add username: 指定用户加入组；
+-d,--delete username: 从组中删除用户；
+-p,--purge :从组中清除所有成员；
+-l,--list: 显示组成员列表;
+groups查看当前用户所在全部组
+```
+### 查看环境变量
+* env
+* export
+
+### 列出变量PATH的值
+* echo $PATH
+
+### 命名一个新的环境变量
+* export VAR_NAME=value
+
+### 添加路径到PATH末尾
+export PATH=$PATH:/path/to/your/dir
+
+### 添加路径到PATH开头
+export PATH=/path/to/your/dir:$PATH
+
+### 环境变量作用域
+* 1.用于当前终端
+    * export CLASS_PATH=./JAVA_HOME/lib:$JAVA_HOME/jre/lib
+* 2.用于当前用户
+    * 写入用户主目录下的.bashrc文件
+    * vim ~/.bashrc
+    * export CLASS_PATH=./JAVA_HOME/lib:$JAVA_HOME/jre/lib
+    * source ~/.bashrc
+* 3.用于所有用户
+    * 修改profile文件
+    * sudo vim /etc/profile
+    * export CLASS_PATH=./JAVA_HOME/lib:$JAVA_HOME/jre/lib
+    * source /etc/profile
+
+### bash下环境变量设置和删除
+* 设置：export 变量名=变量值
+* 删除：unset 变量名
+
+### csh下环境变量设置和删除
+* 设置：setenv 变量名 变量值
+* 删除：unsetenv 变量名
+
+
+
+
+
+
+
+
+## 文件
+
+### 用户信息所在文件
+* /etc/passwd
+* 格式：name:password:UID:GID:GECOS:directory:shell
+    * 例：zsx:x:1000:1000:,,,:/home/zsx:/bin/bash
+    * name：登录用户名
+    * password：密码
+    * UID：用户ID
+    * GID：用户主组ID
+    * GECOS：用户全名或注释，用命令chfn可以修改注释信息，用命令finger可以更加详细的查看修改和用户信息
+    * directory：用户主目录
+    * /bin/bash：用户使用shell，用chsh命令可以直接修改用户的shell
+
+### 组信息所在文件
+* /etc/group
+
+### 用户密码信息所在文件
+* /etc/shadow
+
+### 群组密码信息所在文件
+* /etc/gshadow
+
+
+
+
+
+
+
 
