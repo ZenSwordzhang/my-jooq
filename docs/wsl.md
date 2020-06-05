@@ -41,7 +41,7 @@ sudo service docker start
 ### 问题6：System has not been booted with systemd as init system (PID 1). Can't operate. Failed to connect to bus: Host is down
 * 背景：wsl2下ubuntu执行命令sudo systemctl restart docker报错
 * 原因：到目前为止，在WSL 2中我们没有systemd
-* 解决：使用命令sudo /etc/init.d/docker restart或sudo service docker restart
+* 解决：使用命令sudo /etc/init.d/docker start | sudo /etc/init.d/docker restart | sudo service docker restart
 
 
 
@@ -93,7 +93,7 @@ sudo service docker start
 
 ### 启动ssh服务
 * sudo /etc/init.d/ssh start
-* service ssh start(PowerShell命令)
+* sudo service ssh start
 
 ### 查看端口是否连通
 * 方式1：telnet IP PORT
@@ -140,6 +140,23 @@ EOF
 4. 重启容器：sudo systemctl restart docker | sudo service docker restart | sudo /etc/init.d/docker restart
 * 查看[阿里云专用镜像加速地址](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors)
 
+### wsl2设置静态ip（在ubuntu中进行）
+* 1.sudo apt install -y avahi-daemon
+* 2.sudo /etc/init.d/dbus start
+* 3.sudo /etc/init.d/avahi-daemon start
+```
+<PCNAME>.local解析为Windows机器，
+<PCNAME>-2.local解析为ubuntu机器
+```
+* 另外还可以修改/etc/avahi/avahi-daemon.conf文件，覆盖Linux计算机的已发布主机名
+```
+[server]
+host-name=WSL
+因此WSL.local现在将解析为wsl机器
+这将适用于在本地LAN上任何启用了mDNS的计算机上运行的任何查找
+```
+
+
 ## 文件
 
 ### ip所在文件
@@ -172,6 +189,10 @@ EOF
 
 ### ubuntu常用命令
 * [ubuntu常用命令](https://blog.csdn.net/zsx18273117003/article/details/90731538)
+
+### wsl2静态ip设置
+* [ip设置](https://github.com/shayne/go-wsl2-host)
+* [WSL2设置静态IP](https://github.com/microsoft/WSL/issues/4210)
 
 [](#前言)
 ## 底部

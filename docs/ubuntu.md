@@ -173,9 +173,13 @@ export PATH=/path/to/your/dir:$PATH
 * 删除：unsetenv 变量名
 
 
+### 临时修改主机名(重启后恢复原主机名)
+* hostname new_name
 
-
-
+### 永久修改主机名
+* 1.修改</etc/hostname | /etc/sysconfig/network>文件
+* 2.（可选）修改/etc/hosts配置文件
+* 3.重启ubuntu
 
 
 
@@ -202,9 +206,11 @@ export PATH=/path/to/your/dir:$PATH
 ### 群组密码信息所在文件
 * /etc/gshadow
 
+### 域名与ip的对应关系所在文件
+* /etc/hosts
 
-
-
+### 主机名所在文件
+* /etc/hostname
 
 
 
