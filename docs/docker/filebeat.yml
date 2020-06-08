@@ -1,0 +1,37 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /usr/share/filebeat/log/apps/*/*.log
+  # tags: ["service"]
+  fields:
+    env: test
+    source: spring
+    type: logs
+  # 设置为true，则自定义env字段将作为顶级字段存储在输出文档中，而不是分组在fields子词典下
+  fields_under_root: true
+
+  # 多行合并参数，正则表达式，匹配时间格式：2020-05-25 03:39:08.167
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3}'
+  # true 或 false；默认是false，匹配pattern的行合并；true，不匹配pattern的行合并
+  multiline.negate: true
+  # after 或 before，合并到上一行的末尾或下一行的开头
+  multiline.match: after
+- type: log
+  enabled: true
+  paths:
+    - /usr/share/filebeat/log/facilities/*/postgresql-*.log
+  # tags: ["facility"]
+  fields:
+    env: test
+    source: facility
+    type: logs
+    from: Postgres
+  fields_under_root: true
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3}'
+  multiline.negate: true
+  multiline.match: after
+  include_lines: [ 'duration' ]
+output.logstash:
+    # hosts: ["stat.ats-oa.com:9602"]
+    hosts: ["192.168.1.110:9602"]

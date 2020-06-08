@@ -1,0 +1,118 @@
+# windows下配置
+version: '3'
+
+services:
+  # 服务名
+  elasticsearch:
+    image: elasticsearch:7.7.0
+    container_name: elasticsearch
+    environment:
+        # 设置集群名称为elasticsearch
+        cluster: name=elasticsearch
+        # # 以单一节点模式启动
+        discovery: type=single-node
+        ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+        - /d/usr/share/elasticsearch/config/es-plugins:/usr/share/elasticsearch/plugins
+        - /d/usr/share/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+        - /d/usr/share/elasticsearch/data/es:/usr/share/elasticsearch/data
+        # - /etc/timezone:/etc/timezone:ro
+        # - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  logstash:
+    image: logstash:7.7.0
+    container_name: logstash
+    # 修改配置后自动重启
+    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
+    volumes:
+        - /d/usr/share/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+        - /d/usr/share/logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+        # - /etc/timezone:/etc/timezone:ro
+        # - /etc/localtime:/etc/localtime:ro
+    depends_on:
+        - elasticsearch
+    links:
+        # 指定一个别名
+        - elasticsearch:es
+    ports:
+        - 9600:9600
+        - 9601:9601
+        - 9602:9602
+
+  kibana:
+    image: kibana:7.7.0
+    container_name: kibana
+    links:
+        - elasticsearch:es
+    # volumes:
+      # - /etc/timezone:/etc/timezone:ro
+      # - /etc/localtime:/etc/localtime:ro
+    depends_on:
+        - elasticsearch
+    environment:
+        - "elasticsearch.hosts=http://es:9200"
+    ports:
+        - 9500:5601
+        
+  filebeat:
+    image: elastic/filebeat:7.7.0
+    container_name: filebeat
+    volumes:
+      - /d/usr/share/filebeat/apps/log:/usr/share/filebeat/log/apps
+      - /d/usr/share/filebeat/facilities/log:/usr/share/filebeat/log/facilities
+      - /d/usr/share/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /d/usr/share/filebeat/data:/usr/share/filebeat/data
+      # - /etc/timezone:/etc/timezone:ro
+      # - /etc/localtime:/etc/localtime:ro
+    depends_on:
+        - elasticsearch
+
+  db:
+    image: postgres:13
+    container_name: postgres
+    # restart: always
+    # 从指定配置文件启动
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - /d/usr/share/filebeat/facilities/log/postgresql:/var/log/postgresql
+      # # 配置文件默认路径 /var/lib/postgresql/data/postgresql.conf
+      - /d/usr/share/postgresql/my-postgres.conf:/etc/postgresql/postgresql.conf
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - 5433:5432
+
+    adminer:
+      image: adminer:4.7.7-standalone
+      container_name: adminer
+      # restart: always
+      ports:
+        - 8080:8080
+volumes:
+  pgdata:
+    external: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
