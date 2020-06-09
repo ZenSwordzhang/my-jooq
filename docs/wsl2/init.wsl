@@ -1,0 +1,16 @@
+#!/usr/bin/sh
+
+/etc/init.d/ssh start
+
+# 解决wsl2开机重新生成ip问题
+/etc/init.d/dbus start
+/etc/init.d/avahi-daemon start
+
+docker restart postgres
+
+chmod -R 777 /data/dmplus/facilities/log
+
+# 重新加载系统配置
+sysctl --system
+
+docker restart elasticsearch logstash filebeat kibana
