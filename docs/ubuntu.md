@@ -181,7 +181,14 @@ export PATH=/path/to/your/dir:$PATH
 * 2.（可选）修改/etc/hosts配置文件
 * 3.重启ubuntu
 
+### 非 root 用户想要使用 docker ，需要将该用户添加到 docker 用户组
+* sudo usermod -aG docker user-name
 
+### 查看端口占用
+* netstat -ap | grep port
+
+### 杀死进程
+* kill -9 PID
 
 ## 文件
 

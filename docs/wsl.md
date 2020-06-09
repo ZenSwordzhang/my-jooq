@@ -94,6 +94,7 @@ sudo service docker start
 ### 启动ssh服务
 * sudo /etc/init.d/ssh start
 * sudo service ssh start
+* wsl -d Ubuntu-20.04 -u root /etc/init.d/ssh start(PowerShell启动)
 
 ### 查看端口是否连通
 * 方式1：telnet IP PORT
@@ -140,6 +141,9 @@ EOF
 4. 重启容器：sudo systemctl restart docker | sudo service docker restart | sudo /etc/init.d/docker restart
 * 查看[阿里云专用镜像加速地址](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors)
 
+### 设置docker为守护进程
+* sudo systemctl enable docker
+
 ### wsl2设置静态ip（在ubuntu中进行）
 * 1.sudo apt install -y avahi-daemon
 * 2.sudo /etc/init.d/dbus start
@@ -164,6 +168,9 @@ host-name=WSL
 
 
 ## 参考链接
+
+### wsl2开机启动配置
+* [wsl2启动配置](https://blog.csdn.net/hiqiming/article/details/105244147)
 
 ### win10子系统安装(WSL)
 * [win10子系统安装官网](https://docs.microsoft.com/zh-cn/windows/wsl/install-win10)
@@ -193,6 +200,7 @@ host-name=WSL
 ### wsl2静态ip设置
 * [ip设置](https://github.com/shayne/go-wsl2-host)
 * [WSL2设置静态IP](https://github.com/microsoft/WSL/issues/4210)
+
 
 [](#前言)
 ## 底部

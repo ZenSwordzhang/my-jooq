@@ -520,7 +520,10 @@ GET /library/_search
 ### 查询
 * (query-dsl)[https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html]
 
-
+### Kibana可视化中的JSON输入(JSON Input in Kibana Visualization)
+* [JSON Input in Kibana Visualization](https://discuss.elastic.co/t/json-input-in-kibana-visualization/217723)
+* [参考案例](https://www.elastic.co/guide/zh-CN/kibana/current/field-filter.html#filter-edit)
+* [术语汇总文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html#_shard_size_3)
 
 
 
