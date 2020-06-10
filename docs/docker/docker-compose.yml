@@ -70,6 +70,17 @@ services:
     depends_on:
         - elasticsearch
 
+  elasticsearch-head:
+    image: mobz/elasticsearch-head:5
+    container_name: elasticsearch-head
+    ports:
+      - 9100:9100
+    volumes:
+      # 原vendor.js文件地址：https://github.com/mobz/elasticsearch-head/blob/master/_site/vendor.js
+      # 新的vendor.js为原vendor.js文件修改了6886行、7573行后的文件
+      # contentType: "application/x-www-form-urlencoded改成了contentType: "application/json;charset=UTF-8"
+      - /d/usr/local/etc/elasticsearch-head/_site/vendor.js:/usr/src/app/_site/vendor.js
+
   db:
     image: postgres:13
     container_name: postgres
