@@ -11,14 +11,14 @@ EOF
 # 定义数组
 arr1=(a b c d)
 # 读取数组
-echo ${arr1[1]}
+echo "${arr1[1]}"
 
 arr2=(a 
 b 
 c 
 d
 )
-echo ${arr2[2]}
+echo "${arr2[2]}"
 
 arr3[0]=Aa
 arr3[1]=BbB
@@ -27,7 +27,7 @@ arr3[3]=DDD
 echo ${arr3[0]}
 
 # 获取数组中所有元素
-echo ${arr3[@]}
+echo "${arr3[@]}"
 
 # 获取数组的长度
 echo ${#arr3[@]}

@@ -12,7 +12,9 @@ sudo chmod -R 777 /data/dmplus/facilities/log
 
 sudo chmod 777 /etc/sysctl.conf
 # 输出内容到文件
-sudo echo vm.max_map_count=262144 >> /etc/sysctl.conf
+# sudo echo vm.max_map_count=262144 >> /etc/sysctl.conf
+# 上面写法提示警告，替换为
+echo 'export vm.max_map_count=262144' | sudo tee -a /etc/sysctl.conf > /dev/null
 # 恢复原权限
 sudo chmod 644 /etc/sysctl.conf
 
