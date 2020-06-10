@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker network create redis-net
+
 for port in $(seq 7000 7005); do \
   docker run -d -it \
     -p "${port}":"${port}" \
