@@ -1,38 +1,19 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
-port=1000
-echo 1${port}
-
-printf 1%d\\n ${port}
-printf "Hello, %s\n" "$NAME"
-
-#for i in `seq 7000 7005`;
-#for i in {7000..7005}
-#for((i=7000; i<7006; i++));
-# lt <
-# le <=
-# gt >
-# -ge >=
-# -eq =
-# 上面写法会提示警告，替换为
-for i in $(seq 7000 7005)
+container_names=
+# 生成要检查的容器名
+for port in $(seq 7000 7005);
 do
-  printf "%s\n" "${i}"
+  container_names=$container_names"|redis-${port}"
 done
-printf "\n"
 
+echo "container_names: $container_names"
 
-for i in 7000 7001 7002 7003 7004 7005
-do
-  printf "%s\n" "${i}"
-done
-printf "\n"
+# 去掉字符串首位的"|"，得到grep命令的匹配部分
+grep_part="${container_names:1}"
+echo "grep_part: $grep_part"
 
-i=7000
-while [ $i -lt 7006 ]
-do
-  i=$((i + 1))
-  printf "%s\n" "${i}"
-done
-printf "\n"
+## 拼接命令实现过滤，匹配需要的信息
+docker ps -a | grep -E "$grep_part"
+
 
