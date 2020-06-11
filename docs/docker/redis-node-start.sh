@@ -3,6 +3,7 @@
 # 方法要定义在调用的前面，否则会因找不到该方法报错
 createRedisClusterContainer() {
   echo "Start to create redis cluster"
+  # 注：此处redis.conf文件如果不存在，会默认创建名为redis.conf的文件夹
   for port in $(seq 7000 7005);
   do
     docker run -d -it \
@@ -22,12 +23,13 @@ createRedisClusterContainer() {
 createRedisConfig() {
   echo "Start writing to redis configuration file"
   for port in $(seq 7000 7005); do
-    # windows下使用盘符路径，ubuntu下使用绝对路径
+    # 注：windows下使用盘符路径，ubuntu下使用绝对路径
     if [ ! -d "d:/usr/local/etc/docker/redis-cluster/config/${port}" ]; then
       mkdir -p d:/usr/local/etc/docker/redis-cluster/config/"${port}"
     fi
     # 使用"<<-"，需要使用制表符Tab缩进
     # 使用<<-'EOF'或<<'EOF'，其中的内容都不能进行变量替换，使用<<EOF可以将外部变量传递到内容中
+    # 注：此处若存在名为redis.conf的文件夹，则不再创建redis.conf文件
     tee d:/usr/local/etc/docker/redis-cluster/config/"${port}"/redis.conf <<EOF
 # redis后台运行
 daemonize no
