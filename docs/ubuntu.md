@@ -219,6 +219,14 @@ export PATH=/path/to/your/dir:$PATH
 ### 主机名所在文件
 * /etc/hostname
 
+### 删除文件所有内容
+* ggdG
+```
+gg为跳转到文件首行
+dG为删除光标所在行以及其下所有行的内容
+d为删除，G为跳转到文件末尾行
+```
+
 
 
 

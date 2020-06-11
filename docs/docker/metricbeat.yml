@@ -1,0 +1,13 @@
+metricbeat.modules:
+  #---------------------------- redis Status Module ----------------------------
+  - module: redis
+    metricsets: ["info"]
+    hosts: ["192.168.1.110:7000"]
+    period: 1s
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  hosts: ["192.168.1.110:9600"]
+
+
+

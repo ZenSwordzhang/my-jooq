@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.7.0
+    container_name: elasticsearch
+    # restart: always
+    environment:
+      cluster: name=elasticsearch
+      discovery: type=single-node
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - ${PWD}/config/es-plugins:/usr/share/elasticsearch/plugins
+      - ${PWD}/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${PWD}/data/es:/usr/share/elasticsearch/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  logstash:
+    image: logstash:7.7.0
+    container_name: logstash
+    # restart: always
+    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
+    volumes:
+      - ${PWD}/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ${PWD}/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch:es
+    ports:
+      - 9600:9600
+      - 9601:9601
+      - 9602:9602
+
+  kibana:
+    image: kibana:7.7.0
+    container_name: kibana
+    # restart: always
+    links:
+      - elasticsearch:es
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - elasticsearch
+    environment:
+      - "elasticsearch.hosts=http://es:9200"
+    ports:
+      - 9500:5601
+
+  metricbeat:
+    image: elastic/metricbeat:7.7.0
+    container_name: metricbeat
+    volumes:
+      - ${PWD}/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
