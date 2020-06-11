@@ -65,7 +65,7 @@ curl -X POST --header "Content-Type:application/json" --data-raw "{\"json\":{\"m
 ```
 
 ## 问题5： Error response from daemon: network redis-net not found
-* 背景：通过shell脚本创建redis集群时报错[redis-node-start](./docker/redis-node-start.sh)
+* 背景：通过shell脚本创建redis集群时报错[redis-node-start](redis-node-start.sh)
 * 解决：
     * 添加创建网络命令：docker network create redis-net
 
