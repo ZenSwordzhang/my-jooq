@@ -4,7 +4,7 @@ port=1000
 echo 1${port}
 
 printf 1%d\\n ${port}
-printf "Hello, %s\n" "$NAME"
+printf "Hello, %s\n" "$port"
 
 # 获取字符串长度
 introduction="My name is zsx"
