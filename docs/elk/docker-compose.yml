@@ -65,3 +65,17 @@ services:
       - /:/hostfs:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+
+  redis:
+    image: redis:buster
+    container_name: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ${PWD}/config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ${PWD}/data/redis:/data
+      - /usr/share/filebeat/log/facilities/redis:/var/log/redis
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 6379:6379
+

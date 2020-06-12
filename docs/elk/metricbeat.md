@@ -29,3 +29,6 @@
 ### 输出到logstash
 * [logstash-output](https://www.elastic.co/guide/en/beats/metricbeat/current/logstash-output.html)
 
+### 添加属性
+* [add-fields](https://www.elastic.co/guide/en/beats/metricbeat/current/add-fields.html)
+
