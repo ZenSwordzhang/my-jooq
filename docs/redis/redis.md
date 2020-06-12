@@ -1,5 +1,5 @@
-### 问题
-#### 问题1：OCI runtime exec failed: exec failed: container_linux.go:349: starting container process caused "exec: \"bash\": executable file not found in $PATH": unknown
+## 问题
+### 问题1：OCI runtime exec failed: exec failed: container_linux.go:349: starting container process caused "exec: \"bash\": executable file not found in $PATH": unknown
 * 背景：执行如下命令，进入容器内部报错
 ```
 docker exec -it redis-container-id bash
@@ -9,6 +9,18 @@ docker exec -it redis-container-id bash
 ```
 docker exec -it redis-container-id /bin/sh
 ```
+
+### 问题2：Node zsx-2.local:7000 is not empty.
+* 背景：创建redis集群，分配节点时报错
+![](redis-02.jpg)
+* 解决：
+    * 1.redis-cli -p 7000
+    * 2.flushall
+    * 3.cluster reset
+    * 4.exit
+
+### 问题3： Not all 16384 slots are covered by nodes
+* 背景：创建redis集群，分配节点时报错
 
 
 ## 命令

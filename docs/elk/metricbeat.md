@@ -21,6 +21,7 @@
 
 ### metricbeat.yml文件配置
 * [configuration-metricbeat](https://www.elastic.co/guide/en/beats/metricbeat/current/configuration-metricbeat.html)
+* [modules部分](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-modules.html)
 
 ### metricbeat.docker.yml文件下载地址
 * [metricbeat.docker.yml](https://raw.githubusercontent.com/elastic/beats/7.7/deploy/docker/metricbeat.docker.yml)
