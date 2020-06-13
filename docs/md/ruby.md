@@ -1,25 +1,3 @@
-## 问题
-
-### 问题1：RuboCop: Carriage return character missing. [Layout/EndOfLine]
-* 背景：win10下ruby文件提示语法警告
-解决：
-    * 方法1：
-        * window下要选择文本格式为CRLF-window，Linux下选择LF-Unix，如：[ruby-01.jpg](ruby-01.jpg)
-    * 方法2：E:\Ruby27-x64\lib\ruby\gems\2.7.0\gems\rubocop-0.83.0\config\default.yml文件修改如下配置
-    ```
-    Style/EndOfLine:
-       # 注：Linux为lf，windows为crlf
-       EnforcedStyle: lf
-    ```
-  * 文件末尾要空一行
-### 问题2：RuboCop: Missing frozen string literal comment. [Style/FrozenStringLiteralComment]
-* 背景：win10下ruby文件提示语法警告
-* 解决：文件添加内容行：# frozen_string_literal: true
-
-### 问题3：RuboCop: The name of this source file (`first-ruby.rb`) should use snake_case. [Naming/FileName]
-* 背景：win10下ruby文件提示语法警告
-* 解决：修改文件名：其中“-”修改为"_"
-
 ## 代码分析器
 
 ### rubocop是Ruby的代码分析器

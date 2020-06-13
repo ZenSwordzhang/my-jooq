@@ -253,4 +253,4 @@ output {
 }
 
 ```
-* 4. udp数据模拟发送脚本[send-udp.js](../../../js/send-udp.js)
+* 4. udp数据模拟发送脚本[send-udp.js](../../../node-js/send-udp.js)
