@@ -1,11 +1,6 @@
-###问题
-#### 问题1：The Docker Engine you're using is running in swarm mode
-* 背景：启动zookeeper集群时提示警告
-* 解决，执行命令：docker swarm leave --force
+## kafka集群
 
-###kafka集群
-
-#### D:\usr\local\etc\docker-zookeeper-cluster目录下创建docker-zookeeper-cluster.yml文件
+### D:\usr\local\etc\docker-zookeeper-cluster目录下创建docker-zookeeper-cluster.yml文件
 ```docker-compose
 version: '3'
 services:
@@ -53,7 +48,7 @@ services:
         # network_mode: host
 ```
 
-#### D:\usr\local\bin\start目录下创建shell脚本docker-zeekeeper-cluster-up.sh，文本格式为Unix
+### D:\usr\local\bin\start目录下创建shell脚本docker-zeekeeper-cluster-up.sh，文本格式为Unix
 ```shell
 #!/bin/bash
 
@@ -62,12 +57,12 @@ export ZOO_SERVERS
 docker-compose -f D:/usr/local/etc/docker-zookeeper-cluster/docker-zookeeper-cluster.yml up -d
 ```
 
-#### 切换到脚本启动目录
+### 切换到脚本启动目录
 * cd D:/usr/local/bin/start
 
-#### 赋予脚本文件可执行权限
+### 赋予脚本文件可执行权限
 * chmod +x docker-zeekeeper-cluster-up.sh
 
-#### 执行脚本（二选一）
+### 执行脚本（二选一）
 * 方式1：./docker-zeekeeper-cluster-up.sh
 * 方式2：bash docker-zeekeeper-cluster-up.sh

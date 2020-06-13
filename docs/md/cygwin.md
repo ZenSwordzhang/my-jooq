@@ -1,10 +1,3 @@
-## 问题
-
-### 问题1： /bin/sh: pkg-config: 未找到命令
-* 背景：cygwin下执行命令make && make install安装redis报错
-* 解决：通过启动setup-x86_64.exe执行文件安装pkg-config
-
-
 ### win10下安装apt-cyg，地址链接：[apt-cyg](https://github.com/transcode-open/apt-cyg "apt-cyg")
 * [地址2](https://github.com/kou1okada/apt-cyg)
 * 查看版本：apt-cyg --version

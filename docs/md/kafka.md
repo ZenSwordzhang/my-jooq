@@ -1,9 +1,3 @@
-## 问题
-
-### 问题1：this node is not a swarm manager. Use "docker swarm init" or "docker swarm join" to connect this node to swarm and try again
-* 背景：使用docker-compose命令启动kafka集群报错
-* 解决：docker swarm init
-
 ## kafka-manager界面
 ### 拉取镜像
 * docker pull solsson/kafka-manager

@@ -2,49 +2,6 @@
 [](#底部)
 
 
-## 问题
-### 问题1：sshd: no hostkeys available -- exiting.
-* 背景：win10下，ubuntu子系统启动ssh服务报错
-    * 命令：sudo service ssh start
-* 解决：
-    * 重新配制openssh-server软件包：sudo dpkg-reconfigure openssh-server
-
-### 问题2：
-* 详情：problem running iptables
-```
-ERROR: problem running iptables: iptables v1.8.4 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded
-```
-* 背景：背景：win10下，ubuntu子系统查看防火墙状态报错
-    * 命令：sudo ufw status
-* 原因：ufw仅适用于具有Linux内核的系统
-
-### 问题3：Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
-* 背景：通过sudo apt install docker.io后，执行docker命令报错
-* 解决：
-    * 1.卸载docker，安装参考[教程](https://blog.csdn.net/zsx18273117003/article/details/90707444)
-    * 2.重启docker服务：sudo service docker start
-```快速安装
-sudo curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo service docker start
-```
-
-
-### 问题4：can't connect to the agent: IPC connect call failed
-* 解决：将wsl1转换为wsl2
-
-### 问题5：WSL 2 需要更新其内核组件
-* 解决：下载更新程序并安装，进行更新
-    * [下载地址](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi)
-
-### 问题6：System has not been booted with systemd as init system (PID 1). Can't operate. Failed to connect to bus: Host is down
-* 背景：wsl2下ubuntu执行命令sudo systemctl restart docker报错
-* 原因：到目前为止，在WSL 2中我们没有systemd
-* 解决：使用命令sudo /etc/init.d/docker start | sudo /etc/init.d/docker restart | sudo service docker restart
-
-
-
 # 命令
 
 ## PowerShell命令（以管理员身份运行）
