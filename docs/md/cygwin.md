@@ -26,6 +26,9 @@
 ### 查看设置的docker镜像是否生效（重启docker）
 * docker info
 
+### 安装 telnet
+* telnet的包是 inetutils，直接安装inetutils即可
+
 ### cygwin下安装redis
 * 1.安装gcc
     * 选择包：gcc-core
