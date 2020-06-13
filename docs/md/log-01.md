@@ -24,7 +24,7 @@ For more on the Compose file format versions, see https://docs.docker.com/compos
 ## 配置说明
 
 ### spring 默认配置：参考[链接](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-logging)
-* ![](log-01.jpg)
+* ![](../img/log-01.jpg)
 * A:日期和时间
 * B:日志级别，分别有：ERROR、WARN、INFO、DEBUG、TRACE
 * C:进程ID

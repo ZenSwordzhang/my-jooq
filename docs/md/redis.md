@@ -12,7 +12,7 @@ docker exec -it redis-container-id /bin/sh
 
 ### 问题2：Node zsx-2.local:7000 is not empty.
 * 背景：创建redis集群，分配节点时报错
-![](redis-02.jpg)
+![](../img/redis-02.jpg)
 * 解决：
     * 1.redis-cli -p 7000
     * 2.flushall

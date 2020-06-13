@@ -1,9 +1,9 @@
 ### 问题一：Could not target platform: 'Java SE 14' using tool chain: 'JDK 11 (11)'.
 * 解决方法：
-    * [步骤一](jdk/jdk-setting-1.jpg)
-    * [步骤二](jdk/jdk-setting-2.jpg)
-    * [步骤三](jdk/jdk-setting-3.jpg)
-    * [步骤四](jdk/jdk-setting-4.jpg)
+    * [步骤一](../img/jdk/jdk-setting-1.jpg)
+    * [步骤二](../img/jdk/jdk-setting-2.jpg)
+    * [步骤三](../img/jdk/jdk-setting-3.jpg)
+    * [步骤四](../img/jdk/jdk-setting-4.jpg)
 
 ### 问题二： Process 'command 'E:\jdk\jdk-14.0.1\bin\java.exe'' finished with non-zero exit value -1
 * 原因：配置了properties属性
@@ -33,7 +33,7 @@ jdbc {
 
 ### 问题三：Could not get unknown property 'generateMyJooqSchemaSource' for task set of type org.gradle.api.internal.tasks.DefaultTaskContainer
 * 任务名称不正确，修改为跟jooq插件名称一致
-* [任务名称不正确](jooq/jooq-1.jpg)
+* [任务名称不正确](../img/jooq-1.jpg)
 
 
 

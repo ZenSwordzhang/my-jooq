@@ -48,8 +48,8 @@ sudo service docker start
 # 命令
 
 ## PowerShell命令（以管理员身份运行）
-* [wsl](wsl-01.jpg)
-* [wsl1与wsl2比较](wsl-02.jpg)
+* [wsl](../img/wsl/wsl-01.jpg)
+* [wsl1与wsl2比较](../img/wsl/wsl-02.jpg)
 
 ### win10下wsl1转换为wsl2操作
 #### 1.要求

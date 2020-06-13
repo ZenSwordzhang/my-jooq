@@ -65,9 +65,46 @@ curl -X POST --header "Content-Type:application/json" --data-raw "{\"json\":{\"m
 ```
 
 ## 问题5： Error response from daemon: network redis-net not found
-* 背景：通过shell脚本创建redis集群时报错[redis-node-start](redis-node-start.sh)
+* 背景：通过shell脚本创建redis集群时报错[redis-node-start](../docker/cluster/redis/redis-node-start.sh)
 * 解决：
     * 添加创建网络命令：docker network create redis-net
+
+
+### 问题6：WSL distro stopped while waiting for Lifecycle server.
+* 背景：win10开机启动docker for windows时报错
+* 错误详情
+```
+WSL distro stopped while waiting for Lifecycle server.
+  >Stdout:
+
+  >Stderr:
+2020/06/13 00:50:40 resolving /mnt/host/c/Program Files/Docker/Docker/resources/wsl/docker-wsl-cli.iso...
+Error: mounting wslCLIDest: stat /mnt/host/c/Program Files/Docker/Docker/resources/wsl/docker-wsl-cli.iso: no such file or directory
+2020/06/13 00:50:40 stat /mnt/host/c/Program Files/Docker/Docker/resources/wsl/docker-wsl-cli.iso: no such file or directory
+mounting wslCLIDest
+main.doRun
+	/go/src/github.com/docker/pinata/linuxkit/pkg/wsl-bootstrap/main.go:224
+main.run.func1
+	/go/src/github.com/docker/pinata/linuxkit/pkg/wsl-bootstrap/main.go:83
+github.com/docker/pinata/vendor/github.com/spf13/cobra.(*Command).execute
+	/go/src/github.com/docker/pinata/vendor/github.com/spf13/cobra/command.go:762
+github.com/docker/pinata/vendor/github.com/spf13/cobra.(*Command).ExecuteC
+	/go/src/github.com/docker/pinata/vendor/github.com/spf13/cobra/command.go:852
+github.com/docker/pinata/vendor/github.com/spf13/cobra.(*Command).Execute
+	/go/src/github.com/docker/pinata/vendor/github.com/spf13/cobra/command.go:800
+main.main
+	/go/src/github.com/docker/pinata/linuxkit/pkg/wsl-bootstrap/main.go:25
+runtime.main
+	/usr/local/go/src/runtime/proc.go:203
+runtime.goexit
+	/usr/local/go/src/runtime/asm_amd64.s:1357
+```
+![](../img/docker-01.jpg)
+    * [参考链接](https://github.com/docker/for-win/issues/6812)
+    * [参考链接](https://github.com/docker/for-win/issues/6822)
+* 可能的解决：
+    * In my case the problem was caused because the HyperV VM "DockerDesktopVM" was running. After shutting down the Docker Desktop VM works properly again through WSL2.
+
 
 ## 相关命令
 

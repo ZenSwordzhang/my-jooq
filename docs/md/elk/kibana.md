@@ -4,7 +4,7 @@
 * 解决：
     * 进入[kibana管理界面](http://localhost:5601/)
     * 选择Management-》Index Patterns-》从列表中选择index pattern-》点击refresh按钮
-    * ![](kibana-01.jpg)
+    * ![](../../img/kibana-01.jpg)
 
 
 ## kibana界面的Dev Tools控制台进行增删改查
