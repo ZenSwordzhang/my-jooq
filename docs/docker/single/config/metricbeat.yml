@@ -1,9 +1,55 @@
 metricbeat.modules:
+  #-------------------------------- System Module --------------------------------
+  - module: system
+    metricsets:
+      - cpu             # CPU usage
+      - load            # CPU load averages
+      - memory          # Memory usage
+      - network         # Network IO
+      - process         # Per process metrics
+      - process_summary # Process summary
+      - uptime          # System Uptime
+      - socket_summary  # Socket summary
+      #- core           # Per CPU core usage
+      #- diskio         # Disk IO
+      #- filesystem     # File system usage for each mountpoint
+      #- fsstat         # File system summary metrics
+      #- raid           # Raid
+      #- socket         # Sockets and connection info (linux only)
+      #- service        # systemd service information
+    process.include_top_n:
+      by_cpu: 5
+      by_memory: 5
+    processors:
+      - add_fields:
+          # target: ''时，属性设置为顶级属性，否则属于target的value值下的属性
+          target: ''
+          fields:
+            env: test
+            source: system
+            type: metrics
+
   #---------------------------- redis Status Module ----------------------------
   - module: redis
-    metricsets: ["info"]
-    hosts: ["192.168.1.110:7000"]
-    period: 1s
+    metricsets: ["info", "key", "keyspace"]
+    hosts: ["192.168.1.110:6379", "192.168.1.121:6379", "192.168.1.110:7000"]
+    period: 100s
+    #password: foobared
+    # 收集名称以test- *开头且限制为20个键的所有键的信息
+    key.patterns:
+      - pattern: 'test-*'
+        limit: 20
+
+    processors:
+#      - include_fields:
+#          fields: ["beat", "metricset", "redis.info.stats"]
+      - add_fields:
+          # target: ''时，属性设置为顶级属性，否则属于target的value值下的属性
+          target: ''
+          fields:
+            env: test
+            source: facility
+            type: metrics
 
 #----------------------------- Logstash output --------------------------------
 output.logstash:

@@ -525,7 +525,8 @@ GET /library/_search
 * [参考案例](https://www.elastic.co/guide/zh-CN/kibana/current/field-filter.html#filter-edit)
 * [术语汇总文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html#_shard_size_3)
 
-
+### KQL(keyword-query-language)语法
+[keyword-query-language](https://docs.microsoft.com/zh-cn/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference)
 
 
 
