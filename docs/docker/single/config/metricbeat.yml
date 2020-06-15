@@ -17,6 +17,7 @@ metricbeat.modules:
       #- raid           # Raid
       #- socket         # Sockets and connection info (linux only)
       #- service        # systemd service information
+    period: 100s
     process.include_top_n:
       by_cpu: 5
       by_memory: 5
@@ -28,6 +29,7 @@ metricbeat.modules:
             env: test
             source: system
             type: metrics
+            from: host
 
   #---------------------------- redis Status Module ----------------------------
   - module: redis
@@ -50,6 +52,7 @@ metricbeat.modules:
             env: test
             source: facility
             type: metrics
+            from: redis
 
 #----------------------------- Logstash output --------------------------------
 output.logstash:

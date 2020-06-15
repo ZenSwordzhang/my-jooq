@@ -67,6 +67,7 @@ services:
       - /d/usr/share/filebeat/data:/usr/share/filebeat/data
       # - /etc/timezone:/etc/timezone:ro
       # - /etc/localtime:/etc/localtime:ro
+    command: /usr/local/bin/docker-entrypoint filebeat -e -strict.perms=false
     depends_on:
         - elasticsearch
 

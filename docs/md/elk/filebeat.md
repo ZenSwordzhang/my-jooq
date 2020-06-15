@@ -1,4 +1,5 @@
-
+### 解决filebeat读取文件权限问题
+* /usr/local/bin/docker-entrypoint filebeat -e -strict.perms=false
 
 
 
