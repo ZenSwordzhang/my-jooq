@@ -27,7 +27,7 @@ metricbeat.modules:
           target: ''
           fields:
             env: test
-            source: system
+            source: facility
             type: metrics
             from: host
 

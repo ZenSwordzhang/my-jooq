@@ -184,6 +184,39 @@ jdbc {
 
 
 
+## <h2 style="text-align: center;"> ------------------**KIBANA**------------------ </h2>
+
+### 问题：No cached mapping for this field / refresh of fields not working
+* 解决：
+    * 进入[kibana管理界面](http://localhost:5601/)
+    * 选择Management-》Index Patterns-》从列表中选择index pattern-》点击refresh按钮
+    * ![](../img/kibana-01.jpg)
+
+
+### 问题：Timelion不再出现在侧面导航中编辑
+* 解决
+    * 影响：要创建Timelion可视化，请转到“可视化”，然后从可视化类型中选择“ Timelion ”
+    * 如果想在侧面导航中重新添加Timelion，在kibana.yml文件中设置timelion.ui.enabled为true
+* 参考：https://www.elastic.co/guide/en/kibana/7.x/breaking-changes-7.0.html
+
+
+### 问题：Timelion not showing any data
+```原配置
+.es(index=test-facility-metrics-host-*,
+    timefield=@timestamp,
+    metric=max:system.network.in.bytes)
+```
+* 参考：https://discuss.elastic.co/t/timelion-not-displaying/115503
+* 原因：默认图表中的线需要两个点，每个线段一个起点，一个终点。 
+    * 如果9:26-9:28存储桶中有数据，而9:28-9:30存储桶中没有数据，则timelion无法画线
+* 解决：添加.fit(mode = nearest)
+```修改后配置
+.es(index=test-facility-metrics-host-*,
+    timefield=@timestamp,
+    metric=max:system.network.in.bytes)
+.fit(mode = nearest)
+```
+
 ## <h2 style="text-align: center;"> ------------------**LOG**------------------ </h2>
 
 ### 问题

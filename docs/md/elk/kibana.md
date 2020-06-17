@@ -1,12 +1,3 @@
-## 问题
-
-### 问题1：No cached mapping for this field / refresh of fields not working
-* 解决：
-    * 进入[kibana管理界面](http://localhost:5601/)
-    * 选择Management-》Index Patterns-》从列表中选择index pattern-》点击refresh按钮
-    * ![](../../img/kibana-01.jpg)
-
-
 ## kibana界面的Dev Tools控制台进行增删改查
 
 ### 获取索引信息
@@ -511,14 +502,344 @@ GET /library/_search
 }
 ```
 
+## 可视化操作
 
+### Timelioe使用
+* 数据比较
+```Timelion expression
+.es(index=test-facility-metrics-host-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct'),
+.es(offset=-1h,             
+    index=test-facility-metrics-host-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+```
+* 添加标签名
+```Timelion expression
+.es(offset=-1h,index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct').label('last hour'),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct').label('current hour')
+```
+* 添加标题
+```Timelion expression
+.es(offset=-1h,
+    index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('last hour'),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('current hour')
+  .title('CPU usage over time')
+```
+* 改变图表类型
+```Timelion expression
+.es(offset=-1h,
+    index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('last hour')
+  .lines(fill=1,width=0.5), 
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('current hour')
+  .title('CPU usage over time')
+```
+* 改变颜色
+```Timelion expression
+.es(offset=-1h,
+    index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('last hour')
+  .lines(fill=1,width=0.5)
+  .color(gray), 
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('current hour')
+  .title('CPU usage over time')
+  .color(#1E90FF)
+```
+* 调整图表位置和样式
+```Timelion expression
+.es(offset=-1h,
+    index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('last hour')
+  .lines(fill=1,width=0.5)
+  .color(gray),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+  .label('current hour')
+  .title('CPU usage over time')
+  .color(#1E90FF)
+  .legend(columns=2, position=nw) 
+```
+* 使用数学函数创建可视化图表
+```Timelion expression
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.in.bytes)
+```
+* 绘制变化率
+    * .derivative()
+```Timelion expression
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.in.bytes)
+  .derivative()
+
+```
+   * .derivative()、multiply()
+```
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.in.bytes)
+  .derivative(),
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.out.bytes)
+  .derivative()
+  .multiply(-1) 
+```
+* 更改数据指标
+    * .divide()
+```Timelion expression
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.in.bytes)
+  .derivative()
+  .divide(1048576),
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.out.bytes)
+  .derivative()
+  .multiply(-1)
+  .divide(1048576) 
+```
+* 自定义可视化格式
+```Timelion expression
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.in.bytes)
+  .derivative()
+  .divide(1048576)
+  .lines(fill=2, width=1)
+  .color(green)
+  .label("Inbound traffic")         
+  .title("Network traffic (MB/s)"), 
+.es(index=metricbeat*,
+    timefield=@timestamp,
+    metric=max:system.network.out.bytes)
+  .derivative()
+  .multiply(-1)
+  .divide(1048576)
+  .lines(fill=2, width=1)           
+  .color(blue)                      
+  .label("Outbound traffic")
+  .legend(columns=2, position=nw) 
+```
+* 使用条件逻辑创建可视化并跟踪趋势 
+
+name | description
+:----: | :----:
+eq | equal
+ne | not equal
+lt | less than
+lte | less than or equal to
+gt | greater than
+gte | greater than or equal to
+
+* 定义函数
+```Timelion expression
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+```
+* 跟踪使用的内存
+```Timelion expression
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes'),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .if(gt,                             
+      11300000000,                    
+      .es(index=metricbeat-*,
+          timefield='@timestamp',
+          metric='max:system.memory.actual.used.bytes'),
+      null)
+    .label('warning')
+    .color('#FFCC11'),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .if(gt,
+      11375000000,
+      .es(index=metricbeat-*,
+          timefield='@timestamp',
+          metric='max:system.memory.actual.used.bytes'),
+      null)
+  .label('severe')
+  .color('red')
+```
+* 确定趋势
+```Timelion expression
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes'),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .if(gt,11300000000,
+      .es(index=metricbeat-*,
+          timefield='@timestamp',
+          metric='max:system.memory.actual.used.bytes'),
+      null)
+      .label('warning')
+      .color('#FFCC11'),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .if(gt,11375000000,
+      .es(index=metricbeat-*,
+          timefield='@timestamp',
+          metric='max:system.memory.actual.used.bytes'),
+      null).
+      label('severe')
+      .color('red'),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .mvavg(10) 
+```
+* 自定义格式
+```Timelion expression
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .label('max memory')                    
+  .title('Memory consumption over time'), 
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .if(gt,
+      11300000000,
+      .es(index=metricbeat-*,
+          timefield='@timestamp',
+          metric='max:system.memory.actual.used.bytes'),
+      null)
+    .label('warning')
+    .color('#FFCC11')                 
+    .lines(width=5),                  
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .if(gt,
+      11375000000,
+      .es(index=metricbeat-*,
+          timefield='@timestamp',
+          metric='max:system.memory.actual.used.bytes'),
+      null)
+    .label('severe')
+    .color('red')
+    .lines(width=5),
+.es(index=metricbeat-*,
+    timefield='@timestamp',
+    metric='max:system.memory.actual.used.bytes')
+  .mvavg(10)
+  .label('mvavg')
+  .lines(width=2)
+  .color(#5E5E5E)
+  .legend(columns=4, position=nw) 
+```
+
+### Timelion函数
+
+#### 可视化效果类
+* .bars($width): 用柱状图展示数组
+* .lines($width, $fill, $show, $steps): 用折线图展示数组
+* .points(): 用散点图展示数组
+* .color("#c6c6c6"): 改变颜色
+* .hide(): 隐藏该数组
+* .label("change from %s"): 标签
+* .legend($position, $column): 图例位置
+* .static(value=1024, label="1k", offset="-1d", fit="scale")：在图形上绘制一个固定值
+* .value()：.static() 的简写
+* .title(title="qps")：图表标题
+* .trend(mode="linear", start=0, end=-10)：采用 linear 或 log 回归算法绘制趋势图
+* .yaxis($yaxis_number, $min, $max, $position): 设置 Y 轴属性，.yaxis(2) 表示第二根 Y 轴
+
+#### 数据运算类
+* .abs(): 对整个数组元素求绝对值
+* .precision($number): 浮点数精度
+* .cusum($base): 数组元素之和，再加上 $base
+* .derivative(): 对数组求导数
+* .divide($divisor): 数组元素除法
+* .multiply($multiplier): 数组元素乘法
+* .subtract($term): 数组元素减法
+* .sum($term): 数组元素加法
+* .add(): 同 .sum()
+* .plus(): 同 .sum()
+* .first(): 返回第一个元素
+* .movingaverage($window): 用指定的窗口大小计算移动平均值
+* .mvavg(): .movingaverage() 的简写
+* .movingstd($window): 用指定的窗口大小计算移动标准差
+* .mvstd(): .movingstd() 的简写
+* .fit($mode)：使用指定的 fit 函数填充空值。可选项有：average, carry, nearest, none, scale
+* .holt(alpha=0.5, beta=0.5, gamma=0.5, season="1w", sample=2)：即 Elasticsearch 的 pipeline aggregation 所支持的 holt-winters 算法
+* .log(base=10)：对数
+* .max()：最大值
+* .min()：最小值
+* .props()：附加额外属性，比如 .props(label=bears!)
+* .range(max=10, min=1)：保持形状的前提下修改最大值最小值
+* .scale_interval(interval="1s")：在新间隔下再次统计，比如把一个原本 5min 间隔的 date_histogram 改为每秒的结果
+* .trim(start=1, end=-1)：裁剪序列值
+
+#### 逻辑运算类
+* .condition(operator="eq", if=100, then=200)：支持 eq、ne、lt、gt、lte、gte 等操作符，以及 if、else、then 赋值
+* .if()：.condition() 的简写
+
+#### 数据源设定类
+* .elasticsearch(): 从 ES 读取数据
+* .es(q="querystring", metric="cardinality:uid", index="logstash-*", offset="-1d"): .elasticsearch() 的简写
+* .graphite(metric="path.to.*.data", offset="-1d"): 从 graphite 读取数据
+* .quandl(): 从 quandl.com 读取 quandl 码
+* .worldbank_indicators(): 从 worldbank.org 读取国家数据
+* .wbi(): .worldbank_indicators() 的简写
+* .worldbank(): 从 worldbank.org 读取数据
+* .wb(): .worldbanck() 的简写
 
 ## 参考文档
+
+### 教程
+
+#### 官方
+* [timelion](https://www.elastic.co/guide/en/kibana/7.7/timelion.html)
+* [timelion](https://www.elastic.co/cn/blog/timelion-tutorial-from-zero-to-hero)
+
+#### 第三方
+* [timelion](https://blog.csdn.net/qq_16077957/article/details/80023060)
+* [timelion](http://docs.flycloud.me/docs/ELKStack/kibana/v5/timelion.html)
+
+### features
+* [features](https://www.elastic.co/cn/kibana/features)
+
 ### 映射
 * [removal-of-types](https://www.elastic.co/guide/en/elasticsearch/reference/7.7/removal-of-types.html)
 
 ### 查询
-* (query-dsl)[https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html]
+* [query-dsl](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html)
 
 ### Kibana可视化中的JSON输入(JSON Input in Kibana Visualization)
 * [JSON Input in Kibana Visualization](https://discuss.elastic.co/t/json-input-in-kibana-visualization/217723)
@@ -528,9 +849,18 @@ GET /library/_search
 ### KQL(keyword-query-language)语法
 [keyword-query-language](https://docs.microsoft.com/zh-cn/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference)
 
+### 可视化
+* [可视化](https://www.elastic.co/cn/kibana/features#--)
+* [指标可视化](https://www.elastic.co/guide/en/kibana/current/most-frequent.html)
+* **[datavisualizer](http://localhost:9500/app/ml#/datavisualizer)**
+* [timelines-ui](https://www.elastic.co/guide/en/siem/guide/current/siem-ui-overview.html#timelines-ui)
 
+### 同类型可视化工具
+* [grafana](https://grafana.com/docs/grafana/latest/getting-started/)
 
-
+### 插件
+* [plugins](https://www.elastic.co/guide/cn/kibana/current/known-plugins.html)
+* [Timelion](https://github.com/Fermium/mathlion)
 
 
 

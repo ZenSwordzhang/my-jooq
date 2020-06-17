@@ -32,3 +32,5 @@
 ### 添加属性
 * [add-fields](https://www.elastic.co/guide/en/beats/metricbeat/current/add-fields.html)
 
+### metricbeat部署及监控linux系统指标汇总
+* [linux-metricbeat](https://owelinux.github.io/2018/07/30/article10-linux-metricbeat-diskio/)

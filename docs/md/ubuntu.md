@@ -190,6 +190,10 @@ export PATH=/path/to/your/dir:$PATH
 ### 杀死进程
 * kill -9 PID
 
+### 查看服务状态
+* ps -aux | grep ssh
+* service service_name status
+
 ## 文件
 
 ### 用户信息所在文件
