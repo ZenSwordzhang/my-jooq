@@ -568,6 +568,7 @@ GET /library/_search
   .color(#1E90FF)
 ```
 * 调整图表位置和样式
+* nw:north west
 ```Timelion expression
 .es(offset=-1h,
     index=metricbeat-*,
