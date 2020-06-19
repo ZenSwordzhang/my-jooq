@@ -85,7 +85,7 @@ docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logs
     * 1.查看服务状态：sudo service docker status
     * 2.重启服务：sudo service docker start
 * [参考链接](https://forums.docker.com/t/cannot-connect-to-the-docker-daemon-at-unix-var-run-docker-sock/80886/3)
-![](../img/docker-02.jpg)
+![](../img/docker/docker-02.jpg)
 
 
 ### 问题：Error response from daemon: Get https://registry-1.docker.io/v2/: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
@@ -135,7 +135,7 @@ runtime.main
 runtime.goexit
 	/usr/local/go/src/runtime/asm_amd64.s:1357
 ```
-![](../img/docker-01.jpg)
+![](../img/docker/docker-01.jpg)
     * [参考链接](https://github.com/docker/for-win/issues/6812)
     * [参考链接](https://github.com/docker/for-win/issues/6822)
 * 可能的解决：
@@ -379,6 +379,91 @@ filter {
 
 
 
+## <h2 style="text-align: center;"> ------------------**METRICBEAT**------------------ </h2>
+
+### 问题：Exiting: error loading config file: config file ("metricbeat.yml") must be owned by the user identifier (uid=0) or root
+* 背景：docker容器启动metricbeat时报错
+* 原因：文件拥有者的问题
+* [参考链接](https://www.elastic.co/guide/en/beats/libbeat/7.8/config-file-permissions.html)
+* 解决：
+    * 方法1：直接修改配置文件metricbeat.yml权限拥有者为root用户
+    * 方法2：禁用严格权限检查（一般不推荐）
+        * command: ["--strict.perms=false"]
+
+
+### 问题：Exiting: error loading config file: config file ("metricbeat.yml") can only be writable by the owner but the permissions are "-rwxrwxr-x" (to fix the permissions use: 'chmod go-w /usr/share/metricbeat/metricbeat.yml')
+* 背景：docker容器启动metricbeat时报错
+* 原因：文件写的权限问题
+* [参考链接](https://www.elastic.co/guide/en/beats/libbeat/7.8/config-file-permissions.html)
+* 解决：
+    * 方法1：直接修改配置文件metricbeat.yml读写权限，只让拥有者有写的权限
+    * 方法2：禁用严格权限检查（一般不推荐）
+        * command: ["--strict.perms=false"]
+
+
+### 问题：ERROR: for metricbeat  Cannot start service metricbeat: cgroups: cannot find cgroup mount destination: unknown
+* 背景：ws2下通过shell脚本执行docker-compose.yml文件启动metricbeat容器时报错
+![](../img/docker/docker-04.jpg)
+* [参考链接](https://github.com/microsoft/WSL/issues/4189)
+* 解决：
+    * sudo mkdir /sys/fs/cgroup/systemd
+    * sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+
+
+
+### 问题：ERROR: for metricbeat  Cannot create container for service metricbeat: dial unix /mnt/wsl/docker-desktop/shared-sockets/guest-services/docker.sock: connect: no such file or directory
+* 背景：ws2下通过shell脚本执行docker-compose.yml文件启动metricbeat容器时报错
+![](../img/docker/docker-03.jpg)
+* 解决：
+    * 步骤1：修复docker
+        * 由于此处使用的docker for windows作为wsl2的docker容器，从图片当中可以看出此处docker命令已经失效，
+            * 首先尝试重启docker for windows
+            * 其次尝试重启wsl2后，再重启docker for windows
+            * 最后再尝试重启电脑
+        * 如果此处使用的是wsl2中单独安装的docker容器，那么此处重启wsl2中的docker服务
+    * 步骤2：以root用户执行shell脚本
+        * sudo -S ./docker-up.sh
+        
+
+### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/info: dial unix /var/run/docker.sock: connect: permission denied
+* 背景：metricbeat收集docker容器指标时提示错误
+* 解决：给容器指定root用户
+```docker-compose.yml修改前
+version: '3'
+
+services:
+  metricbeat:
+    image: elastic/metricbeat:7.7.0
+    container_name: metricbeat
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+```
+```docker-compose.yml修改后
+version: '3'
+
+services:
+  metricbeat:
+    image: elastic/metricbeat:7.7.0
+    user: root
+    container_name: metricbeat
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+```
+
 ## <h2 style="text-align: center;"> ------------------**PYTHON**------------------ </h2>
 
 ### 问题
@@ -600,8 +685,10 @@ docker exec -it redis-container-id /bin/sh
 ### 问题：Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
 * 背景：通过sudo apt install docker.io后，执行docker命令报错
 * 解决：
-    * 1.卸载docker，安装参考[教程](https://blog.csdn.net/zsx18273117003/article/details/90707444)
-    * 2.重启docker服务：sudo service docker start
+    * 如果已安装docker容器，直接启动：sudo service docker start
+    * 如果想重新安装
+        * 1.卸载docker，安装参考[教程](https://blog.csdn.net/zsx18273117003/article/details/90707444)
+        * 2.启动docker服务：sudo service docker start
 ```快速安装
 sudo curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh

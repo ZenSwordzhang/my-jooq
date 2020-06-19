@@ -10,7 +10,7 @@ docker restart postgres
 
 chmod -R 777 /data/dmplus/facilities/log
 
-# 重新加载系统配置
+# 重新加载系统配置，解决es启动问题
 sysctl --system
 
 docker restart elasticsearch logstash filebeat kibana

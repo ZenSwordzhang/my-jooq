@@ -23,7 +23,7 @@ find / -name 'application.conf'
 ### 退出容器
 * exit
 
-### 重启重启
+### 重启容器
 * docker restart kafka-manager
 
 ## zookeeper集群
