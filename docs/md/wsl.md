@@ -39,7 +39,7 @@
 * 方式1：Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 * 方式2：dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 
-### 重启子系统
+### 重启wsl2子系统
 * net stop LxssManager
 * net start LxssManager
 

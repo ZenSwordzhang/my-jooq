@@ -79,6 +79,27 @@ docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logs
     * 添加创建网络命令：docker network create redis-net
 
 
+### 问题：Error response from daemon: dial unix /mnt/wsl/docker-desktop/shared-sockets/guest-services/docker.sock: connect: no such file or directory
+* 背景：wsl2中执行docker ps命令报错
+* 解决：
+    * 1.查看服务状态：sudo service docker status
+    * 2.重启服务：sudo service docker start
+* [参考链接](https://forums.docker.com/t/cannot-connect-to-the-docker-daemon-at-unix-var-run-docker-sock/80886/3)
+![](../img/docker-02.jpg)
+
+
+### 问题：Error response from daemon: Get https://registry-1.docker.io/v2/: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
+* 背景：wsl2中docker拉取镜像时报错
+* 解决：重启docker for windows
+
+
+### 问题：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
+* 问题详情：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?limit=0: dial unix /var/run/docker.sock: connect: permission denied
+* 参考链接：https://docs.docker.com/engine/install/linux-postinstall/
+* 背景：使用metricbeat收集docker指标时，收集到的信息提示错误
+* 解决：重启docker for windows
+
+
 ### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
 * 背景：win10下docker拉取镜像报错
 * 原因：缺少权限
@@ -119,6 +140,43 @@ runtime.goexit
     * [参考链接](https://github.com/docker/for-win/issues/6822)
 * 可能的解决：
     * In my case the problem was caused because the HyperV VM "DockerDesktopVM" was running. After shutting down the Docker Desktop VM works properly again through WSL2.
+
+
+
+## <h2 style="text-align: center;"> ------------------**ES**------------------ </h2>
+
+### 问题：has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+* 背景：elasticsearch无法连接到http://localhost:9200
+* 解决：elasticsearch的配置文件elasticsearch.yml中新增配置
+```
+# elasticsearch-head插件访问需要配置
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+```
+* 参考链接：[链接](https://github.com/mobz/elasticsearch-head#enable-cors-in-elasticsearch)
+
+
+### 问题：max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+* 背景：ubuntu下elasticsearch容器启动后自动退出
+* 解决：
+    * 1.在/etc/sysctl.conf文件中添加vm.max_map_count=262144
+    * 2.执行命令重新加载配置：sudo sysctl --system
+
+
+### 问题：vendor.js:7829 POST http://localhost:9200/_all/_search 406 (Not Acceptable)
+* 背景：elasticsearch-head查看数据时报406错误码
+* 解决
+```
+1、进入head安装目录；docker exec -it elasticsearch-head bash
+2、打开文件夹_site，cd _site/
+3、编辑vendor.js  共有两处
+* 6886行   contentType: "application/x-www-form-urlencoded
+改成
+contentType: "application/json;charset=UTF-8"
+* 7573行 var inspectData = s.contentType === "application/x-www-form-urlencoded" &&
+改成
+var inspectData = s.contentType === "application/json;charset=UTF-8" &&
+```
 
 
 
@@ -239,6 +297,85 @@ For more on the Compose file format versions, see https://docs.docker.com/compos
 * 参考：
     * [docker-version](https://docs.docker.com/compose/compose-file/#volume-configuration-reference)
     * [docker-compose-version](https://github.com/docker/compose/releases/)
+
+
+
+## <h2 style="text-align: center;"> ------------------**LOGSTASH**------------------ </h2>
+
+### 问题：Could not execute action: PipelineAction::Create
+* 问题详情：
+```
+][ERROR][logstash.agent           ] Failed to execute action {:id=>:main, :action_type=>LogStash::ConvergeResult::FailedAction, :message=>"Could not execu
+te action: PipelineAction::Create<main>, action_result: false", :backtrace=>nil}
+```
+* 问题背景：logstash用filebeat收集日志时，logstash.conf文件中配置了codec为多行，logstash启动后自动退出
+```
+beats {
+    port => 5044
+    type => "filebeat"
+    codec => multiline {
+        pattern => "^(%{TIMESTAMP_ISO8601})"
+        negate => true
+        what => "previous"
+    }
+}
+```
+* 解决：注释掉logstash.conf文件中的codec配置，在filebeat.yml中添加多行匹配
+```
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /usr/share/filebeat/logs/*.log
+  # 自定义属性
+  fields:
+    env: test
+  # 设置为true，则自定义env字段将作为顶级字段存储在输出文档中，而不是分组在fields子词典下
+  fields_under_root: true
+  
+  # 多行合并参数，正则表达式，匹配时间格式：2020-05-25 03:39:08.167
+  multiline.pattern: '^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}.\d{3}'
+  # true 或 false；默认是false，匹配pattern的行合并；true，不匹配pattern的行合并
+  multiline.negate: true
+  # after 或 before，合并到上一行的末尾或下一行的开头
+  multiline.match: after
+```
+
+
+### 问题： Don't know how to handle `Java::JavaLang::IllegalStateException
+* 问题详情
+```
+[FATAL][logstash.runner          ] An unexpected error occurred! {:error=>#<LogStash::Error: Don't know how to handle `Java::JavaLang::IllegalStateException` for `PipelineAction::C
+reate<main>`>, :backtrace=>["org/logstash/execution/ConvergeResultExt.java:109:in `create'", "org/logstash/execution/ConvergeResultExt.java:37:in `add'", "/usr/share/logstash/logstash-core/lib/logstash/age
+nt.rb:339:in `block in converge_state'"]}
+```
+* 问题背景：在logstash.conf中添加了filter功能后，重启logstash失败
+```
+filter {
+   multiline {
+      pattern => "^(%{TIMESTAMP_ISO8601})"
+      negate => true
+      what => "previous"
+   }
+   grok {
+      # Do multiline matching with (?m) as the above mutliline filter may add newlines to the log messages.
+      match => [ "message", "(?m)^%{TIMESTAMP_ISO8601:log_time}%{SPACE}%{LOGLEVEL:log_level}%{SPACE}%{NUMBER:pid}%{SPACE}---%{SPACE}%{SYSLOG5424SD:thread_name}%{SPACE}%{NOTSPACE:logger_name}%{SPACE}:%{SPACE}%{GREEDYDATA:log_msg}" ]
+   }
+}
+```
+* 原因：logstash容器没有安装logstash-filter-multiline插件
+* 解决：
+    * 安装logstash-filter-multiline插件：logstash-plugin install logstash-filter-multiline
+
+
+### 问题：Logstash not reading file in windows
+* 参考地址：[链接](https://discuss.elastic.co/t/logstash-not-reading-file-in-windows/41723 "链接")
+
+
+### 问题：Logstash接收不到udp/tcp发送的数据
+* 背景：用python脚本编写了udp/tcp服务器端与客户端，并启动了服务器端与客户端
+* 原因：消息优先被发送到服务端了，Logstash监听的端口无法收到数据
+* 解决：只能启动客户端，不能启动服务端
 
 
 

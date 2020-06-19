@@ -46,13 +46,37 @@ metricbeat.modules:
 #      - include_fields:
 #          fields: ["beat", "metricset", "redis.info.stats"]
       - add_fields:
-          # target: ''时，属性设置为顶级属性，否则属于target的value值下的属性
           target: ''
           fields:
             env: test
             source: facility
             type: metrics
             from: redis
+
+  #---------------------------- docker Status Module ----------------------------
+  - module: docker
+    metricsets:
+      - "container"
+      - "cpu"
+      - "diskio"
+      - "event"
+      - "healthcheck"
+      - "info"
+      #- "image"
+      - "memory"
+      - "network"
+    hosts: ["unix:///var/run/docker.sock"]
+    period: 100s
+    enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            env: test
+            source: facility
+            type: metrics
+            from: docker
+
 
 #----------------------------- Logstash output --------------------------------
 output.logstash:
