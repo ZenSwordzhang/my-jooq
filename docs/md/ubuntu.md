@@ -102,6 +102,13 @@
 ### 显示用户默认创建信息
 * useradd -D
 
+### 查看用户信息
+* id username
+* cat /etc/passwd | grep username
+
+### 查看所有用户
+* cat /etc/passwd
+
 ### 修改用户信息
 * usermod username
 ```
@@ -119,8 +126,15 @@
 ### 创建组
 * groupadd groupname
 
-### 
-* 修改组：groupmod -n new_name： 修改组名
+### 查看组信息
+* cat /etc/group | grep groupname
+
+### 查看所有的组信息
+* groups
+* cat /etc/group
+
+### 修改组
+* groupmod -n new_name:old_name
 
 ### 删除组
 * groupdel groupname

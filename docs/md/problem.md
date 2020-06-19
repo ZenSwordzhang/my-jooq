@@ -83,7 +83,7 @@ docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logs
 * 背景：wsl2中执行docker ps命令报错
 * 解决：
     * 1.查看服务状态：sudo service docker status
-    * 2.重启服务：sudo service docker start
+    * 2.启动docker服务：sudo service docker start
 * [参考链接](https://forums.docker.com/t/cannot-connect-to-the-docker-daemon-at-unix-var-run-docker-sock/80886/3)
 ![](../img/docker/docker-02.jpg)
 
@@ -95,9 +95,11 @@ docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logs
 
 ### 问题：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
 * 问题详情：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?limit=0: dial unix /var/run/docker.sock: connect: permission denied
-* 参考链接：https://docs.docker.com/engine/install/linux-postinstall/
+* [参考链接](https://docs.docker.com/engine/install/linux-postinstall/)
+* [参考链接](https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket)
 * 背景：使用metricbeat收集docker指标时，收集到的信息提示错误
 * 解决：重启docker for windows
+
 
 
 ### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock

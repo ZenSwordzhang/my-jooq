@@ -69,6 +69,35 @@
 #### 删除一个或多个网络
 * docker network rm
 
+### 用户映射
+* 1.切换为root用户：sudo -s
+#### 手动创建一个用户：dockeruser
+* 2.追加内容到/etc/subuid文件
+    * echo dockeruser:165536:65536 >>/etc/subuid
+* 3.追加内容到/etc/subgid文件
+    * echo dockeruser:165536:65536 >>/etc/subgid
+* 4.在/etc/docker/daemon.json文件中新增配置
+```
+{
+  "userns-remap": "dockeruser"
+}
+```
+#### 使用默认，上面的2.3.4可以省略，docker会默认创建一个dockremap用户
+```
+{
+  "userns-remap": "default"
+}
+```
+* 5.重启docker服务
+    * sudo service docker restart
+* 6.查看 /var/lib/docker目录下新建了一个165536.165536目录
+![](../img/docker/docker-05.jpg)
+    * 165536 是由用户 dockremap 映射出来的一个 uid
+* 查看 165536.165536 目录的内容，
+![](../img/docker/docker-06.jpg)
+    * 与 /var/lib/docker 目录下的内容基本一致
+    * 说明启用用户隔离后文件相关的内容都会放在新建的 165536.165536 目录下
+
 
 ### 注意：慎用，这个命令不仅会删除数据卷，而且连确认的过程都没有，使用--all参数后会删除所有未被引用的镜像，而不仅仅是dangling镜像
 * docker system prune --all --force --volumes
