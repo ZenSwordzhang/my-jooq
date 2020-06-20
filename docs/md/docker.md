@@ -50,7 +50,7 @@
 #### 将容器连接到网络
 * docker network connect
 
-#### 创建一个网络
+#### 创建网络
 * docker network create [OPTIONS] NETWORK
 * docker network create
 
@@ -60,13 +60,13 @@
 #### 显示一个或多个网络的详细信息
 * docker network inspect
 
-#### 列出网络
+#### 查看网络
 * docker network ls
 
 #### 删除所有未使用的网络
 * docker network prune
 
-#### 删除一个或多个网络
+#### 删除网络（一个或多个）
 * docker network rm
 
 ### 用户映射
@@ -90,13 +90,18 @@
 ```
 * 5.重启docker服务
     * sudo service docker restart
-* 6.查看 /var/lib/docker目录下新建了一个165536.165536目录
+* 6.查看 /var/lib/docker目录下新建了一个165536.165536目录，该目录以该命名空间用户的UID和GID组成
 ![](../img/docker/docker-05.jpg)
     * 165536 是由用户 dockremap 映射出来的一个 uid
 * 查看 165536.165536 目录的内容，
 ![](../img/docker/docker-06.jpg)
     * 与 /var/lib/docker 目录下的内容基本一致
     * 说明启用用户隔离后文件相关的内容都会放在新建的 165536.165536 目录下
+* 7.注：如果通过容器创建目录时，会出现权限问题
+    * 如果只是一级目录，此时需设置目录所属组为165536，该组拥有可读、可写、可执行权限，如：为775
+    * 如果是多级目录，此时需设置目录权限为777
+    * sudo chown zsx:165536 <dir_name>
+    * sudo chmod 775 <dir_name>
 
 
 ### 注意：慎用，这个命令不仅会删除数据卷，而且连确认的过程都没有，使用--all参数后会删除所有未被引用的镜像，而不仅仅是dangling镜像
@@ -117,4 +122,8 @@
 ## 参考资料
 
 ### 容器中的用户
-[隔离 docker 容器中的用户](https://www.cnblogs.com/sparkdev/p/9614326.html)
+[隔离docker容器中的用户](https://www.cnblogs.com/sparkdev/p/9614326.html)
+[使用命名空间隔离容器](https://docs.docker.com/engine/security/userns-remap/)
+
+### 非root用户运行docker守护程序
+[rootless](https://docs.docker.com/engine/security/rootless/)

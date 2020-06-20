@@ -18,7 +18,7 @@
 * mkdir -p directory1/dic2/dic3
 * mkdir -pv directory1/dic2/dic3
 
-### 移动、修改文件 | 文件夹名
+### 移动、修改文件 | 文件夹名(重命名)
 * sudo mv <former_filename | former_folder_name> <new_filename | new_folder_name>
 
 ### 查看系统内核

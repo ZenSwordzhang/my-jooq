@@ -641,6 +641,54 @@ services:
 
 ## <h2 style="text-align: center;"> ------------------**REDIS**------------------ </h2>
 
+### 问题：Error response from daemon: OCI runtime create failed: container_linux.go
+* 问题详情
+```
+docker: Error response from daemon: OCI runtime create failed: container_linux.go:349: starting container process caused "process_linux.go:449: container init caused \"write sysctl key net.core.somaxconn: open /proc/sys/net/core/somaxconn: no such file or directory\"": unknown.
+```
+* 背景：wsl2中使用命名空间隔离容器后，通过shell脚本创建redis集群时报错，容器创建成功，但是不能正常启动
+* 解决：移除net.core.somaxconn的设置
+```修改前
+createRedisClusterContainer() {
+  # 设置绿色字体echo -e "\033[32m 绿色字 \033[0m"
+  echo -e "\033[32m Start to create redis cluster container \033[0m"
+  # 注：此处redis.conf文件如果不存在，会默认创建名为redis.conf的文件夹
+  for port in ${ports}; do
+    docker run -d -it \
+      -p "${port}":"${port}" \
+      -p 1"${port}":1"${port}" \
+      -v ${config_dir}/"${port}"/redis.conf:/usr/local/etc/redis/redis.conf \
+      -v ${data_dir}/"${port}":/data \
+      --name redis-"${port}" \
+      --net ${net_name} \
+      --sysctl net.core.somaxconn=1024 \
+      redis:buster \
+      redis-server /usr/local/etc/redis/redis.conf
+  done
+  echo -e "\033[32m Successfully created redis cluster container \033[0m"
+}
+```
+```修改后
+createRedisClusterContainer() {
+  # 设置绿色字体echo -e "\033[32m 绿色字 \033[0m"
+  echo -e "\033[32m Start to create redis cluster container \033[0m"
+  # 注：此处redis.conf文件如果不存在，会默认创建名为redis.conf的文件夹
+  for port in ${ports}; do
+    docker run -d -it \
+      -p "${port}":"${port}" \
+      -p 1"${port}":1"${port}" \
+      -v ${config_dir}/"${port}"/redis.conf:/usr/local/etc/redis/redis.conf \
+      -v ${data_dir}/"${port}":/data \
+      --name redis-"${port}" \
+      --net ${net_name} \
+      redis:buster \
+      redis-server /usr/local/etc/redis/redis.conf
+  done
+  echo -e "\033[32m Successfully created redis cluster container \033[0m"
+}
+```
+
+
 ### 问题： Not all 16384 slots are covered by nodes
 * 背景：创建redis集群，分配节点时报错
 

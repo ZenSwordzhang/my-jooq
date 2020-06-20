@@ -5,7 +5,9 @@ container_names=
 # 声明一个单节点容器名，后续创建集群分配节点需要
 redis_single_container_name=
 net_name=shared
-#
+config_dir=/data/dmplus/facilities/config/redis-cluster
+data_dir=/data/dmplus/facilities/data/redis-cluster
+
 ports=$(seq 7000 7005)
 
 # 方法要定义在调用的前面，否则会因找不到该方法报错
@@ -17,8 +19,8 @@ createRedisClusterContainer() {
     docker run -d -it \
       -p "${port}":"${port}" \
       -p 1"${port}":1"${port}" \
-      -v /data/dmplus/facilities/config/redis-cluster/"${port}"/redis.conf:/usr/local/etc/redis/redis.conf \
-      -v /data/dmplus/facilities/data/redis-cluster/"${port}":/data \
+      -v ${config_dir}/"${port}"/redis.conf:/usr/local/etc/redis/redis.conf \
+      -v ${data_dir}/"${port}":/data \
       --name redis-"${port}" \
       --net ${net_name} \
       --sysctl net.core.somaxconn=1024 \
@@ -32,13 +34,13 @@ createRedisConfig() {
   echo -e "\033[32m Start writing to redis configuration file \033[0m"
   for port in ${ports}; do
     # 注：windows下使用盘符路径，ubuntu下使用绝对路径
-    if [ ! -d "/data/dmplus/facilities/config/redis-cluster/${port}" ]; then
-      mkdir -p /data/dmplus/facilities/config/redis-cluster/"${port}"
+    if [ ! -d "${config_dir}/${port}" ]; then
+      mkdir -p ${config_dir}/"${port}"
     fi
     # 使用"<<-"，需要使用制表符Tab缩进
     # 使用<<-'EOF'或<<'EOF'，其中的内容都不能进行变量替换，使用<<EOF可以将外部变量传递到内容中
     # 注：此处若存在名为redis.conf的文件夹，则不再创建redis.conf文件
-    tee /data/dmplus/facilities/config/redis-cluster/"${port}"/redis.conf <<EOF
+    tee ${config_dir}/"${port}"/redis.conf <<EOF
 # redis后台运行
 daemonize no
 # redis运行的端口号
