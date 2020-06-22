@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 #for i in `seq 7000 7005`;
 #for i in {7000..7005}

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 
 # Solve the problem：cannot find cgroup mount destination: unknown

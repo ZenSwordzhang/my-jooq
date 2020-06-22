@@ -9,3 +9,8 @@
 
 ### 以root用户执行shell脚本
 * sudo -S ./docker-metricbeat-up.sh
+
+## 参考链接
+
+### 注意事项
+* [编写可靠shell脚本的八个建议](https://segmentfault.com/a/1190000006900083)
