@@ -79,6 +79,11 @@ docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logs
     * 添加创建网络命令：docker network create redis-net
 
 
+### 问题：Error response from daemon: Cannot restart container 2ce6c5824ea5: OCI runtime create failed: container with id exists: 2ce6c5824ea58491f9bcd4782d00061fb01bd2c1e51af3d4d3d52aa679b5cee5: unknown
+* 背景：wsl2重启电脑后重启容器报错
+* 解决：重启wsl2
+
+
 ### 问题：Error response from daemon: dial unix /mnt/wsl/docker-desktop/shared-sockets/guest-services/docker.sock: connect: no such file or directory
 * 背景：wsl2中执行docker ps命令报错
 * 解决：
@@ -641,6 +646,20 @@ services:
 
 ## <h2 style="text-align: center;"> ------------------**REDIS**------------------ </h2>
 
+### 问题：Could not connect to Redis at 192.168.1.110:7000: Connection refused
+* 背景：wsl2中使用shell脚本创建redis集群时报错
+* 解决：使用wsl2自身的ip
+![](../img/redis/redis-05.jpg)
+
+
+### 问题：(error) MOVED 8223 172.18.0.1:7001
+* 背景：通过redis-cli -p 7002命令连接redis集群，设置值时报错
+* 原因：连接命令缺少-c
+* 解决：
+    使用正确连接：redis-cli -c -p 7002
+![](../img/redis/redis-04.jpg)
+
+
 ### 问题：Error response from daemon: OCI runtime create failed: container_linux.go
 * 问题详情
 ```
@@ -695,7 +714,7 @@ createRedisClusterContainer() {
 
 ### 问题：Node zsx-2.local:7000 is not empty.
 * 背景：创建redis集群，分配节点时报错
-![](../img/redis-02.jpg)
+![](../img/redis/redis-02.jpg)
 * 解决：
     * 1.redis-cli -p 7000
     * 2.flushall

@@ -1,6 +1,6 @@
 ## 相关命令
 
-### 从docker中拷贝文件到宿主机
+### 从docker中拷贝文件(复制文件)到宿主机
 * docker cp [OPTIONS] [CONTAINER_ID]:[SRC_PATH] [DEST_PATH]
 * docker cp <container_id | container_name>:/xxx/xxx/xxx/common.log /home/yyy.log
 * 例1： docker cp logstash:/usr/share/logstash/Gemfile d:/usr/local/opt/gem/Gemfile
