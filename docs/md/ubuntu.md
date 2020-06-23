@@ -129,8 +129,10 @@
 ### 查看组信息
 * cat /etc/group | grep groupname
 
-### 查看所有的组信息
+### 查看用户所有的组信息
 * groups
+
+### 查看所有的组信息
 * cat /etc/group
 
 ### 修改组
@@ -208,6 +210,24 @@ export PATH=/path/to/your/dir:$PATH
 * ps -aux | grep ssh
 * service service_name status
 
+### 切换用户
+* sudo -s
+* su root
+
+### 获取文件控制访问列表
+* getfacl FileName
+    
+### 设置ACL权限
+* setfacl -m u:USERNAME:MODE FileName
+* setfacl -m g:GROUPNAME:MODE FileName
+    
+### 删除ACL权限|取消ACL权限
+* setfacl -x u:USERNAME:MODE FileName
+* setfacl -x g:GROUPNAME:MODE FileName
+
+### 删除所有ACL权限
+* setfacl -b FileName
+
 ## 文件
 
 ### 用户信息所在文件
@@ -245,6 +265,13 @@ dG为删除光标所在行以及其下所有行的内容
 d为删除，G为跳转到文件末尾行
 ```
 
+## 参考链接
 
+### dumpe2fs命令
+* [dumpe2fs命令](https://man.linuxde.net/dumpe2fs)
+
+### ACL命令
+* [ACL](https://zhuanlan.zhihu.com/p/65974697)
+* [ACL](https://cloud.tencent.com/developer/article/1361573)
 
 

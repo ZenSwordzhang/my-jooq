@@ -98,15 +98,6 @@ docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logs
 * 解决：重启docker for windows
 
 
-### 问题：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
-* 问题详情：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?limit=0: dial unix /var/run/docker.sock: connect: permission denied
-* [参考链接](https://docs.docker.com/engine/install/linux-postinstall/)
-* [参考链接](https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket)
-* 背景：使用metricbeat收集docker指标时，收集到的信息提示错误
-* 解决：重启docker for windows
-
-
-
 ### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock
 * 背景：win10下docker拉取镜像报错
 * 原因：缺少权限
@@ -434,7 +425,35 @@ filter {
 
 ### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/info: dial unix /var/run/docker.sock: connect: permission denied
 * 背景：metricbeat收集docker容器指标时提示错误
-* 解决：给容器指定root用户
+* [参考链接](https://discuss.elastic.co/t/how-to-use-metricbeat-docker-module-in-docker-swarm/103019/3)
+* [参考链接](https://discuss.elastic.co/t/trouble-running-metricbeat-5-3-0-with-docker-module/82204)
+* [参考链接](https://discuss.elastic.co/t/issue-with-metricbeat-docker-container/109525)
+* [参考链接](https://github.com/elastic/beats/issues/7526)
+* 解决：
+    * 方法1：使用文件系统ACL对Metricbeat用户授予的显式访问权限(未验证成功)
+        * setfacl -m u:1000:rw /var/run/docker.sock
+        * 1.查看文件系统(从图片可以看出为ext4文件系统，支持ACL):
+            * df -T
+        ![](../img/filesystem/filesystem-01.jpg)
+        * 2.查看是否支持ACL: 
+            * sudo tune2fs -l /dev/sda* |grep "Default mount options:"
+        ![](../img/filesystem/filesystem-02.jpg)
+        * 3.切换为root用户: 
+            * sudo -s
+        * 4.查看文件系统信息：
+            * dumpe2fs -h /dev/sda*
+        ![](../img/filesystem/filesystem-03.jpg)
+        * 5.获取文件或目录的ACL设置信息:
+            * getfacl /var/run/docker.sock
+        ![](../img/filesystem/filesystem-04.jpg)
+        * 6.设置文件或目录的ACL设置信息:
+            * setfacl -m u:123:rw /var/run/docker.sock
+        ![](../img/filesystem/filesystem-05.jpg)
+        * 7.重启容器
+            * docker restart metricbeat
+    * 方法2：修改权限
+        * sudo chmod 666 /var/run/docker.sock
+    * 方法3：给容器指定root用户
 ```docker-compose.yml修改前
 version: '3'
 
