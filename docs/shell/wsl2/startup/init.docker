@@ -1,5 +1,42 @@
-#!/bin/bash
+#!/usr/bin/bash
 
+set -x
+set -e
+
+try_again_start() {
+  for i in $(seq 1 4)
+  do
+    if [ "$i" = 4 ]
+    then
+      echo -e "\033[31m Too many failures, exit the program \033[0m" >&2
+      exit 1
+    fi
+    if service docker status | grep "Docker is running"
+    then
+      echo -e "\033[32m docker started successfully \033[0m"
+      break
+    else
+      echo -e "\033[31m Try again, failed to start Docker service \033[0m" >&2
+      sudo service docker start
+    fi
+  done
+}
+
+start_docker_service() {
+  if service docker status | grep "Docker is running"
+  then
+    echo -e "\033[32m Docker is running \033[0m"
+  else
+    echo -e "\033[31m Docker is not running, starting docker \033[0m" >&2
+    sudo service docker start
+    try_again_start
+  fi
+}
+
+fail_exit() {
+  echo -e "\033[31m Failed to restart container \033[0m" >&2
+  exit 1
+}
 
 # Solve the problem：cannot find cgroup mount destination: unknown
 mkdir /sys/fs/cgroup/systemd
@@ -8,9 +45,10 @@ mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
 # Solve the problem when es starts：max virtual memory areas vm.max_map_count [65530] is too low
 sudo sysctl --system
 
-sudo service docker start
+start_docker_service
 
+sleep 1s
 # shellcheck disable=SC2046
-docker restart $(docker ps -aq)
+docker restart $(docker ps -aq) || fail_exit
 
 docker ps

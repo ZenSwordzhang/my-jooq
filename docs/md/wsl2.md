@@ -16,6 +16,10 @@
 * cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }'
 ![](../img/wsl2/wsl2-03.jpg)
 
+## 相关命令
+### 关闭wsl2|退出wsl2
+* wsl --shutdown
+
 ## 参考链接
 
 ### wsl2访问
@@ -23,4 +27,7 @@
 * [WSL2网络访问问题](https://lengthmin.me/posts/wsl2-network-tricks/)
 
 ### netstat参数
-[netstat参数](https://9oelm.github.io/2018-05-06--Listening,-Established,-Close_wait-and-Time_wait-in-netstat/)
+* [netstat参数](https://9oelm.github.io/2018-05-06--Listening,-Established,-Close_wait-and-Time_wait-in-netstat/)
+
+### 重启wsl2
+* [重启wsl2](https://www.hdboy.top/show/35)
