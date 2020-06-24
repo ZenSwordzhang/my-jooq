@@ -16,8 +16,6 @@ services:
         - /d/usr/share/elasticsearch/config/es-plugins:/usr/share/elasticsearch/plugins
         - /d/usr/share/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
         - /d/usr/share/elasticsearch/data/es:/usr/share/elasticsearch/data
-        # - /etc/timezone:/etc/timezone:ro
-        # - /etc/localtime:/etc/localtime:ro
     ports:
       - 9200:9200
       - 9300:9300
@@ -30,8 +28,6 @@ services:
     volumes:
         - /d/usr/share/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
         - /d/usr/share/logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-        # - /etc/timezone:/etc/timezone:ro
-        # - /etc/localtime:/etc/localtime:ro
     depends_on:
         - elasticsearch
     links:
@@ -47,9 +43,6 @@ services:
     container_name: kibana
     links:
         - elasticsearch:es
-    # volumes:
-      # - /etc/timezone:/etc/timezone:ro
-      # - /etc/localtime:/etc/localtime:ro
     depends_on:
         - elasticsearch
     environment:
@@ -65,8 +58,6 @@ services:
       - /d/usr/share/filebeat/facilities/log:/usr/share/filebeat/log/facilities
       - /d/usr/share/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - /d/usr/share/filebeat/data:/usr/share/filebeat/data
-      # - /etc/timezone:/etc/timezone:ro
-      # - /etc/localtime:/etc/localtime:ro
     command: /usr/local/bin/docker-entrypoint filebeat -e -strict.perms=false
     depends_on:
         - elasticsearch
@@ -82,7 +73,7 @@ services:
       # contentType: "application/x-www-form-urlencoded改成了contentType: "application/json;charset=UTF-8"
       - /d/usr/local/etc/elasticsearch-head/_site/vendor.js:/usr/src/app/_site/vendor.js
 
-  db:
+  postgres:
     image: postgres:13
     container_name: postgres
     # restart: always
