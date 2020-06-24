@@ -39,8 +39,10 @@ fail_exit() {
 }
 
 # Solve the problem：cannot find cgroup mount destination: unknown
-mkdir /sys/fs/cgroup/systemd
-mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+if [ ! -d "/sys/fs/cgroup/systemd" ]; then
+  sudo mkdir /sys/fs/cgroup/systemd
+fi
+sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
 
 # Solve the problem when es starts：max virtual memory areas vm.max_map_count [65530] is too low
 sudo sysctl --system
