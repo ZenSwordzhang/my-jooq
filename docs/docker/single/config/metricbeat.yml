@@ -1,3 +1,24 @@
+########################## Metricbeat Configuration ###########################
+
+#============================  Config Reloading ===============================
+
+# Config reloading allows to dynamically load modules. Each file which is
+# monitored must contain one or multiple modules as a list.
+metricbeat.config.modules:
+
+  # Glob pattern for configuration reloading
+  path: ${path.config}/modules.d/*.yml
+
+  # Period on which files under path should be checked for changes
+  reload.period: 10s
+
+  # Set to true to enable config reloading
+  reload.enabled: false
+
+# Maximum amount of time to randomly delay the start of a metricset. Use 0 to
+# disable startup delay.
+metricbeat.max_start_delay: 10s
+
 metricbeat.modules:
   #-------------------------------- System Module --------------------------------
   - module: system
@@ -31,7 +52,7 @@ metricbeat.modules:
             type: metrics
             from: host
 
-  #---------------------------- redis Status Module ----------------------------
+  #---------------------------- Redis Module ----------------------------
   - module: redis
     metricsets: ["info", "key", "keyspace"]
     hosts: ["192.168.1.110:6379", "192.168.1.121:6379", "192.168.1.110:7000"]
@@ -53,7 +74,7 @@ metricbeat.modules:
             type: metrics
             from: redis
 
-  #---------------------------- docker Status Module ----------------------------
+  #---------------------------- Docker Module ----------------------------
   - module: docker
     metricsets:
       - "container"
@@ -77,7 +98,7 @@ metricbeat.modules:
             type: metrics
             from: docker
 
-  #----------------------------- postgresql output --------------------------------
+  #----------------------------- PostgreSQL Module --------------------------------
   - module: postgresql
     enabled: true
     metricsets:
@@ -104,7 +125,10 @@ metricbeat.modules:
     # The available parameters are documented here:
     # https://godoc.org/github.com/lib/pq#hdr-Connection_String_Parameters
     # [postgres://][user:pass@]host[:port][?options]
-    hosts: ["postgres://172.18.0.10:5433"]
+
+    # 此处可以使用docker0的ip或者宿主机ip，但是不能使用容器服务名或者容器本身ip
+    # hosts: ["postgres://172.20.228.138:5433?sslmode=disable"]
+    hosts: ["postgres://172.17.0.1:5433?sslmode=disable"]
 
     # Username to use when connecting to PostgreSQL. Empty by default.
     username: test
@@ -112,9 +136,38 @@ metricbeat.modules:
     # Password to use when connecting to PostgreSQL. Empty by default.
     password: test
 
+  #--------------------------------- HTTP Module ---------------------------------
+  - module: http
+    #metricsets:
+    #  - json
+    period: 10s
+    hosts: ["localhost:80"]
+    namespace: "json_namespace"
+    path: "/"
+    #body: ""
+    #method: "GET"
+    #username: "user"
+    #password: "secret"
+    #request.enabled: false
+    #response.enabled: false
+    #json.is_array: false
+    #dedot.enabled: false
+
+  - module: http
+    #metricsets:
+    #  - server
+    host: "localhost"
+    port: "8080"
+    enabled: false
+    #paths:
+    #  - path: "/foo"
+    #    namespace: "foo"
+    #    fields: # added to the the response in root. overwrites existing fields
+    #      key: "value"
+
 #----------------------------- Logstash output --------------------------------
 output.logstash:
-  hosts: ["192.168.1.110:9600"]
+  hosts: ["logstash:9602"]
 
 
 

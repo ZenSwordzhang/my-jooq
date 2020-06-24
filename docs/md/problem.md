@@ -379,6 +379,33 @@ filter {
 
 ## <h2 style="text-align: center;"> ------------------**METRICBEAT**------------------ </h2>
 
+### 问题：ERROR: for metricbeat  Cannot create container for service metricbeat: dial unix /mnt/wsl/docker-desktop/shared-sockets/guest-services/docker.sock: connect: no such file or directory
+* 背景：ws2下通过shell脚本执行docker-compose.yml文件启动metricbeat容器时报错
+![](../img/docker/docker-03.jpg)
+* 解决：
+    * 步骤1：修复docker
+        * 由于此处使用的docker for windows作为wsl2的docker容器，从图片当中可以看出此处docker命令已经失效，
+            * 首先尝试重启docker for windows
+            * 其次尝试重启wsl2后，再重启docker for windows
+            * 最后再尝试重启电脑
+        * 如果此处使用的是wsl2中单独安装的docker容器，那么此处重启wsl2中的docker服务
+    * 步骤2：以root用户执行shell脚本
+        * sudo -S ./docker-up.sh
+
+
+### 问题：ERROR: for metricbeat  Cannot start service metricbeat: cgroups: cannot find cgroup mount destination: unknown
+* 背景：ws2下通过shell脚本执行docker-compose.yml文件启动metricbeat容器时报错
+![](../img/docker/docker-04.jpg)
+* [参考链接](https://github.com/microsoft/WSL/issues/4189)
+* 解决：
+    * sudo mkdir /sys/fs/cgroup/systemd
+    * sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+
+
+### 问题：Error in modules manager: modules management requires 'metricbeat.config.modules.path' setting
+* 进入metricbeat容器内部，执行命令metricbeat modules list查看启用和禁用的模块时报错
+![](../img/metricbeat/metricbeat-03.jpg)
+
 ### 问题：Exiting: error loading config file: config file ("metricbeat.yml") must be owned by the user identifier (uid=0) or root
 * 背景：docker容器启动metricbeat时报错
 * 原因：文件拥有者的问题
@@ -399,29 +426,13 @@ filter {
         * command: ["--strict.perms=false"]
 
 
-### 问题：ERROR: for metricbeat  Cannot start service metricbeat: cgroups: cannot find cgroup mount destination: unknown
-* 背景：ws2下通过shell脚本执行docker-compose.yml文件启动metricbeat容器时报错
-![](../img/docker/docker-04.jpg)
-* [参考链接](https://github.com/microsoft/WSL/issues/4189)
-* 解决：
-    * sudo mkdir /sys/fs/cgroup/systemd
-    * sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
+### 问题：Exiting: no metricsets configured for module 'http'
+* 背景：wsl2中使用docker启动metricbeat的http模块时报错
+* 原因：metricbeat的http模块在modules.d中默认是被禁用的
+    * but you won’t be able to use the modules command to enable and disable configurations because the command requires the modules.d layout
+![](../img/metricbeat/metricbeat-01.jpg)
+![](../img/metricbeat/metricbeat-02.jpg)
 
-
-
-### 问题：ERROR: for metricbeat  Cannot create container for service metricbeat: dial unix /mnt/wsl/docker-desktop/shared-sockets/guest-services/docker.sock: connect: no such file or directory
-* 背景：ws2下通过shell脚本执行docker-compose.yml文件启动metricbeat容器时报错
-![](../img/docker/docker-03.jpg)
-* 解决：
-    * 步骤1：修复docker
-        * 由于此处使用的docker for windows作为wsl2的docker容器，从图片当中可以看出此处docker命令已经失效，
-            * 首先尝试重启docker for windows
-            * 其次尝试重启wsl2后，再重启docker for windows
-            * 最后再尝试重启电脑
-        * 如果此处使用的是wsl2中单独安装的docker容器，那么此处重启wsl2中的docker服务
-    * 步骤2：以root用户执行shell脚本
-        * sudo -S ./docker-up.sh
-        
 
 ### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/info: dial unix /var/run/docker.sock: connect: permission denied
 * 背景：metricbeat收集docker容器指标时提示错误

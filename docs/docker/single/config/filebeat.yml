@@ -17,6 +17,7 @@ filebeat.inputs:
   multiline.negate: true
   # after 或 before，合并到上一行的末尾或下一行的开头
   multiline.match: after
+
 - type: log
   enabled: true
   paths:
@@ -32,6 +33,6 @@ filebeat.inputs:
   multiline.negate: true
   multiline.match: after
   include_lines: [ 'duration' ]
+
 output.logstash:
-    # hosts: ["stat.ats-oa.com:9602"]
-    hosts: ["192.168.1.110:9602"]
+    hosts: ["logstash:9602"]
