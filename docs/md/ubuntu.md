@@ -228,6 +228,12 @@ export PATH=/path/to/your/dir:$PATH
 ### 删除所有ACL权限
 * setfacl -b FileName
 
+### 解压文件 xxx.tar.xz
+* 1.将 xxx.tar.xz解压成 xxx.tar
+    * xz -d xxx.tar.xz
+* 2.再用 tar xvf xxx.tar来解包
+    * tar xvf xxx.tar
+
 ## 文件
 
 ### 用户信息所在文件

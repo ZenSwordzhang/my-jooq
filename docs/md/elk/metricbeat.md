@@ -1,5 +1,17 @@
 ## 命令
 
+### 查看模块列表及状态
+* metricbeat modules list
+
+### 启用模块
+* metricbeat modules enable apache mysql
+
+### 禁用模块
+* metricbeat modules disable http
+
+### 设置仪表盘模板
+* metricbeat setup -e
+
 ### 设置Kibana仪表板
 * docker run --net="host" docker.elastic.co/beats/metricbeat:7.7.1 setup --dashboards
 
@@ -8,6 +20,23 @@
 
 ### 下载metricbeat.docker.yml文件
 * curl -L -O https://raw.githubusercontent.com/elastic/beats/7.7/deploy/docker/metricbeat.docker.yml
+
+### 验证Elasticsearch中是否存在服务器的统计信息
+* curl -XGET http://localhost:9200/metricbeat-*/_search?pretty
+
+### win10下powershell启动服务（命令关键字部分忽略大小写）
+* Start-Service metricbeat
+* start-service metricbeat
+
+### win10下powershell查看服务
+* get-service | findstr metricbeat
+
+### win10下powershell停止服务
+* stop-service metricbeat
+
+### win10下powershell重启服务
+* restart-service metricbeat
+
 
 ## 参考链接
 

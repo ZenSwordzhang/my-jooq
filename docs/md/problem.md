@@ -2,9 +2,20 @@
 
 
 
+## <h2 style="text-align: center;"> ------------------**CURL**------------------ </h2>
+
+### 问题：Perl: curl: (1) Protocol 'http not supported or disabled in libcurl
+* 背景：在cmd命令窗口中，执行命令curl -XGET 'http://localhost:9200/metricbeat-*/_search?pretty'查看数据时报错
+* 原因：windows中命令不支持单引号
+* [参考链接](https://stackoverflow.com/questions/6684235/perl-curl-1-protocol-http-not-supported-or-disabled-in-libcurl)
+* 解决：修改单引号为双引号
+    * 执行命令curl -XGET "http://localhost:9200/metricbeat-*/_search?pretty"
+
+
+
 ## <h2 style="text-align: center;"> ------------------**CYGWIN**------------------ </h2>
 
-### 问题1： /bin/sh: pkg-config: 未找到命令
+### 问题： /bin/sh: pkg-config: 未找到命令
 * 背景：cygwin下执行命令make && make install安装redis报错
 * 解决：通过启动setup-x86_64.exe执行文件安装pkg-config
 
@@ -432,6 +443,24 @@ filter {
     * but you won’t be able to use the modules command to enable and disable configurations because the command requires the modules.d layout
 ![](../img/metricbeat/metricbeat-01.jpg)
 ![](../img/metricbeat/metricbeat-02.jpg)
+* 解决：添加收集指标配置
+```
+  - module: http
+    period: 10s
+    hosts: ["localhost:8000"]
+    namespace: "json_namespace"
+    path: "/api"
+```
+* 修改为
+```
+  - module: http
+    metricsets:
+     - json
+    period: 10s
+    hosts: ["localhost:8000"]
+    namespace: "json_namespace"
+    path: "/api"
+```
 
 
 ### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/info: dial unix /var/run/docker.sock: connect: permission denied
