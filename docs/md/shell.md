@@ -10,6 +10,10 @@
 ### 以root用户执行shell脚本
 * sudo -S ./docker-metricbeat-up.sh
 
+### shell中切换用户执行命令
+* su - root -c "mkdir /data/test123" 
+* sudo -s mkdir /data/test123
+
 ## 参考链接
 
 ### 注意事项

@@ -234,6 +234,10 @@ export PATH=/path/to/your/dir:$PATH
 * 2.再用 tar xvf xxx.tar来解包
     * tar xvf xxx.tar
 
+### 匹配多个值(或)
+* docker ps -a | egrep "metricbeat|kibana" 
+* docker ps -a | awk '/metricbeat|kibana/'
+
 ## 文件
 
 ### 用户信息所在文件

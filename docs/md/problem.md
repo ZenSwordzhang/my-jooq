@@ -530,6 +530,13 @@ services:
       - /etc/localtime:/etc/localtime:ro
 ```
 
+### 问题：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?limit=0: dial unix /var/run/docker.sock: connect: permission denied
+* 背景：已经在docker-compose.yml文件中配置了root用户，metricbeat收集docker容器指标时仍提示错误
+* 原因：进入metricbeat容器内部，查看/var/run/docker.sock权限不属于root
+![](../img/metricbeat/metricbeat-04.jpg)
+* 解决
+
+
 ## <h2 style="text-align: center;"> ------------------**PYTHON**------------------ </h2>
 
 ### 问题
@@ -801,6 +808,70 @@ docker exec -it redis-container-id /bin/sh
 * 原因：window下的换行符多了‘\r’
 * 解决：通过文本编辑工具Notepad++将文件格式转成Unix文件
 ![](../img/shell-1.jpg)
+
+
+
+## <h2 style="text-align: center;"> ------------------**SPRINGBOOT**------------------ </h2>
+
+### 问题：Invocation of init method failed; nested exception is java.lang.NoSuchFieldError: IGNORE_DEPRECATIONS
+* 背景：springboot集成es，启动时报错
+* 详情
+```console
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2020-06-30 09:06:56.009 ERROR 13148 --- [  restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ESUtils': Invocation of init method failed; nested exception is java.lang.NoSuchFieldError: IGNORE_DEPRECATIONS
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:160)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:416)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1788)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:595)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:517)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:323)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:226)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:321)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:893)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:879)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:551)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:758)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:750)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:315)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1237)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at com.zsx.MyJooqApplication.main(MyJooqApplication.java:10)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+Caused by: java.lang.NoSuchFieldError: IGNORE_DEPRECATIONS
+	at org.elasticsearch.client.RestHighLevelClient.<clinit>(RestHighLevelClient.java:1911)
+	at com.zsx.utils.ESUtils.init(ESUtils.java:36)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleElement.invoke(InitDestroyAnnotationBeanPostProcessor.java:389)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor$LifecycleMetadata.invokeInitMethods(InitDestroyAnnotationBeanPostProcessor.java:333)
+	at org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor.postProcessBeforeInitialization(InitDestroyAnnotationBeanPostProcessor.java:157)
+	... 24 common frames omitted
+
+
+Process finished with exit code 0
+
+```
+* [参考链接](https://stackoverflow.com/questions/62338588/spring-boot-with-elastic-search-causing-java-lang-nosuchfielderror-ignore-depre)
+* 原因：缺少elasticsearch、elasticsearch-rest-client依赖，此处只引入了elasticsearch-rest-high-level-client依赖
+```build.gradle
+implementation group: 'org.elasticsearch.client', name: 'elasticsearch-rest-high-level-client', version: '7.8.0'
+```
+* 解决：引入依赖
+```build.gradle
+implementation group: 'org.elasticsearch.client', name: 'elasticsearch-rest-client', version: '7.8.0'
+implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.8.0'
+```
 
 
 
