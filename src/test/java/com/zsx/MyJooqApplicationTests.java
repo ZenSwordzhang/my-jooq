@@ -14,4 +14,11 @@ public class MyJooqApplicationTests {
 		assertTrue(CollectionUtils.isEmpty(List.of()));
 	}
 
+	@Test
+	void testSplit() {
+		String addr = "192.168.1.110:9200";
+		System.out.println(addr.split(":")[0]);
+		System.out.println(addr.split(":")[1]);
+	}
+
 }

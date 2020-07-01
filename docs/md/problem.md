@@ -243,6 +243,28 @@ jdbc {
 
 
 
+## <h2 style="text-align: center;"> ------------------**JUNIT**------------------ </h2>
+
+### 问题：Found multiple occurrences of org.json.JSONObject on the class path
+* 背景：junit测试时报错
+* 详情
+```
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/E:/gradle/gradle-5.6.4/caches/modules-2/files-2.1/org.json/json/20200518/41a767de4bde8f01d53856b905c49b2db8862f13/json-20200518.jar!/org/json/JSONObject.class
+	jar:file:/E:/gradle/gradle-5.6.4/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+```
+* 解决：
+```
+testCompile("org.springframework.boot:spring-boot-starter-test") {
+    exclude group: "com.vaadin.external.google", module:"android-json"
+}
+```
+
+
+
 ## <h2 style="text-align: center;"> ------------------**KAFKA**------------------ </h2>
 
 ### 问题：this node is not a swarm manager. Use "docker swarm init" or "docker swarm join" to connect this node to swarm and try again
@@ -531,10 +553,15 @@ services:
 ```
 
 ### 问题：failed to get docker stats: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json?limit=0: dial unix /var/run/docker.sock: connect: permission denied
-* 背景：已经在docker-compose.yml文件中配置了root用户，metricbeat收集docker容器指标时仍提示错误
+* 背景：由于docker使用了命名空间管理，已经在docker-compose.yml文件中配置了root用户，metricbeat收集docker容器指标时仍提示错误
 * 原因：进入metricbeat容器内部，查看/var/run/docker.sock权限不属于root
 ![](../img/metricbeat/metricbeat-04.jpg)
 * 解决
+    * 方法1：修改/var/run/docker.sock权限为666，重启容器metricbeat
+    * 方法2：修改/var/run/docker.sock拥有者为165536，重启容器metricbeat
+![](../img/metricbeat/metricbeat-05.jpg)
+        * 再次进入容器内部查看
+![](../img/metricbeat/metricbeat-06.jpg)
 
 
 ## <h2 style="text-align: center;"> ------------------**PYTHON**------------------ </h2>
