@@ -36,6 +36,34 @@ POST /_reindex
 }
 ```
 
+
+### 创建索引结构
+```
+PUT twitter
+{
+  "settings" : {
+    "number_of_shards" : 1,
+    "number_of_replicas" : 0
+  },
+  "mappings" : {
+    "properties" : {
+      "message" : { "type" : "text" }
+    }
+  },
+  "aliases" : {
+    "twitter_alias" : {}
+  }
+}
+```
+```result
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "twitter"
+}
+```
+
+
 ### 根据id删除索引内容
 * DELETE posts/_doc/2
 ```result
@@ -286,6 +314,11 @@ PUT posts/_doc/1
 ###
 ```result
 ```
+
+## 集成
+
+### springboot集成es
+* [ESUtilsTest](../../../src/test/java/com/zsx/utils/ESUtilsTest.java)
 
 ## 参考链接
 

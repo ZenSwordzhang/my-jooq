@@ -248,7 +248,7 @@ jdbc {
 ### 问题：Found multiple occurrences of org.json.JSONObject on the class path
 * 背景：junit测试时报错
 * 详情
-```
+```console
 Found multiple occurrences of org.json.JSONObject on the class path:
 
 	jar:file:/E:/gradle/gradle-5.6.4/caches/modules-2/files-2.1/org.json/json/20200518/41a767de4bde8f01d53856b905c49b2db8862f13/json-20200518.jar!/org/json/JSONObject.class
@@ -257,10 +257,72 @@ Found multiple occurrences of org.json.JSONObject on the class path:
 You may wish to exclude one of them to ensure predictable runtime behavior
 ```
 * 解决：
-```
+```build.gradle
 testCompile("org.springframework.boot:spring-boot-starter-test") {
     exclude group: "com.vaadin.external.google", module:"android-json"
 }
+```
+
+### 问题：java.lang.NoClassDefFoundError: org/junit/platform/commons/util/ClassNamePatternFilterUtils
+* 背景：junit5测试时报错
+* 详情
+```console
+java.lang.NoClassDefFoundError: org/junit/platform/commons/util/ClassNamePatternFilterUtils
+
+	at org.junit.jupiter.engine.config.DefaultJupiterConfiguration.getExecutionConditionFilter(DefaultJupiterConfiguration.java:86)
+	at org.junit.jupiter.engine.config.CachingJupiterConfiguration.lambda$getExecutionConditionFilter$5(CachingJupiterConfiguration.java:79)
+	at java.base/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1708)
+	at org.junit.jupiter.engine.config.CachingJupiterConfiguration.getExecutionConditionFilter(CachingJupiterConfiguration.java:78)
+	at org.junit.jupiter.engine.execution.ConditionEvaluator.evaluate(ConditionEvaluator.java:54)
+	at org.junit.jupiter.engine.descriptor.JupiterTestDescriptor.shouldBeSkipped(JupiterTestDescriptor.java:202)
+	at org.junit.jupiter.engine.descriptor.JupiterTestDescriptor.shouldBeSkipped(JupiterTestDescriptor.java:57)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$checkWhetherSkipped$2(NodeTestTask.java:115)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.checkWhetherSkipped(NodeTestTask.java:115)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:77)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1510)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:125)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:135)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:122)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:80)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:32)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:51)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:248)
+	at org.junit.platform.launcher.core.DefaultLauncher.lambda$execute$5(DefaultLauncher.java:211)
+	at org.junit.platform.launcher.core.DefaultLauncher.withInterceptedStreams(DefaultLauncher.java:226)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:199)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:132)
+	at com.intellij.junit5.JUnit5IdeaTestRunner.startRunnerWithArgs(JUnit5IdeaTestRunner.java:69)
+	at com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:33)
+	at com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:230)
+	at com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:58)
+Caused by: java.lang.ClassNotFoundException: org.junit.platform.commons.util.ClassNamePatternFilterUtils
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:602)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522)
+	... 33 more
+```
+* [参考链接](https://github.com/junit-team/junit5/issues/1773)
+* 原因：引入的包冲突
+* 解决：
+    * 依赖
+```build.gradle
+testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0-M1'
+testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.7.0-M1'
+testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0-M1'
+testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0-M1'
+testImplementation group: 'junit', name: 'junit', version: '4.13'
+testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.7.0-M1'
+```
+* 替换为
+```build.gradle
+testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.7.0-M1'
 ```
 
 
