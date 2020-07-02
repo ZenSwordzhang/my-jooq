@@ -37,6 +37,9 @@
 ### win10下powershell重启服务
 * restart-service metricbeat
 
+### win10下启动metricbeat
+* metricbeat.exe -e -c metricbeat.yml
+
 
 ## 参考链接
 

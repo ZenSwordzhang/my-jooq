@@ -594,6 +594,13 @@ filter {
 * 进入metricbeat容器内部，执行命令metricbeat modules list查看启用和禁用的模块时报错
 ![](../img/metricbeat/metricbeat-03.jpg)
 
+
+### 问题：Exiting: 1 error: metricset 'system/load' not found
+* 背景：win10下运行metricbeat后自动停止
+* 原因： on Windows the system/load metricset is not supported
+* 解决：取消 system/load 指标数据收集
+
+
 ### 问题：Exiting: error loading config file: config file ("metricbeat.yml") must be owned by the user identifier (uid=0) or root
 * 背景：docker容器启动metricbeat时报错
 * 原因：文件拥有者的问题

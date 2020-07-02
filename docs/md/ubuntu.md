@@ -192,10 +192,18 @@ export PATH=/path/to/your/dir:$PATH
 ### 临时修改主机名(重启后恢复原主机名)
 * hostname new_name
 
-### 永久修改主机名
-* 1.修改</etc/hostname | /etc/sysconfig/network>文件
-* 2.（可选）修改/etc/hosts配置文件
-* 3.重启ubuntu
+### 不重启机器的情况下修改主机名
+* 查看当前主机名：hostnamectl
+* 1.使用hostnamectl修改主机名
+    * sudo hostnamectl set-hostname zsx
+* 2.修改/etc/hosts配置文件
+* 3.编辑/etc/cloud/cloud.cfg文件
+    * 如果安装了cloud-init软件包，则还需要编辑cloud.cfg文件
+        * 修改内容 preserve_hostname: true
+    * 如果没有安装cloud-init软件包，无需进行编辑操作
+        * 查看是否安装了cloud-init软件包
+            * 执行 ls -lh /etc/cloud/cloud.cfg 命令
+            * 结果显示 ls: cannot access '/etc/cloud/cloud.cfg': No such file or directory，表示没有安装安装了cloud-init软件包
 
 ### 非 root 用户想要使用 docker ，需要将该用户添加到 docker 用户组
 * sudo usermod -aG docker user-name
@@ -284,4 +292,5 @@ d为删除，G为跳转到文件末尾行
 * [ACL](https://zhuanlan.zhihu.com/p/65974697)
 * [ACL](https://cloud.tencent.com/developer/article/1361573)
 
-
+### 修改主机名
+* [change-hostname](https://linuxize.com/post/how-to-change-hostname-on-ubuntu-18-04/)
