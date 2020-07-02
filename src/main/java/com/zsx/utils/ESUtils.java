@@ -116,6 +116,7 @@ public class ESUtils {
         getSourceRequest.preference("preference");
 
         // Set realtime flag to false (true by default)
+        // If the realtime parameter set to false, real-time data acquisition will be disabled
 //        getSourceRequest.realtime(false);
 
         // Perform a refresh before retrieving the document (false by default)
