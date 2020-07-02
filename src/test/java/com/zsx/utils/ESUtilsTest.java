@@ -84,7 +84,7 @@ public class ESUtilsTest {
         assertTrue(response.isAcknowledged());
     }
 
-    @Order(5)
+    @Order(6)
     @Test
     void testCreateIndexMap() {
         Map<String, Object> message = new HashMap<>();
@@ -98,7 +98,7 @@ public class ESUtilsTest {
         assertTrue(response.isAcknowledged());
     }
 
-    @Order(5)
+    @Order(7)
     @Test
     void testCreateIndexBuilder() {
         try {
@@ -124,7 +124,7 @@ public class ESUtilsTest {
         }
     }
 
-    @Order(5)
+    @Order(8)
     @Test
     void testCreateIndexSource() {
         String jsonSource = "{\n" +
@@ -159,7 +159,7 @@ public class ESUtilsTest {
         assertions(response);
     }
 
-    @Order(10)
+    @Order(11)
     @Test
     void testSaveIndexMap() {
         Map<String, Object> jsonMap = new HashMap<>();
@@ -170,7 +170,7 @@ public class ESUtilsTest {
         assertions(response);
     }
 
-    @Order(10)
+    @Order(12)
     @Test
     void testSaveIndexBuilder() {
         XContentBuilder builder = null;
@@ -190,7 +190,7 @@ public class ESUtilsTest {
         }
     }
 
-    @Order(10)
+    @Order(13)
     @Test
     void testSaveIndexJSONObject() {
         JSONObject obj = new JSONObject();
@@ -211,7 +211,7 @@ public class ESUtilsTest {
         assertNotNull(message);
     }
 
-    @Order(20)
+    @Order(21)
     @Test
     void testGetIndexSourceDataById() {
         GetSourceResponse getSourceResponse = esUtils.getIndexSourceDataById(indexNames.get(0), "1", new String[]{"message", "*Date"}, Strings.EMPTY_ARRAY);
@@ -221,7 +221,7 @@ public class ESUtilsTest {
         assertNotNull(message);
     }
 
-    @Order(20)
+    @Order(22)
     @Test
     void testAsyncGetIndexDataById() {
         GetResponse getResponse = esUtils.asyncGetIndexDataById(indexNames.get(0), "1", new String[]{"message", "*Date"}, Strings.EMPTY_ARRAY, "message");
@@ -231,7 +231,7 @@ public class ESUtilsTest {
         assertNotNull(message);
     }
 
-    @Order(20)
+    @Order(23)
     @Test
     void testAsyncGetIndexSourceDataById() {
         GetSourceResponse getSourceResponse = esUtils.asyncGetIndexSourceDataById(indexNames.get(0), "1", new String[]{"message", "*Date"}, Strings.EMPTY_ARRAY);
@@ -241,7 +241,7 @@ public class ESUtilsTest {
         assertNotNull(message);
     }
 
-    @Order(30)
+    @Order(31)
     @Test
     void testUpdateDataByIdAndScript() {
         Map<String, Object> parameters = Collections.singletonMap("count", 4);
@@ -254,7 +254,7 @@ public class ESUtilsTest {
         assertEquals(1, updateResponse.getShardInfo().getSuccessful());
     }
 
-    @Order(30)
+    @Order(32)
     @Test
     void testUpdateDataByIdAndJsonString() {
         String jsonString = "{" +
@@ -268,7 +268,7 @@ public class ESUtilsTest {
         assertEquals(1, updateResponse.getShardInfo().getSuccessful());
     }
 
-    @Order(30)
+    @Order(33)
     @Test
     void testUpdateDataByIdAndXContentBuilder() {
         try {
@@ -289,7 +289,7 @@ public class ESUtilsTest {
         }
     }
 
-    @Order(30)
+    @Order(34)
     @Test
     void testUpdateDataByIdAndJSONObject() {
         JSONObject obj = new JSONObject();
