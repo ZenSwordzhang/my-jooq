@@ -1,1 +1,8 @@
-http.host: "0.0.0.0"
+metricbeat.modules:
+  - module: http
+    metricsets: ["server"]
+    host: "localhost"
+    port: "8001"
+    server.paths:
+      - path: "/api"
+        namespace: "api__namespace"

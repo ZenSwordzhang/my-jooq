@@ -31,6 +31,9 @@
 ### win10下powershell查看服务
 * get-service | findstr metricbeat
 
+### win10下powershell查看服务状态
+* service metricbeat
+
 ### win10下powershell停止服务
 * stop-service metricbeat
 

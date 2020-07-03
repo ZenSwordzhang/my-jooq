@@ -726,6 +726,23 @@ services:
 ![](../img/metricbeat/metricbeat-06.jpg)
 
 
+### 问题：Start-Service : 由于以下错误无法启动服务“metricbeat (metricbeat)”: 无法启动计算机“.”上的服务 metricbeat。
+* 背景：win10下使用PowerShell设置metricbeat为服务后，使用命令Start-Service metricbeat启动metricbeat报错
+* 详情：
+```console
+Start-Service : 由于以下错误无法启动服务“metricbeat (metricbeat)”: 无法启动计算机“.”上的服务 metricbeat。
+所在位置 行:1 字符: 1
++ Start-Service metricbeat
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OpenError: (System.ServiceProcess.ServiceController:ServiceController) [Start-Service],
+   ServiceCommandException
+    + FullyQualifiedErrorId : CouldNotStartService,Microsoft.PowerShell.Commands.StartServiceCommand
+```
+* 解决：
+    * 重新执行命令：Start-Service metricbeat
+![](../img/metricbeat/metricbeat-07.jpg)
+
+
 ## <h2 style="text-align: center;"> ------------------**PYTHON**------------------ </h2>
 
 ### 问题
