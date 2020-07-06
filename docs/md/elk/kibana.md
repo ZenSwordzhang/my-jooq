@@ -767,9 +767,22 @@ gte | greater than or equal to
 
 ### Timelion函数
 
+```Timelion expression demo
+.es(index=test-facility-metrics-host-*,
+    q='event.dataset.keyword:system.cpu',
+    timefield='@timestamp',
+    metric='avg:system.cpu.user.pct')
+.lines(width=1)
+.fit(average)
+.title('The percentage of CPU time spent in user space')
+.label('last hour')
+```
+
 #### 可视化效果类
 * .bars($width): 用柱状图展示数组
 * .lines($width, $fill, $show, $steps): 用折线图展示数组
+    * width: 边框宽度
+    * fill: 填充级别
 * .points(): 用散点图展示数组
 * .color("#c6c6c6"): 改变颜色
 * .hide(): 隐藏该数组
@@ -845,6 +858,10 @@ gte | greater than or equal to
 ### 查询
 * [query-dsl](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html)
 
+### 告警
+* [watcher-ui](https://www.elastic.co/guide/en/kibana/current/watcher-ui.html)
+* [alerting](https://www.elastic.co/guide/en/kibana/current/alerting-getting-started.html)
+
 ### Kibana可视化中的JSON输入(JSON Input in Kibana Visualization)
 * [JSON Input in Kibana Visualization](https://discuss.elastic.co/t/json-input-in-kibana-visualization/217723)
 * [参考案例](https://www.elastic.co/guide/zh-CN/kibana/current/field-filter.html#filter-edit)
@@ -854,11 +871,13 @@ gte | greater than or equal to
 [keyword-query-language](https://docs.microsoft.com/zh-cn/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference)
 
 ### 可视化
+* [aggregations](https://www.elastic.co/guide/en/kibana/current/supported-aggregations.html)
 * [可视化](https://www.elastic.co/cn/kibana/features#--)
 * [指标可视化](https://www.elastic.co/guide/en/kibana/current/most-frequent.html)
 * **[datavisualizer](http://localhost:9500/app/ml#/datavisualizer)**
 * [timelines-ui](https://www.elastic.co/guide/en/siem/guide/current/siem-ui-overview.html#timelines-ui)
 * **[visualize-data](https://qbox.io/blog/how-to-use-elasticsearch-to-visualize-data?utm_source=qbox.io&utm_medium=article&utm_campaign=monitoring-docker-containers-with-metricbeat-elasticsearch-and-kibana)**
+* **[TSVB](https://www.elastic.co/guide/en/kibana/7.8/TSVB.html)**
 
 ### 同类型可视化工具
 * [grafana](https://grafana.com/docs/grafana/latest/getting-started/)
@@ -867,7 +886,8 @@ gte | greater than or equal to
 * [plugins](https://www.elastic.co/guide/cn/kibana/current/known-plugins.html)
 * [Timelion](https://github.com/Fermium/mathlion)
 
-
+### lucene语法
+* [lucene查询语法](https://segmentfault.com/a/1190000002972420)
 
 
 

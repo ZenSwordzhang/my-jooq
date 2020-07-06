@@ -180,12 +180,16 @@ export PATH=/path/to/your/dir:$PATH
     * export CLASS_PATH=./JAVA_HOME/lib:$JAVA_HOME/jre/lib
     * source /etc/profile
 
-### bash下环境变量设置和删除
+### bash下设置环境变量
 * 设置：export 变量名=变量值
+
+### bash下删除环境变量
 * 删除：unset 变量名
 
-### csh下环境变量设置和删除
+### csh下设置环境变量
 * 设置：setenv 变量名 变量值
+
+### csh下删除环境变量
 * 删除：unsetenv 变量名
 
 

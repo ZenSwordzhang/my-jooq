@@ -43,6 +43,8 @@
 ### win10下启动metricbeat
 * metricbeat.exe -e -c metricbeat.yml
 
+### win10下powershell执行多个命令，使用分号分隔
+restart-service metricbeat; service metricbeat
 
 ## 参考链接
 

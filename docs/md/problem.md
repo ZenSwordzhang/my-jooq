@@ -887,7 +887,32 @@ services:
          external: true
     ```
 
+### 问题：QueryStats: failed to query database: pq: relation "pg_stat_statements" does not exist
+* 背景：使用metricbeat收集postgresql的statement指标时，收集到的指标报错
+* [参考链接](https://stackoverflow.com/questions/31021174/pg-stat-statements-enabled-but-the-table-does-not-exist)
+* 解决：
+* 1.查看是否安装了扩展
+```postgresql
+SELECT * 
+FROM pg_available_extensions 
+WHERE 
+    name = 'pg_stat_statements' and 
+    installed_version is not null;
+```
+* 2.如果表为空，则说明未安装，需要创建扩展
+```postgresql
+CREATE EXTENSION pg_stat_statements;
+```
 
+
+### 问题：QueryStats: failed to query database: pq: pg_stat_statements must be loaded via shared_preload_libraries
+* 背景：使用metricbeat收集postgresql的statement指标时，收集到的指标报错
+* [参考链接](https://dba.stackexchange.com/questions/124054/pg-stat-statements-not-found-even-with-shared-preload-libraries-pg-stat-stat)
+* 解决：新增配置
+    * 查看配置文件所在位置，连接数据库后执行命令：SHOW config_file
+```postgresql.conf
+shared_preload_libraries = 'pg_stat_statements'
+```
 
 ## <h2 style="text-align: center;"> ------------------**RUBY**------------------ </h2>
 
