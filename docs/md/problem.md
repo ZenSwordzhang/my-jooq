@@ -154,6 +154,33 @@ runtime.goexit
 
 ## <h2 style="text-align: center;"> ------------------**ES**------------------ </h2>
 
+
+### caught exception while handling client http traffic, closing connection Netty4HttpChannel{localAddress=/192.168.1.110:9200, remoteAddress=/192.168.1.110:55185}
+* 详情
+```console
+[2020-07-07T09:20:23,467][WARN ][o.e.h.AbstractHttpServerTransport] [node-1] caught exception while handling client http traffic, closing connection Netty4HttpChannel{localAddress=/192.168.1.110:9200, remoteAddress=/192.168.1.110:55185}
+java.io.IOException: 杩滅▼涓绘満寮鸿揩鍏抽棴浜嗕竴涓幇鏈夌殑杩炴帴銆?
+        at sun.nio.ch.SocketDispatcher.read0(Native Method) ~[?:?]
+        at sun.nio.ch.SocketDispatcher.read(SocketDispatcher.java:43) ~[?:?]
+        at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:276) ~[?:?]
+        at sun.nio.ch.IOUtil.read(IOUtil.java:233) ~[?:?]
+        at sun.nio.ch.IOUtil.read(IOUtil.java:223) ~[?:?]
+        at sun.nio.ch.SocketChannelImpl.read(SocketChannelImpl.java:358) ~[?:?]
+        at org.elasticsearch.transport.CopyBytesSocketChannel.readFromSocketChannel(CopyBytesSocketChannel.java:141) ~[transport-netty4-client-7.7.1.jar:7.7.1]
+        at org.elasticsearch.transport.CopyBytesSocketChannel.doReadBytes(CopyBytesSocketChannel.java:126) ~[transport-netty4-client-7.7.1.jar:7.7.1]
+        at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:148) [netty-transport-4.1.45.Final.jar:4.1.45.Final]
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:714) [netty-transport-4.1.45.Final.jar:4.1.45.Final]
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysPlain(NioEventLoop.java:615) [netty-transport-4.1.45.Final.jar:4.1.45.Final]
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:578) [netty-transport-4.1.45.Final.jar:4.1.45.Final]
+        at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:493) [netty-transport-4.1.45.Final.jar:4.1.45.Final]
+        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:989) [netty-common-4.1.45.Final.jar:4.1.45.Final]
+        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [netty-common-4.1.45.Final.jar:4.1.45.Final]
+        at java.lang.Thread.run(Thread.java:834) [?:?]
+```
+* 背景：重启metricbeat服务时，es报错
+* 原因：重启过程中连接中断
+
+
 ### 问题：ElasticsearchStatusException[Elasticsearch exception [type=resource_not_found_exception, reason=Document not found [posts]/[_doc]/[1]]]
 * 背景：junit5下运行整个测试类[ESUtilsTest](../../../src/test/java/com/zsx/utils/ESUtilsTest.java)，testGetIndexSourceDataById()方法报错
 * 详情：
@@ -902,14 +929,59 @@ WHERE
 * 2.如果表为空，则说明未安装，需要创建扩展
 ```postgresql
 CREATE EXTENSION pg_stat_statements;
+-- CREATE EXTENSION pg_stat_statements SCHEMA public;
 ```
+* 3.重启数据库
+* 4.如果还报问题中错误
+    * 猜想原因：metricbeat获取statement数据指标时，查询语句省略了默认设置的search_path部分
+        * 如：SELECT * FROM pg_stat_statements;
+        ![](../img/metricbeat/metricbeat-08.jpg)
+        * 实际应为：SELECT * FROM public.pg_stat_statements;
+        ![](../img/metricbeat/metricbeat-09.jpg)
+     * 查看search_path
+        * SHOW search_path;
+        ![](../img/metricbeat/metricbeat-10.jpg)
+* 4.1 方法1：
+```metricbeat.yml
+- module: postgresql
+  metricsets:
+   - database
+   - bgwriter
+   - activity
+   - statement
+  period: 10s
+  hosts: ["postgres://localhost:5432?sslmode=disable"]
+  username: postgres
+  # password: 1234
+```
+* 添加search_path配置
+```metricbeat.yml
+- module: postgresql
+  metricsets:
+   - database
+   - bgwriter
+   - activity
+   - statement
+  period: 10s
+  hosts: ["postgres://localhost:5432?sslmode=disable&search_path=public"]
+  username: postgres
+  # password: 1234
+```
+* 4.2 方法2：
+    * 设置search_path
+    * SET search_path TO postgres, public;
+        * The first element specifies that a schema with the same name as the current user is to be searched. 
+            * If no such schema exists, the entry is ignored. 
+        * The second element refers to the public schema that we have seen already.
+
 
 
 ### 问题：QueryStats: failed to query database: pq: pg_stat_statements must be loaded via shared_preload_libraries
 * 背景：使用metricbeat收集postgresql的statement指标时，收集到的指标报错
 * [参考链接](https://dba.stackexchange.com/questions/124054/pg-stat-statements-not-found-even-with-shared-preload-libraries-pg-stat-stat)
 * 解决：新增配置
-    * 查看配置文件所在位置，连接数据库后执行命令：SHOW config_file
+    * 查看配置文件所在位置，连接数据库后执行命令：
+        * SHOW config_file
 ```postgresql.conf
 shared_preload_libraries = 'pg_stat_statements'
 ```
