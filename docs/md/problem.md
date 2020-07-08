@@ -930,8 +930,8 @@ services:
 SELECT * 
 FROM pg_available_extensions 
 WHERE 
-    name = 'pg_stat_statements' and 
-    installed_version is not null;
+    name = 'pg_stat_statements' AND 
+    installed_version IS NOT NULL;
 ```
 * 2.如果表为空，则说明未安装，需要创建扩展
 ```postgresql

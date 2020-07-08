@@ -325,9 +325,11 @@ PUT posts/_doc/1
 ### springboot集成
 * [java-rest-high-document](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-document-index.html)
 
+### ip-filtering
+* [ip-filtering](https://www.elastic.co/guide/en/elasticsearch/reference/current/ip-filtering.html)
 
-
-
+### 使用环境变量
+* [using-environ-vars](https://www.elastic.co/guide/en/beats/metricbeat/current/using-environ-vars.html)
 
 
 

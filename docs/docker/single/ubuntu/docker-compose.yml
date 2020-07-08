@@ -70,6 +70,9 @@ services:
     image: elastic/metricbeat:7.7.0
     container_name: metricbeat
     user: root
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     command: ["--strict.perms=false"]
     volumes:
       - ${PWD}/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro

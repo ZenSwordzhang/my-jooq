@@ -111,7 +111,10 @@ metricbeat.modules:
     # 此处可以使用docker0的ip或者宿主机ip，但是不能使用容器服务名或者容器本身ip
     # hosts: ["postgres://172.20.228.138:5433?sslmode=disable"]
     hosts: ["postgres://172.17.0.1:5433?sslmode=disable"]
+    # Configure search_path
 #    hosts: ["postgres://172.17.0.1:5433?sslmode=disable&search_path=public"]
+    # Specify the database
+#    hosts: ["postgres://172.17.0.1:5432/postgres?sslmode=disable&search_path=public"]
     # Username to use when connecting to PostgreSQL. Empty by default.
     username: test
     # Password to use when connecting to PostgreSQL. Empty by default.
