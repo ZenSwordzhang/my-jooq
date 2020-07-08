@@ -784,6 +784,13 @@ b'A request was sent to this URL (http://localhost:8088/user) but a redirect was
 
 ## <h2 style="text-align: center;"> ------------------**POSTGRES**------------------ </h2>
 
+
+### 问题：Error: You must install at least one postgresql-client-<version> package
+* 背景：使用psql命令连接postgres数据库时报错
+* 解决：
+    * 不指定版本安装：sudo apt install postgresql-client
+
+
 ### 问题：FATAL:  data directory "/var/lib/postgresql/data" has wrong ownership
 * 详情：
 ```log

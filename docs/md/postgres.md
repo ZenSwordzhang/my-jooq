@@ -24,8 +24,24 @@
 ### 查看search_path
 * SHOW search_path;
 
-### 设置search_path
+### 给当前会话设置search_path
 * SET search_path TO postgres, public;
+
+### 给数据库永久设置search_path
+* ALTER DATABASE <database_name> SET search_path TO schema1,schema2;
+
+### 给用户或角色设置search_path
+* ALTER USER <user_name> SET search_path TO schema1,schema2;
+
+### 给角色设置search_path
+* ALTER ROLE <role_name> SET search_path TO schema1,schema2;
+
+### 给特定的数据库设置用户的search_path
+* ALTER ROLE <role_name> IN DATABASE <db_name> SET search_path TO schema1,schema2;
+
+### 重置search_path
+* ALTER DATABASE <database_name> RESET search_path;
+* ALTER ROLE <role_name> in DATABASE <database_name> RESET search_path;
 
 ### 查看扩展
 * SELECT * FROM pg_available_extensions WHERE name = 'pg_stat_statements' and installed_version is not null;
