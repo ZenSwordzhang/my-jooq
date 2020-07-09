@@ -834,6 +834,20 @@ gte | greater than or equal to
 * .worldbank(): 从 worldbank.org 读取数据
 * .wb(): .worldbanck() 的简写
 
+
+## kibana目录下操作
+
+### 创建秘钥库
+* bin/kibana-keystore create
+
+### 添加es用户名和密码信息到秘钥库
+* bin/kibana-keystore add elasticsearch.name
+* bin/kibana-keystore add elasticsearch.password
+
+# 从秘钥库删除信息
+* bin/kibana-keystore remove elasticsearch.name
+
+
 ## 参考文档
 
 ### 教程

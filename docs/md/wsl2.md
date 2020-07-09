@@ -10,10 +10,11 @@
 ### ubuntu下操作
 * 3.在etc目录下新建文件init.wsl，内容如[init.wsl](../shell/wsl2/startup/init.wsl)
 
-### 获取wsl2的ip，三选一(查看ip)
+### 获取wsl2的ip，任选一(查看ip)
 * grep -oP '(?<=nameserver ).+' /etc/resolv.conf
 * ip route | grep default | awk '{print $3}'
 * cat /etc/resolv.conf | grep nameserver | awk '{ print $2 }'
+* cat /etc/resolv.conf | grep "nameserver" | cut -f 2 -d " "
 ![](../img/wsl2/wsl2-03.jpg)
 
 ## 相关命令

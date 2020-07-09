@@ -181,5 +181,22 @@ output {
 
 ## 参考链接
 
+### 告警
+* [subscriptions](https://www.elastic.co/cn/subscriptions)
+
 ### Configuring Security in Logstash
 * [Configuring Security in Logstash](https://www.elastic.co/guide/en/logstash/current/ls-security.html)
+
+### grok
+* [patterns](https://github.com/logstash-plugins/logstash-patterns-core/tree/master/patterns)
+* [grok](https://logz.io/blog/logstash-grok/)
+* [在线调试工具](http://grokdebug.herokuapp.com/)
+
+* ### 插件
+* [插件下载地址](https://rubygems.org/)
+
+### 第三方
+* [logstash-best-practice-cn](https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/index.html)
+
+### springboot日志
+* [springboot](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-logging)

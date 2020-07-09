@@ -127,3 +127,10 @@
 
 ### 非root用户运行docker守护程序
 [rootless](https://docs.docker.com/engine/security/rootless/)
+
+### dns
+* [dns](https://docs.docker.com/config/containers/container-networking/)
+
+### docker-compose
+* [compose-file](https://docs.docker.com/compose/compose-file/)
+* [docker-compose](https://github.com/docker/compose/releases/)

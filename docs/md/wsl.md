@@ -24,6 +24,7 @@
 
 #### 4.验证是否转换完成
 * wsl -l -v
+* wsl --list --verbose
 
 ### 设置WSL2为默认体系结构
 * wsl --set-default-version 2

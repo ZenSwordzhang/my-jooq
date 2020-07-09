@@ -34,10 +34,6 @@ The log message.
 
 ## ssl/tsl认证：
 
-### 参考地址
-* [ELK教程](https://www.elastic.co/cn/blog/configuring-ssl-tls-and-https-to-secure-elasticsearch-kibana-beats-and-logstash)
-* [elasticsearch教程](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-docker.html)
-
 ### 新建文件
 * 1.在目录D:\usr\local\etc\elasticsearch\ssl-tls下分别创建4个文件
     * instance.yml
@@ -155,49 +151,6 @@ services:
 volumes: {"data01", "data02", "certs"}
 ```
 * 6.生成证书：docker-compose -f create-certs.yml run --rm create_certs
-
-
-
-
-## 参考链接地址
-
-### springboot
-* [springboot](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-logging)
-
-### ELK
-* [ELKStack](http://docs.flycloud.me/docs/ELKStack/index.html)
-
-### grok
-* [patterns](https://github.com/logstash-plugins/logstash-patterns-core/tree/master/patterns)
-* [grok](https://logz.io/blog/logstash-grok/)
-* [在线调试工具](http://grokdebug.herokuapp.com/)
-
-* logstash
-* [插件下载地址](https://rubygems.org/)
-* [logstash1](https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/index.html)
-
-### filebeat
-* [multiline.pattern](https://www.elastic.co/guide/en/beats/filebeat/current/regexp-support.html)
-
-### ssl/tls安全连接
-* [filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/configuration-ssl.html)
-* [ELK Stack](https://www.elastic.co/cn/blog/configuring-ssl-tls-and-https-to-secure-elasticsearch-kibana-beats-and-logstash#prepare-logstash)
-* [elasticsearch-tls-docker](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-docker.html)
-* [elasticsearch-tls](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls.html)
-* [elasticsearch-security](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-security.html)
-* [elasticsearch-security-tls-ssl-pki](https://www.elastic.co/cn/blog/elasticsearch-security-configure-tls-ssl-pki-authentication)
-* [elasticsearch-security](https://www.elastic.co/cn/blog/getting-started-with-elasticsearch-security)
-* [ELK Stack-ZH](https://www.elastic.co/cn/blog/configuring-ssl-tls-and-https-to-secure-elasticsearch-kibana-beats-and-logstash#preparations)
-* [elasticsearch-ssl-tls](https://www.elastic.co/guide/en/elasticsearch/reference/current/ssl-tls.html)
-
-### dns
-* [dns](https://docs.docker.com/config/containers/container-networking/)
-
-### docker-compose
-* [compose-file](https://docs.docker.com/compose/compose-file/)
-* [docker-compose](https://github.com/docker/compose/releases/)
-
-
 
 
 Markdown[^1]

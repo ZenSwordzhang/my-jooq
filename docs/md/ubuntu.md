@@ -42,6 +42,10 @@
 ### 查看硬盘
 * df -lh
 
+### 查看ip
+* ip addr
+* ifconfig
+
 ### 查看ubuntu版本
 * lsb_release -a
 * cat /etc/issue
@@ -57,11 +61,6 @@
 
 ### 查找文件
 * find / -name file_name
-
-### Linux vi 命令?
-* dd  --删除当前行
-* ndd  --删除n行数据
-* dG  --删除当前后之后的全部行
 
 ### 查看cpu使用情况
 * 方式1：使用top命令
