@@ -1,5 +1,291 @@
 ## 教程
 
+### Docker配置Security
+
+* 1.在目录/data/operations下分别创建3个文件
+    * 1.1 “.env”文件内容：
+```.env
+# Use an es_ prefix for all volumes and networks created by docker-compose
+# COMPOSE_PROJECT_NAME=es
+CERTS_DIR=/usr/share/elasticsearch/config/certificates 
+ELASTIC_PASSWORD=123456
+```
+   * 1.2 create-certs.yml文件内容：
+```create-certs.yml
+version: '3'
+
+services:
+  create_certs:
+    container_name: create_certs
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    command: >
+      bash -c '
+        if [[ ! -f /certs/bundle.zip ]]; then
+          bin/elasticsearch-certutil cert --silent --pem --in config/instances.yml -out /certs/bundle.zip;
+          unzip /certs/bundle.zip -d /certs; 
+        fi;
+        chown -R 1000:0 /certs
+      '
+    user: "0"
+    # working_dir: /usr/share/elasticsearch
+    volumes: 
+      - /data/operations/config/certs:/certs
+      - /data/operations/config/instances.yml:/usr/share/elasticsearch/config/instances.yml
+
+```
+   * 1.3 es-docker-compose.yml文件内容：
+```es-docker-compose.yml
+version: '2.2'
+
+services:
+  es01:
+    container_name: es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD 
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es01/es01.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es01/es01.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es01/es01.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es01/es01.key
+    volumes: 
+      - /data/operations/data/es01:/usr/share/elasticsearch/data
+      - /data/operations/config/certs:$CERTS_DIR
+    ports:
+      - 9200:9200
+    healthcheck:
+      test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  es02:
+    container_name: es02
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es02/es02.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es02/es02.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es02/es02.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es02/es02.key
+    volumes: 
+      - /data/operations/data/es02:/usr/share/elasticsearch/data
+      - /data/operations/config/certs:$CERTS_DIR
+
+  wait_until_ready:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    command: /usr/bin/true
+    depends_on: {"es01": {"condition": "service_healthy"}}
+
+```
+* 注：docker compose 3不再支持下面写法
+```
+  wait_until_ready:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    command: /usr/bin/true
+    depends_on: {"es01": {"condition": "service_healthy"}}
+```
+
+* 2.在目录/data/operations/config下创建instance.yml文件
+    * 2.1 instance.yml文件内容
+```instance.yml
+instances:
+  - name: es01
+    dns:
+      - es01 
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: es02
+    dns:
+      - es02
+      - localhost
+    ip:
+      - 127.0.0.1
+```
+* 2.2 [dns详细说明](https://docs.docker.com/config/containers/container-networking/)
+* 2.3 dns配置(hosts文件：windows在C:\Windows\System32\drivers\etc目录下，Linux在/etc目录下)
+```
+127.0.0.1 kibana.local logstash.local
+192.168.0.2 node1.elastic.test.com node1
+192.168.0.3 node2.elastic.test.com node2
+```
+
+* 3.生成证书：
+    * docker-compose -f create-certs.yml run --rm create_certs
+![](../../img/elastic-stack/es/es-03.jpg)
+![](../../img/elastic-stack/es/es-04.jpg)
+
+* 4.创建并启动es容器
+    * docker-compose -f es-docker-compose.yml up -d
+
+* 5. 由于docker使用了namespace，可能产生权限问题，启动失败
+![](../../img/elastic-stack/es/es-05.jpg)
+* 5.1 查看日志
+    * docker logs es01
+```console
+Created elasticsearch keystore in /usr/share/elasticsearch/config/elasticsearch.keystore
+{"type": "server", "timestamp": "2020-07-10T06:26:05,267Z", "level": "ERROR", "component": "o.e.b.ElasticsearchUncaughtExceptionHandler", "cluster.name": "docker-cluster", "node.name": "es01", "message": "uncaught exception in thread [main]",
+"stacktrace": ["org.elasticsearch.bootstrap.StartupException: ElasticsearchException[failed to bind service]; nested: AccessDeniedException[/usr/share/elasticsearch/data/nodes];",
+"at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:174) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Elasticsearch.execute(Elasticsearch.java:161) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.cli.EnvironmentAwareCommand.execute(EnvironmentAwareCommand.java:86) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.cli.Command.mainWithoutErrorHandling(Command.java:127) ~[elasticsearch-cli-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.cli.Command.main(Command.java:90) ~[elasticsearch-cli-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:126) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:92) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"Caused by: org.elasticsearch.ElasticsearchException: failed to bind service",
+"at org.elasticsearch.node.Node.<init>(Node.java:638) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.node.Node.<init>(Node.java:264) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Bootstrap$5.<init>(Bootstrap.java:227) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Bootstrap.setup(Bootstrap.java:227) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Bootstrap.init(Bootstrap.java:393) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:170) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"... 6 more",
+"Caused by: java.nio.file.AccessDeniedException: /usr/share/elasticsearch/data/nodes",
+"at sun.nio.fs.UnixException.translateToIOException(UnixException.java:90) ~[?:?]",
+"at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?]",
+"at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:116) ~[?:?]",
+"at sun.nio.fs.UnixFileSystemProvider.createDirectory(UnixFileSystemProvider.java:389) ~[?:?]",
+"at java.nio.file.Files.createDirectory(Files.java:694) ~[?:?]",
+"at java.nio.file.Files.createAndCheckIsDirectory(Files.java:801) ~[?:?]",
+"at java.nio.file.Files.createDirectories(Files.java:787) ~[?:?]",
+"at org.elasticsearch.env.NodeEnvironment.lambda$new$0(NodeEnvironment.java:274) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.env.NodeEnvironment$NodeLock.<init>(NodeEnvironment.java:211) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.env.NodeEnvironment.<init>(NodeEnvironment.java:271) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.node.Node.<init>(Node.java:284) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.node.Node.<init>(Node.java:264) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Bootstrap$5.<init>(Bootstrap.java:227) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Bootstrap.setup(Bootstrap.java:227) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Bootstrap.init(Bootstrap.java:393) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:170) ~[elasticsearch-7.7.0.jar:7.7.0]",
+"... 6 more"] }
+uncaught exception in thread [main]
+ElasticsearchException[failed to bind service]; nested: AccessDeniedException[/usr/share/elasticsearch/data/nodes];
+Likely root cause: java.nio.file.AccessDeniedException: /usr/share/elasticsearch/data/nodes
+        at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:90)
+        at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+        at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:116)
+        at java.base/sun.nio.fs.UnixFileSystemProvider.createDirectory(UnixFileSystemProvider.java:389)
+        at java.base/java.nio.file.Files.createDirectory(Files.java:694)
+        at java.base/java.nio.file.Files.createAndCheckIsDirectory(Files.java:801)
+        at java.base/java.nio.file.Files.createDirectories(Files.java:787)
+        at org.elasticsearch.env.NodeEnvironment.lambda$new$0(NodeEnvironment.java:274)
+        at org.elasticsearch.env.NodeEnvironment$NodeLock.<init>(NodeEnvironment.java:211)
+        at org.elasticsearch.env.NodeEnvironment.<init>(NodeEnvironment.java:271)
+        at org.elasticsearch.node.Node.<init>(Node.java:284)
+        at org.elasticsearch.node.Node.<init>(Node.java:264)
+        at org.elasticsearch.bootstrap.Bootstrap$5.<init>(Bootstrap.java:227)
+        at org.elasticsearch.bootstrap.Bootstrap.setup(Bootstrap.java:227)
+        at org.elasticsearch.bootstrap.Bootstrap.init(Bootstrap.java:393)
+        at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:170)
+        at org.elasticsearch.bootstrap.Elasticsearch.execute(Elasticsearch.java:161)
+        at org.elasticsearch.cli.EnvironmentAwareCommand.execute(EnvironmentAwareCommand.java:86)
+        at org.elasticsearch.cli.Command.mainWithoutErrorHandling(Command.java:127)
+        at org.elasticsearch.cli.Command.main(Command.java:90)
+        at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:126)
+        at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:92)
+For complete error details, refer to the log at /usr/share/elasticsearch/logs/docker-cluster.log
+```
+* 5.2 查看数据目录权限
+    * ls -lh /data/operations/data
+```console
+total 16K
+drwxrwxr-x 3 zsx    root   4.0K Jun  8 17:34 bak-es
+drwxrwxr-x 3 zsx    165536 4.0K Jun 20 15:50 es
+drwxr-xr-x 2 165536 165536 4.0K Jul 10 14:25 es01
+drwxr-xr-x 2 165536 165536 4.0K Jul 10 14:25 es02
+```
+![](../../img/elastic-stack/es/es-06.jpg)
+* 5.3 修改权限
+    * sudo chmod -R 775 /data/operations/data/es01 /data/operations/data/es02 -v; sudo chown zsx:165536 /data/operations/data/es01 /data/operations/data/es02 -v
+    ```console
+    mode of '/data/operations/data/es01' changed from 0755 (rwxr-xr-x) to 0775 (rwxrwxr-x)
+    mode of '/data/operations/data/es02' changed from 0755 (rwxr-xr-x) to 0775 (rwxrwxr-x)
+    changed ownership of '/data/operations/data/es01' from 165536:165536 to zsx:165536
+    changed ownership of '/data/operations/data/es02' from 165536:165536 to zsx:165536
+    ```
+    ![](../../img/elastic-stack/es/es-07.jpg)
+* 5.4 重新创建容器
+    * docker-compose -f es-docker-compose.yml up -d
+    ```console
+    WARNING: Found orphan containers (elasticsearch, kibana, logstash) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
+    Starting es01 ... done
+    Starting es02 ... done
+    Creating operations_wait_until_ready_1 ... done
+    ```
+    [](../../img/elastic-stack/es/es-08.jpg)
+
+* 6. 使用引导密码通过SSL / TLS访问Elasticsearch API：
+    * docker run --rm -v /data/operations/config/certs:/certs --network=operations_default docker.elastic.co/elasticsearch/elasticsearch:7.7.0 curl --cacert /certs/ca/ca.crt -u elastic:123456 https://es01:9200
+    ```
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                     Dload  Upload   Total   Spent    Left  Speed
+    100   533  100   533    0     0   2739      0 --:--:-- --:--:-- --:--:--  2747
+    {
+      "name" : "es01",
+      "cluster_name" : "docker-cluster",
+      "cluster_uuid" : "HDHI1vHRRDSPAmORWGXbbA",
+      "version" : {
+        "number" : "7.7.0",
+        "build_flavor" : "default",
+        "build_type" : "docker",
+        "build_hash" : "81a1e9eda8e6183f5237786246f6dced26a10eaf",
+        "build_date" : "2020-05-12T02:01:37.602180Z",
+        "build_snapshot" : false,
+        "lucene_version" : "8.5.1",
+        "minimum_wire_compatibility_version" : "6.8.0",
+        "minimum_index_compatibility_version" : "6.0.0-beta1"
+      },
+      "tagline" : "You Know, for Search"
+    }
+    ```
+    [](../../img/elastic-stack/es/es-09.jpg)
+
+* 7. 生成随机密码
+    * docker exec es01 /bin/bash -c "bin/elasticsearch-setup-passwords auto --batch --url https://localhost:9200"
+    ```console
+    Changed password for user apm_system
+    PASSWORD apm_system = AT4ihuFJinzBAX3tqnAR
+    
+    Changed password for user kibana
+    PASSWORD kibana = q4LHQGXOOD76GNxPVhvi
+    
+    Changed password for user logstash_system
+    PASSWORD logstash_system = e6ovOQlAA6C6R1sJf9yV
+    
+    Changed password for user beats_system
+    PASSWORD beats_system = gwGhjaHujR0uJlP0Hw8t
+    
+    Changed password for user remote_monitoring_user
+    PASSWORD remote_monitoring_user = XWuPgEPBk4l6rTsdmmjD
+    
+    Changed password for user elastic
+    PASSWORD elastic = 8FhZZnG8g56UkNPNbzJw
+    ```
+
 ### win10下配置Security
 
 * 1.打开安全认证
@@ -340,6 +626,41 @@ PUT posts/_doc/1
   "_seq_no" : 2,
   "_primary_term" : 1
 }
+```
+
+### 获取es单个节点上的证书的信息
+* GET /_ssl/certificates
+```result
+[
+  {
+    "path" : "elastic-certificates.p12",
+    "format" : "PKCS12",
+    "alias" : "instance",
+    "subject_dn" : "CN=instance",
+    "serial_number" : "ffbe21312d5d06f4fb6a592cadc8ab1a5bc3740c",
+    "has_private_key" : true,
+    "expiry" : "2023-07-09T11:08:46.000Z"
+  },
+  {
+    "path" : "elastic-certificates.p12",
+    "format" : "PKCS12",
+    "alias" : "ca",
+    "subject_dn" : "CN=Elastic Certificate Tool Autogenerated CA",
+    "serial_number" : "ad459270ba228a61a4f11166e9054acbb453a2b5",
+    "has_private_key" : false,
+    "expiry" : "2023-07-09T11:08:46.000Z"
+  },
+  {
+    "path" : "elastic-certificates.p12",
+    "format" : "PKCS12",
+    "alias" : "instance",
+    "subject_dn" : "CN=Elastic Certificate Tool Autogenerated CA",
+    "serial_number" : "ad459270ba228a61a4f11166e9054acbb453a2b5",
+    "has_private_key" : false,
+    "expiry" : "2023-07-09T11:08:46.000Z"
+  }
+]
+
 ```
 
 ## es目录下操作

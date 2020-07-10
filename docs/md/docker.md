@@ -58,7 +58,7 @@
 * docker network disconnect
 
 #### 显示一个或多个网络的详细信息
-* docker network inspect
+* docker network inspect <network_name>
 
 #### 查看网络
 * docker network ls
@@ -118,6 +118,11 @@
 * Pause 意味着调度程序不会将新任务分配给节点，但现有任务仍在运行。
 * Drain 意味着调度程序不会向节点分配新任务。调度程序关闭所有现有任务并在可用节点上调度它们。
 
+### .env文件
+* 设置环境变量的文件，docker会自动读取目录下的.env文件
+
+### 环境变量优先级
+* Compose file > Shell environment variables > Environment file > Dockerfile > Variable is not defined
 
 ## 参考资料
 
@@ -134,3 +139,6 @@
 ### docker-compose
 * [compose-file](https://docs.docker.com/compose/compose-file/)
 * [docker-compose](https://github.com/docker/compose/releases/)
+
+### 关于docker
+* [articles-basics](https://www.bookstack.cn/read/docker-cn/articles-basics.md)
