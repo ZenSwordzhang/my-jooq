@@ -1,6 +1,6 @@
 ## 教程
 
-### Docker配置Security
+### Docker配置Security认证
 
 * 1.在目录/data/operations下分别创建3个文件
     * 1.1 “.env”文件内容：
@@ -105,6 +105,87 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
     command: /usr/bin/true
     depends_on: {"es01": {"condition": "service_healthy"}}
+```
+* docker-compose3.8版本
+```es-docker-compose.yml
+version: '3.8'
+
+networks:
+  es-shared:
+    external:
+      name: es-shared
+
+services:
+  es01:
+    container_name: es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD 
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # - xpack.license.self_generated.type=trial 
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es01/es01.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es01/es01.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es01/es01.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es01/es01.key
+    volumes: 
+      - /data/operations/data/es01:/usr/share/elasticsearch/data
+      - /data/operations/config/certs:$CERTS_DIR
+    ports:
+      - 9200:9200
+    networks:
+      - es-shared
+    healthcheck:
+      test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  es02:
+    container_name: es02
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # - xpack.license.self_generated.type=trial
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=$CERTS_DIR/es02/es02.key
+      - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.http.ssl.certificate=$CERTS_DIR/es02/es02.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
+      - xpack.security.transport.ssl.certificate=$CERTS_DIR/es02/es02.crt
+      - xpack.security.transport.ssl.key=$CERTS_DIR/es02/es02.key
+    volumes: 
+      - /data/operations/data/es02:/usr/share/elasticsearch/data
+      - /data/operations/config/certs:$CERTS_DIR
+    networks:
+      - es-shared
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    container_name: kibana01
+    environment:
+      elasticsearch.hosts: http://es01:9200
+    ports:
+      - 5601:5601
+    networks:
+      - es-shared
+
 ```
 
 * 2.在目录/data/operations/config下创建instance.yml文件
@@ -286,7 +367,7 @@ drwxr-xr-x 2 165536 165536 4.0K Jul 10 14:25 es02
     PASSWORD elastic = 8FhZZnG8g56UkNPNbzJw
     ```
 
-### win10下配置Security
+### win10下配置Security认证
 
 * 1.打开安全认证
 ```elasticsearch.yml
