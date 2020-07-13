@@ -3,3 +3,6 @@ server.name: "kibana01"
 elasticsearch.hosts: ["http://es01:9200"]
 elasticsearch.username: "elastic"
 elasticsearch.password: "123456"
+
+server.ssl.certificate: ${CERTS_DIR_KIBANA}/kibana01/kibana01.crt
+server.ssl.key: ${CERTS_DIR_KIBANA}/kibana01/kibana01.key

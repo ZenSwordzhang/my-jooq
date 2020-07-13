@@ -366,6 +366,9 @@ drwxr-xr-x 2 165536 165536 4.0K Jul 10 14:25 es02
     Changed password for user elastic
     PASSWORD elastic = 8FhZZnG8g56UkNPNbzJw
     ```
+* 8.通过https访问：
+    * https://zsx-2.local:9200/
+        * 此时需要输入账号密码
 
 ### win10下配置Security认证
 

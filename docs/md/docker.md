@@ -51,8 +51,9 @@
 * docker network connect
 
 #### 创建网络
-* docker network create [OPTIONS] NETWORK
-* docker network create
+* docker network create [OPTIONS] <network_name>
+* docker network create <network_name>
+* docker network create --driver bridge <network_name>
 
 #### 断开容器的网络
 * docker network disconnect
@@ -67,7 +68,7 @@
 * docker network prune
 
 #### 删除网络（一个或多个）
-* docker network rm
+* docker network rm <network_name>
 
 ### 用户映射
 * 1.切换为root用户：sudo -s
