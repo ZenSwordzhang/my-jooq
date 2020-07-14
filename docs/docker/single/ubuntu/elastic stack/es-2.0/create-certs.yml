@@ -15,5 +15,5 @@ services:
     user: "0"
     # working_dir: /usr/share/elasticsearch
     volumes: 
-      - /data/operations/config/certs:/certs
-      - /data/operations/config/instances.yml:/usr/share/elasticsearch/config/instances.yml
+      - ${PWD}/config/certs:/certs
+      - ${PWD}/config/instances.yml:/usr/share/elasticsearch/config/instances.yml

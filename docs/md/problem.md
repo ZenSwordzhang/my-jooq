@@ -309,6 +309,20 @@ var inspectData = s.contentType === "application/json;charset=UTF-8" &&
 
 
 
+## <h2 style="text-align: center;"> ------------------**FILEBEAT**------------------ </h2>
+
+### 问题：Exiting: error initializing publisher: missing field accessing 'output.logstash.ssl.certificate_authorities.0' (source:'filebeat.yml')
+* 详情：
+```log
+2020-07-14T11:12:02.435Z	ERROR	instance/beat.go:932	Exiting: error initializing publisher: missing field accessing 'output.logstash.ssl.certificate_authorities.0' (source:'filebeat.yml')
+Exiting: error initializing publisher: missing field accessing 'output.logstash.ssl.certificate_authorities.0' (source:'filebeat.yml')
+
+```
+* 背景：docker启动filebeat报错
+* 原因：filebeat.yml中使用了环境变量的值，而环境变量中没有定义该值
+
+
+
 ## <h2 style="text-align: center;"> ------------------**IDEA**------------------ </h2>
 
 ### 问题：

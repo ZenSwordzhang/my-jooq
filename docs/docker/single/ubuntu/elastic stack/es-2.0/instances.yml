@@ -26,3 +26,17 @@ instances:
       - localhost
     ip:
       - 127.0.0.1
+
+  - name: filebeat01
+    dns:
+      - filebeat01
+      - localhost
+    ip:
+      - 127.0.0.1
+
+  - name: metricbeat01
+    dns:
+      - metricbeat01
+      - localhost
+    ip:
+      - 127.0.0.1

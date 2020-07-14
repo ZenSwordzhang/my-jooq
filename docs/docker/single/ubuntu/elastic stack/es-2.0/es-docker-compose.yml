@@ -15,9 +15,9 @@ services:
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       # xpack.license.self_generated.type: trial
     volumes:
-      - /data/operations/data/es01:/usr/share/elasticsearch/data
-      - /data/operations/config/certs/es01:${CERTS_DIR_ES}/es01
-      - /data/operations/config/certs/ca:${CERTS_DIR_ES}/ca
+      - ${PWD}/data/es01:/usr/share/elasticsearch/data
+      - ${PWD}/config/certs/es01:${CERTS_DIR_ES}/es01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_ES}/ca
       - ${PWD}/config/es01.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9200:9200
@@ -38,15 +38,14 @@ services:
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       # xpack.license.self_generated.type: trial
     volumes: 
-      - /data/operations/data/es02:/usr/share/elasticsearch/data
-      - /data/operations/config/certs/es02:${CERTS_DIR_ES}/es02
-      - /data/operations/config/certs/ca:${CERTS_DIR_ES}/ca
+      - ${PWD}/data/es02:/usr/share/elasticsearch/data
+      - ${PWD}/config/certs/es02:${CERTS_DIR_ES}/es02
+      - ${PWD}/config/certs/ca:${CERTS_DIR_ES}/ca
       - ${PWD}/config/es02.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9201:9200
     networks:
       - es-shared
-
 
   kibana01:
     image: docker.elastic.co/kibana/kibana:7.7.0
@@ -55,11 +54,48 @@ services:
       CERTS_DIR_KIBANA: ${CERTS_DIR_KIBANA}
     volumes:
       - ${PWD}/config/kibana01.yml:/usr/share/kibana/config/kibana.yml
-      - /data/operations/config/certs/kibana01:${CERTS_DIR_KIBANA}/kibana01
-      - /data/operations/config/certs/ca:${CERTS_DIR_KIBANA}/ca
+      - ${PWD}/config/certs/kibana01:${CERTS_DIR_KIBANA}/kibana01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_KIBANA}/ca
     ports:
       - 5601:5601
     networks:
       - es-shared
 
+  logstash01:
+    image: logstash:7.7.0
+    container_name: logstash01
+    environment:
+      CERTS_DIR_LOGSTASH: ${CERTS_DIR_LOGSTASH}
+    # restart: always
+    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
+    volumes:
+      - ${PWD}/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ${PWD}/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ${PWD}/config/certs/logstash01:${CERTS_DIR_LOGSTASH}/logstash01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_LOGSTASH}/ca
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - es01
+    ports:
+      - 5044:5044
+      - 8088:8088
+    networks:
+      - es-shared
 
+  filebeat01:
+    image: elastic/filebeat:7.7.0
+    container_name: filebeat01
+    environment:
+      CERTS_DIR_FILEBEAT: ${CERTS_DIR_FILEBEAT}
+    command: /usr/local/bin/docker-entrypoint filebeat -e -strict.perms=false
+    volumes:
+      - ${PWD}/log/test.log:/usr/share/filebeat/logs/test.log
+      - ${PWD}/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ${PWD}/data/filebeat01:/usr/share/filebeat/data
+      - ${PWD}/config/certs/filebeat01:${CERTS_DIR_FILEBEAT}/filebeat01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_FILEBEAT}/ca
+    depends_on:
+      - es01
+    networks:
+      - es-shared

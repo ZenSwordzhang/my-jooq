@@ -1,0 +1,11 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /usr/share/filebeat/logs/test.log
+
+output.logstash:
+  hosts: ["logstash-node01:5044"]
+  ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/ca/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.crt"
+  ssl.key: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.key"
