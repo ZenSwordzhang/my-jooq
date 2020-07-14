@@ -48,9 +48,11 @@ services:
       - es-shared
 
 
-  kibana:
+  kibana01:
     image: docker.elastic.co/kibana/kibana:7.7.0
     container_name: kibana01
+    environment:
+      CERTS_DIR_KIBANA: ${CERTS_DIR_KIBANA}
     volumes:
       - ${PWD}/config/kibana01.yml:/usr/share/kibana/config/kibana.yml
       - /data/operations/config/certs/kibana01:${CERTS_DIR_KIBANA}/kibana01

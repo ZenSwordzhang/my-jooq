@@ -1,3 +1,8 @@
+## 命令
+
+### 查看服务状态
+* curl -I http://localhost:5601/status
+
 ## kibana界面的Dev Tools控制台进行增删改查
 
 ### 获取索引信息
@@ -902,6 +907,11 @@ gte | greater than or equal to
 
 ### lucene语法
 * [lucene查询语法](https://segmentfault.com/a/1190000002972420)
+
+### 安全
+* [kibana-authentication](https://www.elastic.co/guide/en/kibana/current/kibana-authentication.html)
+* [secure-cluster](https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html)
+* [security-settings-kb](https://www.elastic.co/guide/en/kibana/current/security-settings-kb.html)
 
 
 

@@ -39,6 +39,10 @@
 ### 查看网卡
 * lspci | grep -i 'Network'
 
+### 查看网关
+* netstat -rn
+* route -n
+
 ### 查看硬盘
 * df -lh
 

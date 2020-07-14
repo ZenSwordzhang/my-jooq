@@ -457,6 +457,50 @@ testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '
 
 ## <h2 style="text-align: center;"> ------------------**KIBANA**------------------ </h2>
 
+### 问题：FATAL  Error: [config validation of [elasticsearch].url]: definition for this key is missing
+* 背景：启动kibana报错
+* 原因：elasticsearch.url已改名为elasticsearch.hosts
+
+
+### 问题：FATAL CLI ERROR YAMLException: can not read a block mapping entry; a multiline key may not be an implicit key at line 13, column 41
+* 背景：kibana配置x-pack，通过docker-compose创建kibana时报错
+* 详情：
+```log
+FATAL CLI ERROR YAMLException: can not read a block mapping entry; a multiline key may not be an implicit key at line 13, column 41:
+     ... earch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/ca/ca.crt"]
+                                         ^
+    at generateError (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:167:10)
+    at throwError (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:173:9)
+    at readBlockMapping (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:1073:9)
+    at composeNode (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:1359:12)
+    at readDocument (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:1519:3)
+    at loadDocuments (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:1575:5)
+    at load (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:1596:19)
+    at safeLoad (/usr/share/kibana/node_modules/js-yaml/lib/js-yaml/loader.js:1618:10)
+    at readYaml (/usr/share/kibana/src/core/server/config/read_config.js:34:47)
+    at getConfigFromFiles (/usr/share/kibana/src/core/server/config/read_config.js:66:18)
+    at RawConfigService.loadConfig (/usr/share/kibana/src/core/server/config/raw_config_service.js:51:70)
+    at bootstrap (/usr/share/kibana/src/core/server/bootstrap.js:61:20)
+    at Command.<anonymous> (/usr/share/kibana/src/cli/serve/serve.js:195:33)
+    at Command.<anonymous> (/usr/share/kibana/src/cli/command.js:111:20)
+    at Command.listener (/usr/share/kibana/node_modules/commander/index.js:291:8)
+    at Command.emit (events.js:198:13)
+
+```
+* 解决：重启kibana容器
+![](../img/elastic-stack/kibana/kibana-01.jpg)
+
+### 问题：Kibana server is not ready yet
+* 背景：通过浏览器查看kibana时报错
+* 原因1：浏览器没有缓过来
+    * 解决：刷新浏览器
+* 原因2：kibana.yml中的elasticsearch.hosts配置错误，默认为http://elasticsearch:9200
+    * 解决：
+        * 修改正确配置
+        * http://{ip}:9200
+* 原因3：es配置了http.ssl认证，kibana未指定用于 Elasticsearch 实例的 PEM 证书文件路径
+    * elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/ca/ca.crt"]
+
 ### 问题：No cached mapping for this field / refresh of fields not working
 * 解决：
     * 进入[kibana管理界面](http://localhost:5601/)

@@ -1,6 +1,8 @@
 ## 教程
 
 ### Docker配置Security认证
+* [参考链接](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-docker.html)
+* [参考链接](https://www.elastic.co/cn/blog/configuring-ssl-tls-and-https-to-secure-elasticsearch-kibana-beats-and-logstash#enable-tls-kibana)
 
 * 1.在目录/data/operations下分别创建3个文件
     * 1.1 “.env”文件内容：
@@ -206,13 +208,6 @@ instances:
     ip:
       - 127.0.0.1
 ```
-* 2.2 [dns详细说明](https://docs.docker.com/config/containers/container-networking/)
-* 2.3 dns配置(hosts文件：windows在C:\Windows\System32\drivers\etc目录下，Linux在/etc目录下)
-```
-127.0.0.1 kibana.local logstash.local
-192.168.0.2 node1.elastic.test.com node1
-192.168.0.3 node2.elastic.test.com node2
-```
 
 * 3.生成证书：
     * docker-compose -f create-certs.yml run --rm create_certs
@@ -319,7 +314,7 @@ drwxr-xr-x 2 165536 165536 4.0K Jul 10 14:25 es02
     ```
     [](../../img/elastic-stack/es/es-08.jpg)
 
-* 6. 使用引导密码通过SSL / TLS访问Elasticsearch API：
+* 6. 使用引导密码通过SSL/TLS访问Elasticsearch API：
     * docker run --rm -v /data/operations/config/certs:/certs --network=operations_default docker.elastic.co/elasticsearch/elasticsearch:7.7.0 curl --cacert /certs/ca/ca.crt -u elastic:123456 https://es01:9200
     ```
       % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -745,6 +740,15 @@ PUT posts/_doc/1
   }
 ]
 
+```
+
+## 相关信息
+
+### 查看集群健康状态
+* http://192.168.1.121:9200/_cat/health?v
+```console
+epoch      timestamp cluster status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+1594641112 11:51:52  es      green           2         2     10   5    0    0        0             0                  -                100.0%
 ```
 
 ## es目录下操作
