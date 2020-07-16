@@ -45,6 +45,22 @@
 ### 删除未被使用的数据卷
 * docker volume prune 
 
+
+### 日志相关命令
+
+#### 查看指定时间后的日志，只显示最后10行：
+* docker logs -f -t --since="2020-07-16" --tail=10 <CONTAINER_ID | CONTAINER_NAME>
+
+#### 查看最近30分钟的日志:
+* docker logs --since 30m <CONTAINER_ID | CONTAINER_NAME>
+
+#### 查看某时间之后的日志：
+* docker logs -t --since="2020-07-16T00:00:00" <CONTAINER_ID | CONTAINER_NAME>
+
+#### 查看某时间段日志
+* docker logs -t --since="2020-07-16T00:00:00" --until "2020-07-16T23:59:59" <CONTAINER_ID | CONTAINER_NAME>
+
+
 ### network相关命令
 
 #### 将容器连接到网络

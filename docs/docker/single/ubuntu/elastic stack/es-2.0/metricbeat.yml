@@ -29,6 +29,10 @@ metricbeat.modules:
           fields:
             from: http
 
+#================================ Logging ======================================
+# Send all logging output to stderr. The default is false.
+# logging.to_stderr: true
+
 output.logstash:
   hosts: ["logstash01:5044"]
   ssl.certificate_authorities: ["${CERTS_DIR_METRICBEAT}/ca/ca.crt"]
