@@ -69,6 +69,7 @@ services:
     # restart: always
     command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
     volumes:
+      - ${PWD}/log/test.log:/usr/share/logstash/logs/test.log
       - ${PWD}/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ${PWD}/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       - ${PWD}/config/certs/logstash01:${CERTS_DIR_LOGSTASH}/logstash01
@@ -98,5 +99,25 @@ services:
       - ${PWD}/config/certs/ca:${CERTS_DIR_FILEBEAT}/ca
     depends_on:
       - es01
+    networks:
+      - es-shared
+
+  metricbeat01:
+    image: elastic/metricbeat:7.7.0
+    container_name: metricbeat01
+    user: root
+    environment:
+      CERTS_DIR_METRICBEAT: ${CERTS_DIR_METRICBEAT}
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - ${PWD}/config/certs/metricbeat01:${CERTS_DIR_METRICBEAT}/metricbeat01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_METRICBEAT}/ca
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - es-shared
