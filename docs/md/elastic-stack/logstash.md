@@ -220,6 +220,8 @@ output {
 
 ### Configuring Security in Logstash
 * [Configuring Security in Logstash](https://www.elastic.co/guide/en/logstash/current/ls-security.html)
+* [configuration-management-settings](https://www.elastic.co/guide/en/logstash/current/configuring-centralized-pipelines.html)
+* [configuring-logstash](https://www.elastic.co/guide/en/logstash/current/configuring-logstash.html)
 
 ### grok
 * [patterns](https://github.com/logstash-plugins/logstash-patterns-core/tree/master/patterns)

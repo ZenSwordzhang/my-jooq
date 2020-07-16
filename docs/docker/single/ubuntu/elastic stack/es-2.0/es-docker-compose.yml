@@ -37,7 +37,7 @@ services:
       CERTS_DIR_ES: ${CERTS_DIR_ES}
       ES_JAVA_OPTS: -Xms512m -Xmx512m
       # xpack.license.self_generated.type: trial
-    volumes: 
+    volumes:
       - ${PWD}/data/es02:/usr/share/elasticsearch/data
       - ${PWD}/config/certs/es02:${CERTS_DIR_ES}/es02
       - ${PWD}/config/certs/ca:${CERTS_DIR_ES}/ca
@@ -80,6 +80,7 @@ services:
     ports:
       - 5044:5044
       - 8088:8088
+      - 9600:9600
     networks:
       - es-shared
 

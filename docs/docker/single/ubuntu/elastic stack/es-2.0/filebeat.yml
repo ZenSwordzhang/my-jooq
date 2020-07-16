@@ -5,7 +5,8 @@ filebeat.inputs:
       - /usr/share/filebeat/logs/test.log
 
 output.logstash:
-  hosts: ["logstash-node01:5044"]
+  hosts: ["logstash01:5044"]
+  bulk_max_size: 1024
   ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/ca/ca.crt"]
   ssl.certificate: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.crt"
   ssl.key: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.key"

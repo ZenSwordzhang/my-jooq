@@ -322,6 +322,24 @@ Exiting: error initializing publisher: missing field accessing 'output.logstash.
 * 原因：filebeat.yml中使用了环境变量的值，而环境变量中没有定义该值
 
 
+### 问题：Failed to publish events caused by: write tcp 172.23.0.6:45490->172.23.0.5:5044: write: connection reset by peer
+* 详情
+```log
+filebeat01    | 2020-07-16T01:22:16.271Z	ERROR	[logstash]	logstash/async.go:279	Failed to publish events caused by: write tcp 172.23.0.6:45490->172.23.0.5:5044: write: connection reset by peer
+filebeat01    | 2020-07-16T01:22:17.920Z	ERROR	[publisher_pipeline_output]	pipeline/output.go:127	Failed to publish events: write tcp 172.23.0.6:45490->172.23.0.5:5044: write: connection reset by peer
+```
+* 背景：启动filebeat容器后，手动往指定收集的日志文件中写入内容时，filebeat提示错误
+* 原因：Logstash关闭了不活动的Beats连接
+* 解决：增加client_inactivity_timeout设置，并加大其值，默认为60
+```logstash
+input {
+  beats {
+    client_inactivity_timeout => 1200
+    port => 5044
+  }
+}
+```
+
 
 ## <h2 style="text-align: center;"> ------------------**IDEA**------------------ </h2>
 
@@ -573,6 +591,17 @@ For more on the Compose file format versions, see https://docs.docker.com/compos
 
 ## <h2 style="text-align: center;"> ------------------**LOGSTASH**------------------ </h2>
 
+### 问题：Attempted to resurrect connection to dead ES instance, but got an error
+* 详情
+```log
+[2020-07-15T06:26:43,870][WARN ][logstash.outputs.elasticsearch][main] Attempted to resurrect connection to dead ES instance, but got an error. {:url=>"https://logstash_system:xxxxxx@es01:9200/", :error_type=>LogStash::Outputs::ElasticSearch::HttpClient::Pool::BadResponseCodeError, :error=>"Got response code '401' contacting Elasticsearch at URL 'https://es01:9200/'"}
+```
+* 背景：使用docker容器，logstash连接es01时报错
+* 解决：进入es容器，手动设置密码
+    * docker exec -it es01 bash
+    * bin/elasticsearch-setup-passwords interactive --url https://es01:9200
+
+
 ### 问题：Could not execute action: PipelineAction::Create
 * 问题详情：
 ```
@@ -613,6 +642,15 @@ filebeat.inputs:
 ```
 
 
+### 问题：Cannot reload pipeline, because the existing pipeline is not reloadable
+* 详情
+```log
+[2020-07-16T02:28:46,383][ERROR][logstash.agent           ] Failed to execute action {:id=>:main, :action_type=>LogStash::ConvergeResult::FailedAction, :message=>"Cannot reload pipeline, because the existing pipeline is not reloadable", :backtrace=>nil}
+```
+* 背景：启动logstash容器后，修改logstash.conf配置后，logstash报错
+* 解决：重启logstash容器
+
+
 ### 问题： Don't know how to handle `Java::JavaLang::IllegalStateException
 * 问题详情
 ```
@@ -639,6 +677,15 @@ filter {
     * 安装logstash-filter-multiline插件：logstash-plugin install logstash-filter-multiline
 
 
+### 问题：Encountered a retryable error. Will Retry with exponential backoff 
+* 详情
+```log
+[2020-07-15T08:31:05,719][ERROR][logstash.outputs.elasticsearch][main][a32f7b3ae53476064fa06a88b1f0fb5b21cafcf48cef2e337a16d7f6b3e176ac] Encountered a retryable error. Will Retry with exponential backoff  {:code=>403, :url=>"https://es01:9200/_bulk"}
+```
+* 背景：修改logstash.conf配置后，日志报错
+* **解决：**
+
+
 ### 问题：Logstash not reading file in windows
 * 参考地址：[链接](https://discuss.elastic.co/t/logstash-not-reading-file-in-windows/41723 "链接")
 
@@ -648,6 +695,18 @@ filter {
 * 原因：消息优先被发送到服务端了，Logstash监听的端口无法收到数据
 * 解决：只能启动客户端，不能启动服务端
 
+
+### 问题：Pipeline aborted due to error {:pipeline_id=>"main", :exception=>java.lang.IllegalArgumentException: File does not contain valid private key
+```log
+[2020-07-15T06:53:30,116][ERROR][logstash.javapipeline    ][main] Pipeline aborted due to error {:pipeline_id=>"main", :exception=>java.lang.IllegalArgumentException: File does not contain valid private key: /usr/share/logstash/config/certs/logstash01/logstash01.key, :backtrace=>["io.netty.handler.ssl.SslContextBuilder.keyManager(io/netty/handler/ssl/SslContextBuilder.java:270)", "io.netty.handler.ssl.SslContextBuilder.forServer(io/netty/handler/ssl/SslContextBuilder.java:90)", "org.logstash.netty.SslContextBuilder.buildContext(org/logstash/netty/SslContextBuilder.java:104)", "jdk.internal.reflect.GeneratedMethodAccessor138.invoke(jdk/internal/reflect/GeneratedMethodAccessor138)", "jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(jdk/internal/reflect/DelegatingMethodAccessorImpl.java:43)", "java.lang.reflect.Method.invoke(java/lang/reflect/Method.java:566)", "org.jruby.javasupport.JavaMethod.invokeDirectWithExceptionHandling(org/jruby/javasupport/JavaMethod.java:441)", "org.jruby.javasupport.JavaMethod.invokeDirect(org/jruby/javasupport/JavaMethod.java:305)", "usr.share.logstash.vendor.bundle.jruby.$2_dot_5_dot_0.gems.logstash_minus_input_minus_beats_minus_6_dot_0_dot_9_minus_java.lib.logstash.inputs.beats.create_server(/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-input-beats-6.0.9-java/lib/logstash/inputs/beats.rb:181)", "usr.share.logstash.vendor.bundle.jruby.$2_dot_5_dot_0.gems.logstash_minus_input_minus_beats_minus_6_dot_0_dot_9_minus_java.lib.logstash.inputs.beats.RUBY$method$create_server$0$__VARARGS__(usr/share/logstash/vendor/bundle/jruby/$2_dot_5_dot_0/gems/logstash_minus_input_minus_beats_minus_6_dot_0_dot_9_minus_java/lib/logstash/inputs//usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-input-beats-6.0.9-java/lib/logstash/inputs/beats.rb)", "usr.share.logstash.vendor.bundle.jruby.$2_dot_5_dot_0.gems.logstash_minus_input_minus_beats_minus_6_dot_0_dot_9_minus_java.lib.logstash.inputs.beats.register(/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-input-beats-6.0.9-java/lib/logstash/inputs/beats.rb:157)", "usr.share.logstash.vendor.bundle.jruby.$2_dot_5_dot_0.gems.logstash_minus_input_minus_beats_minus_6_dot_0_dot_9_minus_java.lib.logstash.inputs.beats.RUBY$method$register$0$__VARARGS__(usr/share/logstash/vendor/bundle/jruby/$2_dot_5_dot_0/gems/logstash_minus_input_minus_beats_minus_6_dot_0_dot_9_minus_java/lib/logstash/inputs//usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-input-beats-6.0.9-java/lib/logstash/inputs/beats.rb)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.register_plugins(/usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb:216)", "org.jruby.RubyArray.each(org/jruby/RubyArray.java:1809)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.register_plugins(/usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb:215)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.start_inputs(/usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb:327)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.RUBY$method$start_inputs$0$__VARARGS__(usr/share/logstash/logstash_minus_core/lib/logstash//usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.start_workers(/usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb:287)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.RUBY$method$start_workers$0$__VARARGS__(usr/share/logstash/logstash_minus_core/lib/logstash//usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.run(/usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb:170)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.RUBY$method$run$0$__VARARGS__(usr/share/logstash/logstash_minus_core/lib/logstash//usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb)", "usr.share.logstash.logstash_minus_core.lib.logstash.java_pipeline.start(/usr/share/logstash/logstash-core/lib/logstash/java_pipeline.rb:125)", "org.jruby.RubyProc.call(org/jruby/RubyProc.java:318)", "java.lang.Thread.run(java/lang/Thread.java:834)"], "pipeline.sources"=>["/usr/share/logstash/pipeline/logstash.conf"], :thread=>"#<Thread:0x3cf28ea3 run>"}
+[2020-07-15T06:53:30,121][ERROR][logstash.agent           ] Failed to execute action {:id=>:main, :action_type=>LogStash::ConvergeResult::FailedAction, :message=>"Could not execute action: PipelineAction::Create<main>, action_result: false", :backtrace=>nil}
+```
+* 背景：logstash配置ssl认证启动后，日志报错
+* 原因：使用的私钥格式不是PKCS8格式
+* 解决：
+    * 将私钥装换成PKCS8格式
+    * openssl pkcs8 -in logstash01.key -topk8 -nocrypt -out logstash01.pem
+    
 
 
 ## <h2 style="text-align: center;"> ------------------**METRICBEAT**------------------ </h2>
