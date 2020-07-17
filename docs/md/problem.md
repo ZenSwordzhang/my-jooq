@@ -686,6 +686,19 @@ filter {
 * **解决：**
 
 
+### 问题：Error while performing sniffing {:error_message=>"Host name '172.23.0.2' does not match the certificate subject provided by the peer (CN=es01)"
+* 详情
+```
+[2020-07-16T12:04:13,840][WARN ][logstash.licensechecker.licensereader] Error while performing sniffing {:error_message=>"Host name '172.23.0.2' does not match the certificate subject provided by the peer (CN=es01)", :class=>"Manticore::UnknownException", :backtrace=>["/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/manticore-0.6.4-java/lib/manticore/response.rb:37:in `block in initialize'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/manticore-0.6.4-java/lib/manticore/response.rb:79:in `call'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/manticore_adapter.rb:74:in `perform_request'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:332:in `perform_request_to_url'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:319:in `block in perform_request'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:414:in `with_connection'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:318:in `perform_request'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:173:in `check_sniff'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:166:in `sniff!'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:155:in `block in start_sniffer'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:137:in `until_stopped'", "/usr/share/logstash/vendor/bundle/jruby/2.5.0/gems/logstash-output-elasticsearch-10.5.1-java/lib/logstash/outputs/elasticsearch/http_client/pool.rb:153:in `block in start_sniffer'"]}
+
+```
+* 背景：logstash使用Collecting monitoring data using legacy collectors时，启动成功后查看日志报错
+* 原因：logstash.yml设置了sniffing为true
+```logstash.yml
+xpack.monitoring.elasticsearch.sniffing: true
+```
+
+
 ### 问题：Logstash not reading file in windows
 * 参考地址：[链接](https://discuss.elastic.co/t/logstash-not-reading-file-in-windows/41723 "链接")
 

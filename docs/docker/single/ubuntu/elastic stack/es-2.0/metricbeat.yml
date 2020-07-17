@@ -29,6 +29,23 @@ metricbeat.modules:
           fields:
             from: http
 
+  #--------------------------------- Logstash Module ---------------------------------
+  # Collect Logstash monitoring data with Metricbeate
+  - module: logstash
+    metricsets:
+      - node
+      - node_stats
+    period: 10s
+    hosts: ["logstash01:9600"]
+    #username: "user"
+    #password: "secret"
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: logstash
+
 #================================ Logging ======================================
 # Send all logging output to stderr. The default is false.
 # logging.to_stderr: true
