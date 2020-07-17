@@ -13,3 +13,12 @@ output.logstash:
   ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/ca/ca.crt"]
   ssl.certificate: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.crt"
   ssl.key: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.key"
+
+## Enable the HTTP endpoint to allow external collection of monitoring data
+#http.enabled: true
+#
+## By default, metrics are exposed on port 5066
+#http.port: 5066
+#
+## Disable the default collection of Filebeat monitoring metrics
+#monitoring.enabled: false

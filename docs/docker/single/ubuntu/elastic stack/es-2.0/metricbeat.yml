@@ -46,6 +46,22 @@ metricbeat.modules:
           fields:
             from: logstash
 
+#  #--------------------------------- Beat Module ---------------------------------
+#  - module: beat
+#    metricsets:
+#      - stats
+#      - state
+#    period: 10s
+#    hosts: ["http://filebeat01:5066"]
+#    #username: "user"
+#    #password: "secret"
+#    xpack.enabled: true
+#    processors:
+#      - add_fields:
+#          target: ''
+#          fields:
+#            from: filebeat
+
 #================================ Logging ======================================
 # Send all logging output to stderr. The default is false.
 # logging.to_stderr: true

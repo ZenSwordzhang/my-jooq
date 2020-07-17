@@ -17,3 +17,6 @@
 * [configuration-filebeat-modules](https://www.elastic.co/guide/en/beats/filebeat/current/configuration-filebeat-modules.html)
 * [regexp-support](https://www.elastic.co/guide/en/beats/filebeat/current/regexp-support.html)
 * [configuration-ssl](https://www.elastic.co/guide/en/beats/filebeat/current/configuration-ssl.html)
+
+### 安全
+* [securing-beats](https://www.elastic.co/guide/en/beats/filebeat/current/securing-beats.html)

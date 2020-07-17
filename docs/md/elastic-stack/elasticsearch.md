@@ -410,6 +410,8 @@ xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 ### 删除索引
 * curl -X DELETE http://localhost:9200/{indexName}
 
+### 查看集群节点统计资料
+* GET /_nodes/stats
 
 ### 查看集群详细信息
 * http://localhost:9200/_cluster/stats
@@ -790,6 +792,9 @@ epoch      timestamp cluster status node.total node.data shards pri relo init un
 ### 使用环境变量
 * [using-environ-vars](https://www.elastic.co/guide/en/beats/metricbeat/current/using-environ-vars.html)
 
+### 集群节点统计资料
+* [cluster-nodes-stats](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-nodes-stats.html)
+
 ### 安全
 * **[elasticsearch-tls](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls.html)**
 * [configuring-security](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-security.html)
@@ -801,6 +806,9 @@ epoch      timestamp cluster status node.total node.data shards pri relo init un
 * **[elasticsearch-tls-docker](https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-docker.html)**
 * [elasticsearch-security-tls-ssl-pki](https://www.elastic.co/cn/blog/elasticsearch-security-configure-tls-ssl-pki-authentication)
 * [elasticsearch-ssl-tls](https://www.elastic.co/guide/en/elasticsearch/reference/current/ssl-tls.html)
+
+#### ip筛选
+* [ip-filtering](https://www.elastic.co/guide/en/elasticsearch/reference/current/ip-filtering.html)
 
 ### 第三方
 * [secure-settings](https://learnku.com/docs/elasticsearch73/7.3/322-secure-settings/6591)

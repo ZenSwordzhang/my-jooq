@@ -99,6 +99,8 @@ services:
       - ${PWD}/config/certs/ca:${CERTS_DIR_FILEBEAT}/ca
     depends_on:
       - es01
+#    ports:
+#      - 5066:5066
     networks:
       - es-shared
 
