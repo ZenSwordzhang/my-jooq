@@ -78,6 +78,9 @@
 * 下载到本地命令：sz
 * 上传到Linux上命令：rz
 
+### 断点续传
+* wget -c download_addr
+
 ### grep不区分大小写匹配
 * grep -i match_content
 

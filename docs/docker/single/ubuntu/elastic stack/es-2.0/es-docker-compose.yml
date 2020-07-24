@@ -8,7 +8,7 @@ networks:
 services:
   es01:
     container_name: es01
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    image: elasticsearch:7.7.0
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       CERTS_DIR_ES: ${CERTS_DIR_ES}
@@ -20,7 +20,8 @@ services:
       - ${PWD}/config/certs/ca:${CERTS_DIR_ES}/ca
       - ${PWD}/config/es01.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
-      - 9200:9200
+      - 9201:9200
+      - 9301:9300
     networks:
       - es-shared
     healthcheck:
@@ -31,7 +32,7 @@ services:
 
   es02:
     container_name: es02
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    image: elasticsearch:7.7.0
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       CERTS_DIR_ES: ${CERTS_DIR_ES}
@@ -43,7 +44,8 @@ services:
       - ${PWD}/config/certs/ca:${CERTS_DIR_ES}/ca
       - ${PWD}/config/es02.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
-      - 9201:9200
+      - 9202:9200
+      - 9302:9300
     networks:
       - es-shared
 
@@ -67,11 +69,11 @@ services:
     environment:
       CERTS_DIR_LOGSTASH: ${CERTS_DIR_LOGSTASH}
     # restart: always
-    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
+    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash01.conf --config.reload.automatic"
     volumes:
       - ${PWD}/log/test.log:/usr/share/logstash/logs/test.log
-      - ${PWD}/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ${PWD}/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ${PWD}/config/logstash01.yml:/usr/share/logstash/config/logstash.yml
+      - ${PWD}/config/logstash01.conf:/usr/share/logstash/pipeline/logstash.conf
       - ${PWD}/config/certs/logstash01:${CERTS_DIR_LOGSTASH}/logstash01
       - ${PWD}/config/certs/ca:${CERTS_DIR_LOGSTASH}/ca
       - /etc/timezone:/etc/timezone:ro
@@ -81,7 +83,7 @@ services:
     ports:
       - 5044:5044
       - 8088:8088
-      - 9600:9600
+      - 9700:9600
     networks:
       - es-shared
 
@@ -93,14 +95,12 @@ services:
     command: /usr/local/bin/docker-entrypoint filebeat -e -strict.perms=false
     volumes:
       - ${PWD}/log/test.log:/usr/share/filebeat/logs/test.log
-      - ${PWD}/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ${PWD}/config/filebeat01.yml:/usr/share/filebeat/filebeat.yml
       - ${PWD}/data/filebeat01:/usr/share/filebeat/data
       - ${PWD}/config/certs/filebeat01:${CERTS_DIR_FILEBEAT}/filebeat01
       - ${PWD}/config/certs/ca:${CERTS_DIR_FILEBEAT}/ca
     depends_on:
       - es01
-#    ports:
-#      - 5066:5066
     networks:
       - es-shared
 
@@ -112,7 +112,7 @@ services:
       CERTS_DIR_METRICBEAT: ${CERTS_DIR_METRICBEAT}
     command: ["--strict.perms=false"]
     volumes:
-      - ${PWD}/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - ${PWD}/config/metricbeat01.yml:/usr/share/metricbeat/metricbeat.yml:ro
       - ${PWD}/config/certs/metricbeat01:${CERTS_DIR_METRICBEAT}/metricbeat01
       - ${PWD}/config/certs/ca:${CERTS_DIR_METRICBEAT}/ca
       - ${PWD}/log/metricbeat01:/usr/share/metricbeat/logs
@@ -122,5 +122,7 @@ services:
       - /:/hostfs:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 5166:5066
     networks:
       - es-shared

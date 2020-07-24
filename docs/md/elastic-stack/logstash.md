@@ -98,6 +98,90 @@ source => #string（必选项）
 target => #string（可选项）
 ``` 
 
+### mutate插件
+#### 重命名格式1
+``` mutate
+mutate {
+    rename => { "host" => "[host][name]" }
+}
+``` 
+#### 结果显示格式1
+``` result
+
+{
+  "took" : 334,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 1,
+      "relation" : "eq"
+    },
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "my_index",
+        "_type" : "_doc",
+        "_id" : "nhe2fnMBr8RDMA8CzsCc",
+        "_score" : 1.0,
+        "_source" : {
+          "@timestamp" : "2020-07-24T02:46:16.263Z",
+          "host" : {
+            "name" : "2eff571f8ea1"
+          },
+          "@version" : "1"
+        }
+      }
+    ]
+  }
+}
+``` 
+#### 重命名格式2
+``` mutate
+mutate {
+    rename => { "host" => "host.name" }
+}
+```
+#### 结果显示格式2 
+``` result
+
+{
+  "took" : 334,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 1,
+      "relation" : "eq"
+    },
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "my_index",
+        "_type" : "_doc",
+        "_id" : "nhe2fnMBr8RDMA8CzsCc",
+        "_score" : 1.0,
+        "_source" : {
+          "@timestamp" : "2020-07-24T02:46:16.263Z",
+          "host.name" : "2eff571f8ea1",
+          "@version" : "1"
+        }
+      }
+    ]
+  }
+}
+``` 
+
 ## 命令
 
 ### 显示节点级别的JVM统计信息

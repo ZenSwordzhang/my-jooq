@@ -63,6 +63,15 @@ POST /library/books/1/_update
 ### 删除索引信息
 * 已弃用：DELETE /library/books/1
 * DELETE /library/_doc/1
+```
+POST indexName/_delete_by_query
+{
+  "query": { 
+    "match_all": {
+    }
+  }
+}
+```
 
 ### 删除索引
 * DELETE /library
@@ -858,6 +867,7 @@ gte | greater than or equal to
 ### 教程
 
 #### 官方
+* [introduction](https://www.elastic.co/guide/cn/kibana/current/introduction.html)
 * [timelion](https://www.elastic.co/guide/en/kibana/7.7/timelion.html)
 * [timelion](https://www.elastic.co/cn/blog/timelion-tutorial-from-zero-to-hero)
 
@@ -867,6 +877,7 @@ gte | greater than or equal to
 
 #### painless script
 * [painless-guide](https://www.elastic.co/guide/en/elasticsearch/painless/master/painless-guide.html)
+* [modules-scripting](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting.html)
 
 ### features
 * [features](https://www.elastic.co/cn/kibana/features)
@@ -896,7 +907,8 @@ gte | greater than or equal to
 * **[datavisualizer](http://localhost:9500/app/ml#/datavisualizer)**
 * [timelines-ui](https://www.elastic.co/guide/en/siem/guide/current/siem-ui-overview.html#timelines-ui)
 * **[visualize-data](https://qbox.io/blog/how-to-use-elasticsearch-to-visualize-data?utm_source=qbox.io&utm_medium=article&utm_campaign=monitoring-docker-containers-with-metricbeat-elasticsearch-and-kibana)**
-* **[TSVB](https://www.elastic.co/guide/en/kibana/7.8/TSVB.html)**
+* **[visualize](https://www.elastic.co/guide/en/kibana/current/visualize.html)**
+* [visualize](https://www.elastic.co/guide/cn/kibana/current/visualize.html)
 
 ### 同类型可视化工具
 * [grafana](https://grafana.com/docs/grafana/latest/getting-started/)

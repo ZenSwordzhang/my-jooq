@@ -812,5 +812,7 @@ epoch      timestamp cluster status node.total node.data shards pri relo init un
 
 ### 第三方
 * [secure-settings](https://learnku.com/docs/elasticsearch73/7.3/322-secure-settings/6591)
+* [elasticsearch技术解析与实战(四) 聚合](https://pdf.us/2018/05/16/1050.html)
+
 
 
