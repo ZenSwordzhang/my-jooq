@@ -8,11 +8,10 @@ app = Flask(__name__)
 
 @app.route('/api', methods=['GET'])
 def get_msg():
-
     """
     curl -X GET 'http://192.168.1.110:8001/api'
     """
-    return "The server port is 8001"
+    return '{"msg" : "The server port is 8001"}'
 
 
 if __name__ == "__main__":
