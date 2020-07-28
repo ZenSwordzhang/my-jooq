@@ -2,6 +2,7 @@ metricbeat.config.modules:
 
   # Glob pattern for configuration reloading
   # path: ${path.config}/modules.d/*.yml
+  path: /usr/share/metricbeat/metricbeat.yml
 
   # Period on which files under path should be checked for changes
   reload.period: 10s
@@ -29,6 +30,29 @@ metricbeat.modules:
           fields:
             from: http
 
+  #--------------------------------- Elasticsearch Module ---------------------------------
+  - module: elasticsearch
+    metricsets:
+      - ccr
+      - cluster_stats
+      - index
+      - index_recovery
+      - index_summary
+      - ml_job
+      - node_stats
+      - shard
+      - enrich
+    period: 10s
+    hosts: ["es02:9200"]
+    username: "elastic"
+    password: "123456"
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: elasticsearch
+
   #--------------------------------- Logstash Module ---------------------------------
   # Collect Logstash monitoring data with Metricbeate
   - module: logstash
@@ -37,8 +61,8 @@ metricbeat.modules:
       - node_stats
     period: 10s
     hosts: ["logstash01:9600"]
-    #username: "user"
-    #password: "secret"
+    # username: "test_kibana_monitor"
+    # password: "123456"
     xpack.enabled: true
     processors:
       - add_fields:
@@ -46,34 +70,33 @@ metricbeat.modules:
           fields:
             from: logstash
 
-#  #--------------------------------- Beat Module ---------------------------------
-#  - module: beat
-#    metricsets:
-#      - stats
-#      - state
-#    period: 10s
-#    hosts: ["http://filebeat01:5066"]
-#    #username: "user"
-#    #password: "secret"
-#    xpack.enabled: true
-#    processors:
-#      - add_fields:
-#          target: ''
-#          fields:
-#            from: filebeat
+  #--------------------------------- Beat Module ---------------------------------
+  - module: beat
+    metricsets:
+      - stats
+      - state
+    period: 10s
+    hosts: ["filebeat01:5166"]
+    # username: "test_kibana_monitor"
+    # password: "123456"
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: filebeat
 
 #================================ Logging ======================================
 # Send all logging output to stderr. The default is false.
-# logging.to_stderr: true
+logging.to_stderr: true
 
-#----------------------------- Logging -----------------------------
-logging.level: info
-logging.to_files: true
-logging.files:
-  path: /usr/share/metricbeat/logs
-  name: metricbeat
-  keepfiles: 7
-  permissions: 0644
+  # logging.level: info
+  # logging.to_files: true
+  # logging.files:
+  # path: /usr/share/metricbeat/logs
+  # name: metricbeat
+  # keepfiles: 7
+# permissions: 0644
 
 output.logstash:
   hosts: ["logstash01:5044"]

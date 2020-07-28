@@ -1,11 +1,12 @@
 server.host: "0.0.0.0"
 server.name: "kibana01"
 # es配置了http.ssl认证后，此处需用https请求
-elasticsearch.hosts: ["https://es02:9200"]
-elasticsearch.username: "elastic"
+elasticsearch.hosts: ["http://es02:9200"]
+# es配置了transport.ssl认证后，此处需指定账号密码
+elasticsearch.username: "kibana"
 elasticsearch.password: "123456"
 
-
+# 配置ssl认证后，需使用https访问https://localhost:5601/
 server.ssl.enabled: true
 server.ssl.certificate: ${CERTS_DIR_KIBANA}/kibana01/kibana01.crt
 server.ssl.key: ${CERTS_DIR_KIBANA}/kibana01/kibana01.key
