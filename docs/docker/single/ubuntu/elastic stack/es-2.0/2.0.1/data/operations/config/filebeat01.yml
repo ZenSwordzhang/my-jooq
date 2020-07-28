@@ -1,0 +1,15 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /usr/share/filebeat/logs/test.log
+    fields:
+      from: spring
+    fields_under_root: true
+
+output.logstash:
+  hosts: ["logstash01:5044"]
+  bulk_max_size: 1024
+  ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/ca/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.crt"
+  ssl.key: "${CERTS_DIR_FILEBEAT}/filebeat01/filebeat01.key"

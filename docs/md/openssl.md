@@ -12,6 +12,9 @@ RSA key ok
 ### 将私钥转换为PKCS＃8未加密格式
 * openssl pkcs8 -in test.key -topk8 -nocrypt -out test1.pem
 
+### 
+* openssl pkcs12 -in elastic-certificates.p12 -cacerts -nokeys -out elasticsearch-ca.pem
+
 ## 参考链接
 
 ### pkcs8

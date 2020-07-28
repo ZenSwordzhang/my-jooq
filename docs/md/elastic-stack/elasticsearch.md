@@ -340,7 +340,8 @@ drwxr-xr-x 2 165536 165536 4.0K Jul 10 14:25 es02
     ```
     [](../../img/elastic-stack/es/es-09.jpg)
 
-* 7. 生成随机密码
+* 7.生成密码 
+    * 7.1 生成随机密码
     * docker exec es01 /bin/bash -c "bin/elasticsearch-setup-passwords auto --batch --url https://localhost:9200"
     ```console
     Changed password for user apm_system
@@ -361,6 +362,9 @@ drwxr-xr-x 2 165536 165536 4.0K Jul 10 14:25 es02
     Changed password for user elastic
     PASSWORD elastic = 8FhZZnG8g56UkNPNbzJw
     ```
+    * 7.2 手动指定密码
+        * docker exec es01 bash
+        * bin/elasticsearch-setup-passwords interactive --url https://localhost:9200
 * 8.通过https访问：
     * https://zsx-2.local:9200/
         * 此时需要输入账号密码
@@ -775,6 +779,10 @@ epoch      timestamp cluster status node.total node.data shards pri relo init un
 
 ### 升级秘钥库
 * bin/elasticsearch-keystore upgrade
+
+### 生成证书
+* bin/elasticsearch-certutil cert ca --pem --in config/instances.yml -out config/certs/test1.zip
+* bin/elasticsearch-certutil cert --silent --pem --in config/instances.yml -out /certs/test2.zip
 
 ## 集成
 
