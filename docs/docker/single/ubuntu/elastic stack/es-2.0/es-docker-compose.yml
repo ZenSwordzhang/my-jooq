@@ -101,6 +101,8 @@ services:
       - ${PWD}/config/certs/ca:${CERTS_DIR_FILEBEAT}/ca
     depends_on:
       - es01
+    ports:
+      - 5166:5066
     networks:
       - es-shared
 
@@ -122,7 +124,5 @@ services:
       - /:/hostfs:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    ports:
-      - 5166:5066
     networks:
       - es-shared
