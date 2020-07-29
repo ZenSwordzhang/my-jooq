@@ -9,10 +9,12 @@ RSA key ok
 ### 使用默认参数（具有256位密钥的AES和hmacWithSHA256）将私钥转换为PKCS＃8格式
 * openssl pkcs8 -in test.key -topk8 -out test.pem
 
-### 将私钥转换为PKCS＃8未加密格式
+### 证书格式转换
+
+#### 将私钥转换为PKCS＃8未加密格式
 * openssl pkcs8 -in test.key -topk8 -nocrypt -out test1.pem
 
-### 
+#### 
 * openssl pkcs12 -in elastic-certificates.p12 -cacerts -nokeys -out elasticsearch-ca.pem
 
 ## 参考链接

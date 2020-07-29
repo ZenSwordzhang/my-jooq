@@ -1,0 +1,28 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /usr/share/filebeat/logs/test.log
+    fields:
+      from: spring
+    fields_under_root: true
+
+output.logstash:
+  hosts: ["zsx-2.local:5044"]
+  # The maximum number of events to bulk in a single Logstash request. The default is 2048.
+  bulk_max_size: 1024
+  ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/ca/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_FILEBEAT}/instance/instance.crt"
+  ssl.key: "${CERTS_DIR_FILEBEAT}/instance/instance.key"
+  ssl.verification_mode: none
+
+# Enable the HTTP endpoint to allow external collection of monitoring data
+http.enabled: true
+
+http.host: "0.0.0.0"
+
+# By default, metrics are exposed on port 5066
+http.port: 5166
+
+# Disable the default collection of Filebeat monitoring metrics
+monitoring.enabled: false
