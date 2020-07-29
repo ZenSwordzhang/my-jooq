@@ -1,4 +1,5 @@
 http.host: "0.0.0.0"
 node.name: "logstash-node01"
+# 内置用户，拥有monitor.cluster、admin/xpack/monitoring/bulk等权限
 monitoring.elasticsearch.username: "logstash_system"
 monitoring.elasticsearch.password: "123456"
