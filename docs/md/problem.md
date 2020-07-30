@@ -340,6 +340,42 @@ input {
 }
 ```
 
+### 问题：Failed to publish events caused by: lumberjack protocol error
+* 背景：filebeat发送数据到logstash，logstash的input的beats插件配置了tsl/ssl认证，而filebeat没有提供相应的证书
+* 详情：
+```log
+2020-07-30T07:31:22.433Z        INFO    [publisher_pipeline_output]     pipeline/output.go:101  Connecting to backoff(async(tcp://zsx-2.local:5044))
+2020-07-30T07:31:22.440Z        INFO    [publisher_pipeline_output]     pipeline/output.go:111  Connection to backoff(async(tcp://zsx-2.local:5044)) established
+2020-07-30T07:31:22.445Z        ERROR   [logstash]      logstash/async.go:279   Failed to publish events caused by: lumberjack protocol error
+2020-07-30T07:31:22.445Z        ERROR   [logstash]      logstash/async.go:279   Failed to publish events caused by: client is not connected
+```
+* 解决：给filebeat配置相应的证书
+```filebeat.yml
+output.logstash:
+  hosts: ["zsx-2.local:5044"]
+  # The maximum number of events to bulk in a single Logstash request. The default is 2048.
+  bulk_max_size: 1024
+  ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/ca/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_FILEBEAT}/instance/instance.crt"
+  ssl.key: "${CERTS_DIR_FILEBEAT}/instance/instance.key"
+```
+
+### 问题：Failed to connect to backoff(async(tcp://zsx-2.local:5044)): x509: certificate is valid for instance, not zsx-2.local
+* 背景：filebeat发送数据到logstash，进行证书认证时报错
+* 原因：证书使用的默认的创建方式，未指定dns和ip
+    * bin/elasticsearch-certutil cert ca --days 1095 --pem -out /certs/bundle.zip
+* 解决：set verification_mode: none to disable hostname checking.
+```filebeat.yml
+output.logstash:
+  hosts: ["zsx-2.local:5044"]
+  # The maximum number of events to bulk in a single Logstash request. The default is 2048.
+  bulk_max_size: 1024
+  ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/ca/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_FILEBEAT}/instance/instance.crt"
+  ssl.key: "${CERTS_DIR_FILEBEAT}/instance/instance.key"
+  ssl.verification_mode: none
+```
+
 
 ## <h2 style="text-align: center;"> ------------------**IDEA**------------------ </h2>
 
@@ -602,6 +638,72 @@ For more on the Compose file format versions, see https://docs.docker.com/compos
     * bin/elasticsearch-setup-passwords interactive --url https://es01:9200
 
 
+### 问题： An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+* 详情
+```log
+[2020-07-30T15:50:22,088][WARN ][io.netty.channel.DefaultChannelPipeline][main][67d4e784911558dd91daed31c167362a18b34b8c64ecca89f9ad9dca7177cf76] An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.
+io.netty.handler.codec.DecoderException: javax.net.ssl.SSLHandshakeException: error:10000412:SSL routines:OPENSSL_internal:SSLV3_ALERT_BAD_CERTIFICATE
+        at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:472) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:278) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:340) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1434) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:362) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:348) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:965) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:163) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:644) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:579) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:496) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:458) [netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:897) [netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) [netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at java.lang.Thread.run(Thread.java:834) [?:?]
+Caused by: javax.net.ssl.SSLHandshakeException: error:10000412:SSL routines:OPENSSL_internal:SSLV3_ALERT_BAD_CERTIFICATE
+        at io.netty.handler.ssl.ReferenceCountedOpenSslEngine.shutdownWithError(ReferenceCountedOpenSslEngine.java:897) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.ReferenceCountedOpenSslEngine.sslReadErrorResult(ReferenceCountedOpenSslEngine.java:1147) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.ReferenceCountedOpenSslEngine.unwrap(ReferenceCountedOpenSslEngine.java:1101) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.ReferenceCountedOpenSslEngine.unwrap(ReferenceCountedOpenSslEngine.java:1169) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.ReferenceCountedOpenSslEngine.unwrap(ReferenceCountedOpenSslEngine.java:1212) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.SslHandler$SslEngineType$1.unwrap(SslHandler.java:216) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.SslHandler.unwrap(SslHandler.java:1297) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.SslHandler.decodeNonJdkCompatible(SslHandler.java:1211) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.ssl.SslHandler.decode(SslHandler.java:1245) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.codec.ByteToMessageDecoder.decodeRemovalReentryProtection(ByteToMessageDecoder.java:502) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        at io.netty.handler.codec.ByteToMessageDecoder.callDecode(ByteToMessageDecoder.java:441) ~[netty-all-4.1.30.Final.jar:4.1.30.Final]
+        ... 16 more
+```
+* 背景：logstash配置了tsl/ssl认证以后报错
+* 原因：logstash下input的beats插件ssl认证ssl_verify_mode设为了force_peer，而filter下的插件没有配置证书进行认证
+```logstash
+input {
+    beats {
+        port => 5044
+        add_field => {
+            source => "beats"
+        }
+        ssl => true
+        # This key need to be in the PKCS8 format
+        ssl_key => "${CERTS_DIR_LOGSTASH}/instance/instance.pem"
+        ssl_certificate => "${CERTS_DIR_LOGSTASH}/instance/instance.crt"
+        ssl_certificate_authorities => "${CERTS_DIR_LOGSTASH}/ca/ca.crt"
+        ssl_verify_mode => "force_peer"
+    }
+}
+filter {
+    grok {
+        # Do multiline matching with (?m) as the above mutliline filter may add newlines to the log messages.
+        match => [ "message", "(?m)^%{TIMESTAMP_ISO8601:timestamp}%{SPACE}%{LOGLEVEL:logLevel}%{SPACE}%{NUMBER:pid}%{SPACE}---%{SPACE}\[%{SPACE}%{DATA:thread}\]%{SPACE}%{NOTSPACE:class}%{SPACE}:%{SPACE}%{GREEDYDATA:message}" ]
+        overwrite => [ "message" ]
+    }
+}
+```
+* 解决：修改ssl_verify_mode为peer
+```logstash.conf
+ssl_verify_mode => "peer"
+```
+
 ### 问题：Could not execute action: PipelineAction::Create
 * 问题详情：
 ```
@@ -696,6 +798,20 @@ filter {
 * 原因：logstash.yml设置了sniffing为true
 ```logstash.yml
 xpack.monitoring.elasticsearch.sniffing: true
+```
+
+### 问题：Limit of total fields [1000] in index [beats-filebeat-20200730] has been exceeded
+* 详情：
+```log
+[2020-07-30T16:37:15,785][WARN ][logstash.outputs.elasticsearch][main][a5552068049365e154d9cd7d980e02242c5896d0eebed9f78697bec9688e87e9] Could not index event to Elasticsearch. {:status=>400, :action=>["index", {:_id=>nil, :_index=>"beats-filebeat-20200730", :routing=>nil, :_type=>"_doc"}, #<LogStash::Event:0x26522a56>], :response=>{"index"=>{"_index"=>"beats-filebeat-20200730", "_type"=>"_doc", "_id"=>"6ibennMBWHoZMrUITEm-", "status"=>400, "error"=>{"type"=>"illegal_argument_exception", "reason"=>"Limit of total fields [1000] in index [beats-filebeat-20200730] has been exceeded"}}}}
+```
+* 背景：通过容器启动logstash后提示警告
+* 解决：修改其大小
+```
+PUT /beats-filebeat-20200730/_settings
+{
+  "index.mapping.total_fields.limit": 2000
+}
 ```
 
 
