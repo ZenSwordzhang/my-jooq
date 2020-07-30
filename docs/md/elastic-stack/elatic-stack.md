@@ -9,6 +9,8 @@ ELASTIC_PASSWORD=123456
 PWD=/data/operations
 ```
 
+### docker-compose.yml增加elastic stack的证书目录挂载
+
 ### 生成证书
 * 1.切换到elasticsearch安装目录
 * 2.执行证书生成命令

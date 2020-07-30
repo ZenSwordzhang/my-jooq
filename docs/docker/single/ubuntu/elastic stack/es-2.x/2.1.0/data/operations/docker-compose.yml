@@ -16,7 +16,8 @@ services:
       # xpack.license.self_generated.type: trial
     volumes:
       - ${PWD}/data/es01:/usr/share/elasticsearch/data
-      - ${PWD}/config/certs:${CERTS_DIR_ES}
+      - ${PWD}/config/certs/es01:${CERTS_DIR_ES}/es01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_ES}/ca
       - ${PWD}/config/es01.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9201:9200
@@ -39,7 +40,8 @@ services:
       # xpack.license.self_generated.type: trial
     volumes:
       - ${PWD}/data/es02:/usr/share/elasticsearch/data
-      - ${PWD}/config/certs:${CERTS_DIR_ES}
+      - ${PWD}/config/certs/es02:${CERTS_DIR_ES}/es02
+      - ${PWD}/config/certs/ca:${CERTS_DIR_ES}/ca
       - ${PWD}/config/es02.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9202:9200
@@ -54,7 +56,8 @@ services:
       CERTS_DIR_KIBANA: ${CERTS_DIR_KIBANA}
     volumes:
       - ${PWD}/config/kibana01.yml:/usr/share/kibana/config/kibana.yml
-      - ${PWD}/config/certs:${CERTS_DIR_KIBANA}
+      - ${PWD}/config/certs/kibana01:${CERTS_DIR_KIBANA}/kibana01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_KIBANA}/ca
     ports:
       - 5601:5601
     networks:
@@ -66,12 +69,13 @@ services:
     environment:
       CERTS_DIR_LOGSTASH: ${CERTS_DIR_LOGSTASH}
     # restart: always
-    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
+    command: bash -c "bin/logstash -f /usr/share/logstash/config/logstash.conf --config.reload.automatic"
     volumes:
       - ${PWD}/log/test.log:/usr/share/logstash/logs/test.log
       - ${PWD}/config/logstash01.yml:/usr/share/logstash/config/logstash.yml
-      - ${PWD}/config/logstash01.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ${PWD}/config/certs:${CERTS_DIR_LOGSTASH}
+      - ${PWD}/config/logstash01.conf:/usr/share/logstash/config/logstash.conf
+      - ${PWD}/config/certs/logstash01:${CERTS_DIR_LOGSTASH}/logstash01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_LOGSTASH}/ca
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
@@ -93,12 +97,10 @@ services:
       - ${PWD}/log/test.log:/usr/share/filebeat/logs/test.log
       - ${PWD}/config/filebeat01.yml:/usr/share/filebeat/filebeat.yml
       - ${PWD}/data/filebeat01:/usr/share/filebeat/data
-      - ${PWD}/config/certs:${CERTS_DIR_FILEBEAT}
+      - ${PWD}/config/certs/filebeat01:${CERTS_DIR_FILEBEAT}/filebeat01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_FILEBEAT}/ca
     depends_on:
       - es01
-    ports:
-      - 5167:5167
-      - 5166:5066
     networks:
       - es-shared
 
@@ -111,7 +113,8 @@ services:
     command: ["--strict.perms=false"]
     volumes:
       - ${PWD}/config/metricbeat01.yml:/usr/share/metricbeat/metricbeat.yml:ro
-      - ${PWD}/config/certs:${CERTS_DIR_METRICBEAT}
+      - ${PWD}/config/certs/metricbeat01:${CERTS_DIR_METRICBEAT}/metricbeat01
+      - ${PWD}/config/certs/ca:${CERTS_DIR_METRICBEAT}/ca
       - ${PWD}/log/metricbeat01:/usr/share/metricbeat/logs
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
@@ -119,5 +122,7 @@ services:
       - /:/hostfs:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 5166:5066
     networks:
       - es-shared

@@ -31,10 +31,10 @@ services:
     image: logstash:7.7.0
     container_name: logstash
     # restart: always
-    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
+    command: bash -c "bin/logstash -f /usr/share/logstash/config/logstash.conf --config.reload.automatic"
     volumes:
       - ${PWD}/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ${PWD}/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ${PWD}/config/logstash.conf:/usr/share/logstash/config/logstash.conf
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:

@@ -804,6 +804,19 @@ xpack.monitoring.elasticsearch.sniffing: true
 ```
 
 
+### 问题：Failed to publish events caused by: lumberjack protocol error
+* 背景：修改metricbeat配置后，meitricbeat报错
+* 详情
+```log
+2020-07-30T09:40:02.512+0800	ERROR	[logstash]	logstash/async.go:279	Failed to publish events caused by: lumberjack protocol error
+2020-07-30T09:40:02.514+0800	ERROR	[logstash]	logstash/async.go:279	Failed to publish events caused by: lumberjack protocol error
+2020-07-30T09:40:02.514+0800	ERROR	[logstash]	logstash/async.go:279	Failed to publish events caused by: client is not connected
+```
+* 解决：重启metricbeat
+    * systemctl stop metricbeat
+    * systemctl start metricbeat
+    * 
+
 ### 问题：Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.24/info: dial unix /var/run/docker.sock: connect: permission denied
 * 背景：metricbeat收集docker容器指标时提示错误
 * [参考链接](https://discuss.elastic.co/t/how-to-use-metricbeat-docker-module-in-docker-swarm/103019/3)

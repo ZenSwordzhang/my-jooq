@@ -69,11 +69,11 @@ services:
     environment:
       CERTS_DIR_LOGSTASH: ${CERTS_DIR_LOGSTASH}
     # restart: always
-    command: bash -c "bin/logstash -f /usr/share/logstash/pipeline/logstash.conf --config.reload.automatic"
+    command: bash -c "bin/logstash -f /usr/share/logstash/config/logstash.conf --config.reload.automatic"
     volumes:
       - ${PWD}/log/test.log:/usr/share/logstash/logs/test.log
       - ${PWD}/config/logstash01.yml:/usr/share/logstash/config/logstash.yml
-      - ${PWD}/config/logstash01.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ${PWD}/config/logstash01.conf:/usr/share/logstash/config/logstash.conf
       - ${PWD}/config/certs/logstash01:${CERTS_DIR_LOGSTASH}/logstash01
       - ${PWD}/config/certs/ca:${CERTS_DIR_LOGSTASH}/ca
       - /etc/timezone:/etc/timezone:ro
