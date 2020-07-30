@@ -15,4 +15,3 @@ services:
     user: "0"
     volumes:
       - ${PWD}/config/certs:/certs
-      - ${PWD}/config/instances.yml:/usr/share/elasticsearch/config/instances.yml
