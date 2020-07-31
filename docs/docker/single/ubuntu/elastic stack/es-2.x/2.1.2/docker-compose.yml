@@ -141,3 +141,25 @@ services:
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     networks:
       - es-shared
+
+  netdata01:
+    image: netdata/netdata
+    container_name: netdata01
+    hostname: zsx-2.local # set to fqdn of host
+    ports:
+      - 19999:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - ${PWD}/data/netdata01:/var/lib/netdata
+      - ${PWD}/config/netdata01.conf:/etc/netdata/netdata.conf
+      - ${PWD}/log/netdata01:/var/log/netdata
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared

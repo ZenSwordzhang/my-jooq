@@ -321,6 +321,18 @@ scp -P 2222 /home/ubuntu/postgres.conf  zsx@zsx-2.local:/home/zsx/postgres1.conf
 ### 通过ssh连接远程主机
 * ssh -p 2222 zsx@zsx-2.local
 
+### 停止服务
+* systemctl stop netdata
+
+### 启动服务
+* systemctl start netdata
+
+### 重启服务
+*  systemctl restart netdata
+
+### 设置开机启动
+* systemctl enable netdata
+
 ## 参考链接
 
 ### dumpe2fs命令
