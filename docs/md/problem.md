@@ -182,7 +182,7 @@ java.io.IOException: 杩滅▼涓绘満寮鸿揩鍏抽棴浜嗕竴涓幇鏈�
 
 
 ### 问题：ElasticsearchStatusException[Elasticsearch exception [type=resource_not_found_exception, reason=Document not found [posts]/[_doc]/[1]]]
-* 背景：junit5下运行整个测试类[ESUtilsTest](../../../src/test/java/com/zsx/utils/ESUtilsTest.java)，testGetIndexSourceDataById()方法报错
+* 背景：junit5下运行整个测试类[ESUtilsTest](../../src/test/java/com/zsx/utils/ESUtilsTest.java)，testGetIndexSourceDataById()方法报错
 * 详情：
 ```console
 ElasticsearchStatusException[Elasticsearch exception [type=resource_not_found_exception, reason=Document not found [posts]/[_doc]/[1]]
@@ -1044,6 +1044,52 @@ b'A request was sent to this URL (http://localhost:8088/user) but a redirect was
 ## <h2 style="text-align: center;"> ------------------**POSTGRES**------------------ </h2>
 
 
+### 问题：Error: Database is uninitialized and superuser password is not specified
+* 详情
+```log
+Error: Database is uninitialized and superuser password is not specified.
+       You must specify POSTGRES_PASSWORD to a non-empty value for the
+       superuser. For example, "-e POSTGRES_PASSWORD=password" on "docker run".
+
+       You may also use "POSTGRES_HOST_AUTH_METHOD=trust" to allow all
+       connections without a password. This is *not* recommended.
+
+       See PostgreSQL documentation about "trust":
+       https://www.postgresql.org/docs/current/auth-trust.html
+```
+* 背景：Ubuntu-20.04下启动postgres容器时报错
+* 原因docker-compose.yml文件中postgres的POSTGRES_USER、POSTGRES_PASSWORD、POSTGRES_DB等值使用了环境变量，实际环境变量中未配置这些值
+```docker-compose.yml
+version: '3.8'
+
+networks:
+  es-shared:
+    external:
+      name: es-shared
+services:
+  postgres01:
+    image: postgres:13
+    container_name: postgres01
+    # restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5433:5432
+    volumes:
+      - ${PWD}/data/postgres:/var/lib/postgresql/data
+      - ${PWD}/config/postgres.conf:/etc/postgresql/postgresql.conf
+      - ${PWD}/log/postgres:/var/log/postgres
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    networks:
+      - es-shared
+```
+* 解决：POSTGRES_USER、POSTGRES_PASSWORD、POSTGRES_DB等值添加到环境变量中或者直接明确指定这些值
+
+
 ### 问题：Error: You must install at least one postgresql-client-<version> package
 * 背景：使用psql命令连接postgres数据库时报错
 * 解决：
@@ -1258,7 +1304,7 @@ shared_preload_libraries = 'pg_stat_statements'
 * 背景：win10下ruby文件提示语法警告
 解决：
     * 方法1：
-        * window下要选择文本格式为CRLF-window，Linux下选择LF-Unix，如：[ruby-01.jpg](../../my-ruby/ruby-01.jpg)
+        * window下要选择文本格式为CRLF-window，Linux下选择LF-Unix，如：[ruby-01.jpg](../img/ruby-01.jpg)
     * 方法2：E:\Ruby27-x64\lib\ruby\gems\2.7.0\gems\rubocop-0.83.0\config\default.yml文件修改如下配置
     ```
     Style/EndOfLine:

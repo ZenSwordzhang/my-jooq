@@ -293,6 +293,34 @@ dG为删除光标所在行以及其下所有行的内容
 d为删除，G为跳转到文件末尾行
 ```
 
+### 删除掉每行前面的空格和Tab键 | 去掉每行以#开头的内容 | 删除空行
+* cat postgres.conf | sed 's/^[ \t]*//g' | grep -v "^#" | grep -v '^\s*$'
+* cat postgres.conf | sed 's/^[ \t]*//g' | grep -v "^#" | grep -vE "^[[:blank:]]*$"
+* cat postgres.conf | sed 's/^[ \t]*//g' | grep -v "^#" | sed '/^\s*$/d'
+* cat postgres.conf | sed 's/^[ \t]*//g' | grep -v "^#" | awk NF test.conf
+* cat postgres.conf | sed 's/^[ \t]*//g' | grep -v "^#" | tr -s '\n'
+
+### 从远程主机复制文件夹到本地指定目录(-r表示文件夹操作，-P指定远程主机端口，如果端口为默认端口22时可以省略)
+* scp -r -P 2222 zsx@zsx-2.local:/etc/metricbeat/certs /etc/metricbeat
+
+### 从远程主机复制文件到本地指定目录
+* scp -P 2222 zsx@zsx-2.local:/home/zsx/metricbeat-7.7.0-amd64.deb /home/ubuntu
+
+### 从远程主机复制文件到本地指定文件
+* scp -P 2222 zsx@zsx-2.local:/home/zsx/install.sh /home/ubuntu/test_install.sh
+
+### 从本地复制文件到远程主机指定目录
+scp -r -P 2222 /home/ubuntu/certs  zsx@zsx-2.local:/home/zsx
+
+### 从本地复制文件到远程主机指定目录
+scp -P 2222 /home/ubuntu/postgres.conf  zsx@zsx-2.local:/home/zsx
+
+### 从本地复制文件到远程主机指定文件
+scp -P 2222 /home/ubuntu/postgres.conf  zsx@zsx-2.local:/home/zsx/postgres1.conf
+
+### 通过ssh连接远程主机
+* ssh -p 2222 zsx@zsx-2.local
+
 ## 参考链接
 
 ### dumpe2fs命令
