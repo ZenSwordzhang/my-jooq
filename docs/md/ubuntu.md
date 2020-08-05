@@ -1,5 +1,36 @@
 ## 命令
 
+### 系统升级
+#### 1.检查系统上是否有被锁住版本的软件包
+* sudo apt-mark showhold
+
+#### 2.如果有on hold软件包，使用下面的命令解锁这些软件包:
+* sudo apt-mark unhold package_name
+
+#### 3.更新APT列表，并且升级所有的已安装软件包
+* sudo apt update
+* sudo apt upgrade
+
+#### 4.如果内核被升级，重启机器
+* sudo systemctl reboot
+
+#### 5.对于所有已经安装的软件包执行一个主要版本升级：
+* sudo apt full-upgrade
+    * apt full-upgrade可能会移除一些不必要的软件包。
+
+#### 6.移除任何被自动安装的，但是不再被任何包所依赖的软件包：
+* sudo apt --purge autoremove
+
+#### 7.安装update-manager-core软件包
+* sudo apt install update-manager-core
+
+#### 8.强制升级(-d表示强制升级)
+* sudo do-release-upgrade -d
+* do-release-upgrade是“update-manager-core”软件包的一部分
+
+#### 9.查看Ubuntu版本
+* lsb_release -a
+
 ### 给指定用户赋予某个文件夹的权限
 * sudo chown -R 用户名 文件路径
 * -R表示递归处理
@@ -50,7 +81,7 @@
 * ip addr
 * ifconfig
 
-### 查看ubuntu版本
+### 查看ubuntu版本 | 查看系统版本
 * lsb_release -a
 * cat /etc/issue
 
@@ -321,17 +352,32 @@ scp -P 2222 /home/ubuntu/postgres.conf  zsx@zsx-2.local:/home/zsx/postgres1.conf
 ### 通过ssh连接远程主机
 * ssh -p 2222 zsx@zsx-2.local
 
-### 停止服务
-* systemctl stop netdata
 
-### 启动服务
-* systemctl start netdata
+### deb格式（Debian软件包格式）操作，此处以metricbeat为例
 
-### 重启服务
-*  systemctl restart netdata
+#### 安装服务
+sudo dpkg -i metricbeat-7.7.0-amd64.deb
 
-### 设置开机启动
-* systemctl enable netdata
+#### 停止服务
+* systemctl stop metricbeat
+
+#### 启动服务
+* systemctl start metricbeat
+
+#### 重启服务
+*  systemctl restart metricbeat
+
+#### 设置开机启动
+* systemctl enable metricbeat
+
+#### 查看已经安装的包
+* sudo dpkg -l metricbeat
+
+#### 删除安装包
+* sudo dpkg -r metricbeat
+
+#### 删除安装包和配置文件
+* sudo dpkg -P metricbeat
 
 ## 参考链接
 

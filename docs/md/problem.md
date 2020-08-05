@@ -1031,6 +1031,116 @@ Start-Service : 由于以下错误无法启动服务“metricbeat (metricbeat)�
 ![](../img/metricbeat/metricbeat-07.jpg)
 
 
+### 问题：云服务主机上mtricbeat收集不到docker.diskio指标数据，本地主机可以收集到
+#### 原因分析:
+* 1.云服务主机上执行命令docker stats -a，查看容器统计信息
+```console
+CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
+e2ddfe1c3466        logstash01          336.60%             654.9MiB / 5.804GiB   11.02%              5.05kB / 0B         0B / 0B             26
+7a53de54e717        kibana01            61.65%              529.1MiB / 5.804GiB   8.90%               4.96kB / 0B         0B / 0B             12
+fbef7ebba0de        es01                178.42%             763.1MiB / 5.804GiB   12.84%              5.53kB / 298B       0B / 0B             50
+edc3f94d0cfe        es02                168.64%             778MiB / 5.804GiB     13.09%              5.36kB / 298B       0B / 0B             49
+```
+    * 从结果看出所有容器的BLOCK I/O值一直显示0B / 0B
+* 2.本地主机上执行命令docker stats -a，查看容器统计信息
+```console
+CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
+ddad6cbdcbaf        logstash            3.81%               1.326GiB / 31.22GiB   4.25%               626MB / 1.83GB      12.3kB / 10.6MB     120
+2a82d34512a0        kibana              0.18%               385.5MiB / 31.22GiB   1.21%               55.7MB / 112MB      897kB / 84.7MB      12
+7b4f239a40c8        elasticsearch       19.58%              5.124GiB / 31.22GiB   16.41%              1.93GB / 343MB      12.1MB / 5.25GB     157
+
+```
+    * 从结果看出容器的BLOCK I/O值是有正常值显示的
+* 3.猜想可能是docker版本问题
+    * 本地主机docker版本是19.03.8，云服务器上docker版本是19.03.12
+    * 于是将本地docker版本升级到19.03.12，测试后，发现本地主机上metricbeat仍然能收集到docker.diskio数据，排除单独docker版本问题影响
+```console
+Client: Docker Engine - Community
+ Version:           19.03.12
+ API version:       1.40
+ Go version:        go1.13.10
+ Git commit:        48a66213fe
+ Built:             Mon Jun 22 15:45:36 2020
+ OS/Arch:           linux/amd64
+ Experimental:      false
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          19.03.12
+  API version:      1.40 (minimum version 1.12)
+  Go version:       go1.13.10
+  Git commit:       48a66213fe
+  Built:            Mon Jun 22 15:44:07 2020
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.2.13
+  GitCommit:        7ad184331fa3e55e52b890ea95e65ba581ae3429
+ runc:
+  Version:          1.0.0-rc10
+  GitCommit:        dc9208a3303feef5b3839f4323d9beb36df0a9dd
+ docker-init:
+  Version:          0.18.0
+  GitCommit:        fec3683
+
+```
+* 4.猜想主机系统版本或内核问题
+    * 云服务主机系统版本为Ubuntu 18.04 LTS，内核版本4.4.0-142-generic，本地主机系统版本为Ubuntu 20.04.1 LTS，内核版本5.4.0-42-generic
+    * 找了系统版本为ubuntu16.04，docker版本为18.04的云服务主机，执行docker stats -a命令后，容器的BLOCK I/O值有正常值显示，排除单独版本或内核问题
+* 4.1 查看云服务主机内核
+    * uname -r
+```console
+4.4.0-142-generic
+```
+* 4.2 查看云服务主机版本
+    * lsb_release -a
+```console
+```
+* 4.3 查看本地主机内核
+    * uname -r
+```console
+5.4.0-42-generic
+```
+* 4.4 查看本地主机版本
+    * lsb_release -a
+```console
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 20.04.1 LTS
+Release:	20.04
+Codename:	focal
+```
+* 5.猜想系统版本或内核与docker版本不兼容问题
+    * 升级云服务主机上的系统版本到Ubuntu 20.04.1 LTS
+    * 升级成功后，执行docker stats -a命令后，BLOCK I/O 数据显示正常，metricbeat可以正常收集到docker.diskio数据
+```console
+CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
+ddad6cbdcbaf        logstash            0.64%               1.326GiB / 31.22GiB   4.25%               647MB / 1.89GB      12.3kB / 10.6MB     120
+2a82d34512a0        kibana              0.06%               385.8MiB / 31.22GiB   1.21%               56.9MB / 116MB      897kB / 84.7MB      12
+7b4f239a40c8        elasticsearch       0.96%               5.127GiB / 31.22GiB   16.42%              2GB / 355MB         12.1MB / 5.44GB     157
+```
+* 6.在wsl2中测试：
+    * 系统版本：Ubuntu 20.04.1 LTS
+    * 系统内核：4.19.104-microsoft-standard
+    * docker版本：19.03.12
+* 6.1 执行docker stats -a命令，查看结果BLOCK I/O 数据也一直是0B / 0B
+```console
+CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
+e2ddfe1c3466        logstash01          13.65%              907.6MiB / 5.804GiB   15.27%              182kB / 413kB       0B / 0B             69
+7a53de54e717        kibana01            0.66%               436.6MiB / 5.804GiB   7.35%               4.55MB / 10.5MB     0B / 0B             12
+fbef7ebba0de        es01                0.93%               1.865GiB / 5.804GiB   32.13%              18.5MB / 54.6MB     0B / 0B             126
+edc3f94d0cfe        es02                1.20%               1020MiB / 5.804GiB    17.16%              64.8MB / 22.2MB     0B / 0B             131
+```
+* 6.2 查看docker.diskio收集情况，数据全部为0
+* 7.结论：docker版本与系统及系统内核兼容性问题，使得docker stats -a命令获取不到BLOCK I/O数据
+* 原因：docker版本与系统及系统内核兼容性问题，使得docker stats -a命令获取不到BLOCK I/O数据
+* 解决：经测试通过，可以正常收集到docker.diskio数据的版本
+    * 系统版本：Ubuntu 20.04.1 LTS
+    * 系统内核：5.4.0-42-generic
+    * docker版本：19.03.12
+
+
+
 ## <h2 style="text-align: center;"> ------------------**PYTHON**------------------ </h2>
 
 ### 问题

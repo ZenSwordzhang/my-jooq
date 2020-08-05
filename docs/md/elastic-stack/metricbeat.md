@@ -12,6 +12,9 @@
 ### 设置仪表盘模板
 * metricbeat setup -e
 
+### 启动metricbeat（tar xzvf metricbeat-7.8.1-linux-x86_64.tar.gz）
+* sudo ./metricbeat -e
+
 ### 设置Kibana仪表板
 * docker run --net="host" docker.elastic.co/beats/metricbeat:7.7.1 setup --dashboards
 

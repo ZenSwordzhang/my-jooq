@@ -163,3 +163,19 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - es-shared
+
+  cadvisor01:
+    container_name: cadvisor01
+    image: registry.cn-hangzhou.aliyuncs.com/zsx_test/cadvisor:v0.36.0
+    restart: always
+    ports:
+      - "8900:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared

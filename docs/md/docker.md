@@ -45,6 +45,19 @@
 ### 删除未被使用的数据卷
 * docker volume prune 
 
+### 容器指标统计
+* docker stats | docker stats -a
+* docker stats [container_name]
+* docker stats --no-stream
+* 读取数据目录：
+    * Blkio Stats
+        * /sys/fs/cgroup/blkio/docker/[containerId]
+    * Memory
+        * /sys/fs/cgroup/memory/docker/[containerId]
+    * CPU
+        * /sys/fs/cgroup/cpuacct/docker/[containerId]
+    * Network
+        * /sys/class/net/<EthInterface>/statistics
 
 ### 日志相关命令
 
