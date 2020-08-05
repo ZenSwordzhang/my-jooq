@@ -1133,6 +1133,7 @@ edc3f94d0cfe        es02                1.20%               1020MiB / 5.804GiB  
 ```
 * 6.2 查看docker.diskio收集情况，数据全部为0
 * 7.结论：docker版本与系统及系统内核兼容性问题，使得docker stats -a命令获取不到BLOCK I/O数据
+####
 * 原因：docker版本与系统及系统内核兼容性问题，使得docker stats -a命令获取不到BLOCK I/O数据
 * 解决：经测试通过，可以正常收集到docker.diskio数据的版本
     * 系统版本：Ubuntu 20.04.1 LTS
