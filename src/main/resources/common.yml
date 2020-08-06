@@ -1,0 +1,4 @@
+time:
+  interval: 10
+logstash:
+  port: 8088
