@@ -377,6 +377,16 @@ output.logstash:
 ```
 
 
+## <h2 style="text-align: center;"> ------------------**GIT**------------------ </h2>
+
+### 问题：automatic merge failed fix conflicts and then commit the result
+* 解决：
+    * 1.git status (查看状态信息)
+    * 2.解决冲突
+    * 3.git add fileName (标记冲突已解决)
+    * 4.git commit -m 'Merge remote-tracking branch "origin/master" into zsx-branch-recycle-bin' (重新提交)
+
+
 ## <h2 style="text-align: center;"> ------------------**IDEA**------------------ </h2>
 
 ### 问题：
