@@ -1,5 +1,6 @@
 package com.zsx.java.json;
 
+import com.zsx.entity.Author;
 import org.json.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,10 +15,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JsonTest {
+public class OrgJsonTest {
 
     @Test
-    void jsonObjectTest() {
+    void testJsonObject() {
         JSONObject jsonObj = new JSONObject("{'name':'zsx','age':20}");
         String name = jsonObj.getString("name");
         assertEquals("zsx", name);
@@ -27,7 +28,7 @@ public class JsonTest {
 
     @ParameterizedTest
     @CsvSource({"zsx,2020080601,13500001111", "lisi,2020080602,13500002222"})
-    void prepareJSONObjectTest(String name, Integer id, String phone) {
+    void testPrepareJSONObject(String name, Integer id, String phone) {
         JSONObject studentJSONObject = new JSONObject();
         studentJSONObject.put("name", name);
         studentJSONObject.put("id", id);
@@ -36,7 +37,7 @@ public class JsonTest {
     }
 
     @Test
-    void jsonArrayTest() {
+    void testJsonArray() {
         JSONArray jsonarray = new JSONArray("[{'name':'zsx','age':20},{'name':'lisi','age':15}]");
         for (int i = 0; i < jsonarray.length(); i++) {
             JSONObject jsonObj = jsonarray.getJSONObject(i);
@@ -47,7 +48,7 @@ public class JsonTest {
     }
 
     @Test
-    void jsonObjectAndArrayTest() {
+    void testJsonObjectAndArray() {
         String jsonString = "{'name':'zsx','age':20,'book':['book1','book2']}";
         JSONObject jsonObj = new JSONObject(jsonString);
 
@@ -65,7 +66,7 @@ public class JsonTest {
     }
 
     @Test
-    void jsonStringerTest() {
+    void testJsonStringer() {
         JSONStringer stringer = new JSONStringer();
         stringer.object().key("name").value("zsx").key("age").value(20).endObject();
         System.out.println(stringer);
@@ -73,7 +74,7 @@ public class JsonTest {
 
 
     @Test
-    void jsonTokenerTest() {
+    void testJsonTokener() {
         String json = "{"
                 + "  \"name\": \"zsx\", "
                 + "  \"book\": [ \"book1\",\"book2\" ] "
@@ -95,7 +96,7 @@ public class JsonTest {
     }
 
     @Test
-    void stringToJsonTest() {
+    void testStringToJson() {
         //定义JSON字符串
         String jsonStr = "{\"id\": 1," +
                 " \"title\": \"json title\", " +
@@ -130,7 +131,7 @@ public class JsonTest {
     }
 
     @Test
-    void jsonToStringTest() {
+    void testJsonToString() {
         //创建JSONObject对象
         JSONObject json = new JSONObject();
 
@@ -150,7 +151,7 @@ public class JsonTest {
     }
 
     @Test
-    void listToJSONArray() {
+    void testListToJSONArray() {
         //初始化ArrayList集合并添加数据
         List<String> list = new ArrayList<>();
         list.add("username");
@@ -167,6 +168,16 @@ public class JsonTest {
         array.put(list);
         array.put(map);
         System.out.println(array);
+    }
+
+
+    @Test
+    void testBuildJsonString() {
+        JSONObject json = new JSONObject();
+        Author author1 = Author.of("zsx", 20, true, "1");
+        json.put("author1", author1);
+        Author author2 = Author.of("lisisi", 18, false, "2");
+        json.put("author2", author2);
     }
 
 }

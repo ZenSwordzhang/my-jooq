@@ -137,7 +137,10 @@
 ### 注意：慎用，这个命令不仅会删除数据卷，而且连确认的过程都没有，使用--all参数后会删除所有未被引用的镜像，而不仅仅是dangling镜像
 * docker system prune --all --force --volumes
 
+
+
 ## 参数说明
+
 ### 节点MANAGER STATUS列说明：显示节点是属于manager或者worker,没有值 表示不参与群管理的工作节点。
 * Leader 意味着该节点是使得群的所有群管理和编排决策的主要管理器节点。
 * Reachable 意味着节点是管理者节点正在参与Raft共识。如果领导节点不可用，则该节点有资格被选为新领导者。
@@ -153,6 +156,55 @@
 
 ### 环境变量优先级
 * Compose file > Shell environment variables > Environment file > Dockerfile > Variable is not defined
+
+
+
+## 操作
+
+### 配置远程连接
+
+#### wsl2中docker配置远程连接 (2020-08-08)**config failure**
+* 此处docker使用的不是docker for windows，而是ubuntu下的docker
+* 1.修改/lib/systemd/system/docker.service文件
+* 1.1 在[Service]下的ExecStart中新增-H tcp://0.0.0.0:2375配置
+* 1.2 sudo vim /lib/systemd/system/docker.service
+```/lib/systemd/system/docker.service
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2375 --containerd=/run/containerd/containerd.sock
+```
+* 2.新增DOCKER_HOST
+* 2.1 修改配置文件/etc/profile，新增内容
+    * sudo vim /etc/profile
+```/etc/profile
+export DOCKER_HOST=tcp://0.0.0.0:2375
+```
+* 3.刷新配置
+    * source /etc/profile
+* 4.重启docker
+* sudo service docker restart
+* 5.验证
+    * docker -H 192.168.1.110 info
+
+* 目前wsl2还不能使用systemd命令,可以通过service docker start命令,用的是/etc/init.d/docker
+    * 通过ps -aux | grep docker就可以看出启动命令由/usr/bin/dockerd -p /var/run/docker.pid变成
+* ps -aux | grep docker
+```console
+zsx@zsx:~$ ps -aux | grep docker
+root         149  0.2  1.5 1673808 95232 ?       Sl   14:11   0:07 /usr/bin/dockerd -p /var/run/docker.pid
+root         173  0.2  0.8 1483236 51664 ?       Ssl  14:11   0:08 containerd --config /var/run/docker/containerd/containerd.toml --log-level info
+zsx         1107  0.0  0.0   8164   728 pts/0    S+   14:59   0:00 grep --color=auto docker
+```
+* -H unix:///var/run/docker.sock可以让本地通过sock连接
+    * 即可以通过docker ps -a正常运行,而不用docker -H tcp://localhost:2375 ps -a
+* wsl2还有目前还不能使用127.0.0.1访问
+    * 可以用localhost或者具体的ip地址
+    * 可以用ip addr查看
+        * 如tcp://192.168.1.110:2375
+* 检查2375监听是否正常
+    * 通过浏览器访问http://localhost:2375/info
+    * 通过tail -f /var/log/docker.log查看启动日志
+    * sudo netstat -lntp | grep dockerd
+    * docker -H 192.168.1.110 info
+
 
 ## 参考资料
 

@@ -42,8 +42,10 @@ configurations {
 }
 // 项目自身需要的资源
 repositories {
-    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    // https://maven.aliyun.com/mvn/guide
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    maven { url 'https://maven.aliyun.com/repository/central/' }
+    maven { url 'https://maven.aliyun.com/repository/spring/' }
     mavenCentral()
     jcenter()
     maven { url 'https://repo.spring.io/milestone' }
@@ -57,8 +59,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     jooqRuntime 'org.postgresql:postgresql:42.2.12'
     implementation 'org.postgresql:postgresql:42.2.12'
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.4.0'
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.4.0'
     implementation group: 'org.jooq', name: 'jooq-meta', version: '3.13.1'
     implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.13.1'
     implementation group: 'org.springframework', name: 'spring-tx', version: '5.2.5.RELEASE'

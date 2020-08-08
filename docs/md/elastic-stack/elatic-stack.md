@@ -23,10 +23,10 @@ PWD=/data/operations
 * 3.解压证书压缩文件
     * unzip /certs/bundle.zip
 * 4.切换到证书私钥目录
-* 5.将证书转换成pkcs8格式
+* 5.将私钥转换成pkcs8格式
     * openssl pkcs8 -in instance.key -topk8 -nocrypt -out instance.pem
 
-### 新增对elastic stack进行tsl/ssl的认证配置
+### 对elastic stack进行tsl/ssl的认证配置
 * 1.es配置
 ```elasticsearch.yml
 xpack.security.enabled: true

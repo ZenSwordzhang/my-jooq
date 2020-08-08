@@ -63,6 +63,7 @@ output {
 }
 ```
 
+
 ### 问题：Attempted to resurrect connection to dead ES instance, but got an error. {:url=>"http://elasticsearch:9200/", :error_type=>LogStash::Outputs::ElasticSearch::HttpClient::Pool::HostUnreachableError, :error=>"Elasticsearch Unreachable: [http://elasticsearch:9200/][Manticore::ResolutionFailure] elasticsearch: Name or service not known"}
 * 背景：win10下docker容器运行logstash镜像报错
 ```docker
@@ -82,6 +83,17 @@ xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 ```docker
 docker run --rm -it -v /d/usr/share/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml -v /d/usr/share/logstash/pipeline:/usr/share/logstash/pipeline -p 9600:9600 -p 5044:5044 logstash:7.6.2
 ```
+
+
+### 问题：Cannot connect to the Docker daemon at tcp://0.0.0.0:2375. Is the docker daemon running?
+* 背景：在配置wsl2中的docker使用远程连接时，在/etc/profile文件中配置了环境变量DOCKER_HOST=tcp://0.0.0.0:2375后，重启docker服务失败
+* 原因：
+```
+You no longer need to use docker for desktop you simply run docker native within WSL 2. Since its now using Hyper-V and has a real kernel. You will need to remove the export DOCKER_HOST from your environment and start the docker daemon using systemctl.
+```
+* 解决：移除环境变量DOCKER_HOST的配置，刷新配置，重启docker服务
+    * source /etc/profile
+    * sudo service docker restart
 
 
 ### 问题： Error response from daemon: network redis-net not found
@@ -377,6 +389,7 @@ output.logstash:
 ```
 
 
+
 ## <h2 style="text-align: center;"> ------------------**GIT**------------------ </h2>
 
 ### 问题：automatic merge failed fix conflicts and then commit the result
@@ -387,11 +400,21 @@ output.logstash:
     * 4.git commit -m 'Merge remote-tracking branch "origin/master" into zsx-branch-recycle-bin' (重新提交)
 
 
+
 ## <h2 style="text-align: center;"> ------------------**IDEA**------------------ </h2>
 
 ### 问题：
 * 详情：Passed value of header "Host" is not allowed. Please contact your license server administrator.
 * 原因：That's because the license server is running behind a reverse proxy. Please configure virtual hosts using the JLS_VIRTUAL_HOSTS variable.
+
+
+### 问题：Please consider deleting these variables: JAVA_TOOL_OPTIONS.
+* 背景：IDEA启动提示警告
+* 详情：
+```
+The use of Java options environment variables detected. Such variables override IDE configuration files (*.vmoptions) and may cause performance and stability issues. Please consider deleting these variables: JAVA_TOOL_OPTIONS.
+```
+* 解决：删除系统环境变量中JAVA_TOOL_OPTIONS的配置
 
 
 
@@ -609,6 +632,8 @@ FATAL CLI ERROR YAMLException: can not read a block mapping entry; a multiline 
     metric=max:system.network.in.bytes)
 .fit(mode = nearest)
 ```
+
+
 
 ## <h2 style="text-align: center;"> ------------------**LOG**------------------ </h2>
 
@@ -846,6 +871,7 @@ PUT /beats-filebeat-20200730/_settings
     * 将私钥装换成PKCS8格式
     * openssl pkcs8 -in logstash01.key -topk8 -nocrypt -out logstash01.pem
     
+
 
 
 ## <h2 style="text-align: center;"> ------------------**METRICBEAT**------------------ </h2>
@@ -1420,6 +1446,8 @@ CREATE EXTENSION pg_stat_statements;
 ```postgresql.conf
 shared_preload_libraries = 'pg_stat_statements'
 ```
+
+
 
 ## <h2 style="text-align: center;"> ------------------**RUBY**------------------ </h2>
 
