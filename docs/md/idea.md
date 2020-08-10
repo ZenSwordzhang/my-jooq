@@ -5,11 +5,15 @@
 
 
 ### win10下idea试用版
-* [老版地址-秘钥所在路径](C:/Users/用户名/对应产品/config/eval )
-* [新版地址-秘钥所在路径](C:/Users/18273/AppData/Roaming/JetBrains/IntelliJIdea2020.2/eval)
-* [other.yml](C:/Users/18273/AppData/Roaming/JetBrains/IntelliJIdea2020.2/options/other.yml)
+* 老版地址-秘钥所在路径 
+    * **C:/Users/用户名/对应产品/config/eval** 
+* 新版地址-秘钥所在路径
+    * **C:/Users/18273/AppData/Roaming/JetBrains/IntelliJIdea2020.2/eval**
+* other.yml
+    * **C:/Users/18273/AppData/Roaming/JetBrains/IntelliJIdea2020.2/options/other.yml**
 * regedit
-    * [注册表项](HKEY_CURRENT_USER/Software/JavaSoft/Prefs/jetbrains/idea)
+    * 注册表项 
+        * **HKEY_CURRENT_USER/Software/JavaSoft/Prefs/jetbrains/idea**
 
 ## 参考网站
 
