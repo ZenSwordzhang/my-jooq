@@ -60,9 +60,13 @@ dependencies {
     jooqRuntime 'org.postgresql:postgresql:42.2.12'
     implementation 'org.postgresql:postgresql:42.2.12'
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
+
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.73'
+
+    implementation group: 'com.hynnet', name: 'json-lib', version: '2.4'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.4.0'
     implementation group: 'org.jooq', name: 'jooq-meta', version: '3.13.1'
     implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.13.1'
