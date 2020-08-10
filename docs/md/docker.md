@@ -206,6 +206,11 @@ zsx         1107  0.0  0.0   8164   728 pts/0    S+   14:59   0:00 grep --color=
     * docker -H 192.168.1.110 info
 
 
+### 推送本地镜像到[dockerhub](https://hub.docker.com/)
+* docker login
+    * chanjianyiru
+* docker push chanjianyiru/ideaserver:latest
+
 ## 参考资料
 
 ### 容器中的用户
