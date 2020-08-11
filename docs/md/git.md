@@ -32,6 +32,28 @@
 * 7.将代码推送到远程仓库（master）
     * git push
 
+### 查看所有分支
+* git branch -a
+
+### 在本地新建分支
+* git branch branchName
+    * git branch home_zsx
+
+### 新创建分支并切换
+* git checkout -b zsx company_zsx
+
+### 切换到你的新分支
+* git checkout branchName
+
+### 将新分支发布在github上
+* git push origin branchName
+
+### 在本地删除一个分支
+* git branch -d branchName
+
+### 在github远程端删除一个分支
+* git push origin :branchName
+
 
 ## 设置
 

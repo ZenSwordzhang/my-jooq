@@ -42,18 +42,7 @@ public class LogCollector {
 
 
     public static void main(String[] args) throws InterruptedException {
-        LogCollector collector = new LogCollector();
 
-        JSONObject jsonObj = new JSONObject();
-        Author author1 = Author.of("zsx", 20, true, "1");
-//        jsonObj.put("author1", author1);
-        Author author2 = Author.of("lisisi", 18, false, "2");
-//        jsonObj.put("author2", author2);
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(author1);
-        jsonArray.put(author2);
-        collector.sendPost(jsonArray.get(0));
-        System.out.println(jsonArray.get(1));
 //        while (true) {
 //            int m = 100 + new Random().nextInt(100);
 //            JSONArray intervalMsg = new JSONArray();
@@ -91,7 +80,7 @@ public class LogCollector {
 
     }
 
-    public void sendPost(Object obj) {
+    public static void sendPost(Object obj) {
         //create RestTemplate
         String baseUrl = "http://zsx-2.local:8088";
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(baseUrl);
