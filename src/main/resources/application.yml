@@ -3,7 +3,7 @@ logging:
     org:
       jooq: DEBUG
 server:
-  port: 8000
+  port: 8088
 spring:
   application:
     name: jooq
