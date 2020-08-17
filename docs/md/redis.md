@@ -21,7 +21,23 @@
 * redis-cli -c -p 7000
 * info replication
 
+### 启动redis延迟监听
+* CONFIG SET latency-monitor-threshold 100
+
+### 查看redis指标信息（通过客户端连接到redis后执行命令）
+* info
+* info CPU
+
+### 查看redis响应一个请求的时间
+* latency latest
+* 模拟数据
+    * debug sleep 1
+
 ## redis性能指标
+
+### 性能测试
+* ./redis-benchmark -c 100 -n 5000
+    * 100个连接，5000次请求对应的性能
 
 ### 监控指标
 * 性能指标：Performance metrics
@@ -54,6 +70,7 @@ hit rate (calculated) |  缓存命中率 keyspace_hits / (keyspace_hits + keyspa
     77795 samples： redis-cli记录发出PING命令并接收响应的次数
 
 ##### instantaneous_ops_per_sec
+* redis-cli info | grep instantaneous_ops_per_sec
 
 ##### hit rate
 
@@ -70,7 +87,9 @@ blocked_clients	| 由于BLPOP、BRPOP或BRPOPLPUSH而阻塞的客户端 | Other
 ##### used_memory
 * 查看内存使用情况命令
     * info memory
+
 ##### mem_fragmentation_ratio（内存碎片率）
+* redis-cli info | grep mem_fragmentation_ratio
 * 碎片比率大于1表示正在发生碎片
 * 比率超过1.5表示碎片过多，您的Redis实例消耗了其请求的物理内存的150％
 * 小于1的碎片率告诉您Redis需要的内存多于系统上可用的内存，这将导致交换
@@ -118,7 +137,8 @@ keyspace	| 数据库中的键总数 | Resource: Utilization
 :----: | :----: | :---:
 rdb_last_save_time | 最后保存到磁盘的Unix时间戳 | Other
 rdb_changes_since_last_save | 自最后一次持久化以来数据库的更改数 | Other
-
+* redis-cli info | grep rdb_last_save_time
+* redis-cli info | grep rdb_changes_since_last_save
 
 #### 错误指标：Error metrics
 
@@ -138,6 +158,7 @@ master_link_down_since_seconds | 主从断开的时间（单位：s） | Resourc
 * [redis监控指标](https://www.jianshu.com/p/68485d5c7fb9)
 * [Redis性能指标详解与监控](https://blog.csdn.net/z644041867/article/details/77965521)
 * [metricbeat-module-redis](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-module-redis.html)
+* [info](https://redis.io/commands/info)
 
 ### 性能
 * [Redis性能问题排查](https://www.cnblogs.com/mushroom/p/4738170.html)

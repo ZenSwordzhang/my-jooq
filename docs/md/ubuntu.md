@@ -1,6 +1,97 @@
 ## 命令
 
+### 参数详解
+
+#### top命令 
+* [参考链接](https://www.jianshu.com/p/608c63268f52)
+
+##### 1.命令参数
+* -b 批处理
+* -c 显示完整的命令
+* -I 忽略失效过程
+* -s 保密模式
+* -S 累积模式
+* -i<时间> 设置间隔时间
+* -u<用户名> 指定用户名
+* -p<进程号> 指定进程
+* -n<次数> 循环显示的次数
+
+##### 2.命令结果
+* top -u postgres
+    * 分为上下部分
+        * 上面是系统统计信息
+        * 下面是进程信息
+```console
+top - 14:55:40 up 9 days, 11:51,  1 user,  load average: 0.00, 0.03, 0.05
+Tasks: 216 total,   1 running, 215 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  1.3 us,  0.8 sy,  0.0 ni, 97.8 id,  0.0 wa,  0.0 hi,  0.1 si,  0.0 st
+MiB Mem :   7948.5 total,    223.4 free,   3399.0 used,   4326.2 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem 
+
+ PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                                                                                                                      
+1108 postgres  20   0  248432  27264  25136 S   0.0   0.3   0:20.52 postgres                                                                                                                                                     
+1116 postgres  20   0  248544   7844   5676 S   0.0   0.1   0:00.31 postgres                                                                                                                                                     
+1117 postgres  20   0  248432   6092   3940 S   0.0   0.1   0:10.04 postgres                                                                                                                                                     
+1118 postgres  20   0  248432  10064   7912 S   0.0   0.1   0:10.04 postgres                                                                                                                                                     
+1119 postgres  20   0  248836   7000   4660 S   0.0   0.1   0:10.49 postgres                                                                                                                                                     
+1120 postgres  20   0  103488   4488   2360 S   0.0   0.1   0:10.54 postgres                                                                                                                                                     
+1121 postgres  20   0  248744   6788   4452 S   0.0   0.1   0:00.44 postgres  
+```
+##### 3.系统统计信息
+* 第一行：任务队列信息，同 uptime 命令的执行结果
+    * top - 14:55:40 up 9 days, 11:51,  1 user,  load average: 0.00, 0.03, 0.05
+        * 14:55:40 （当前系统时间）
+        * up 9 days（系统运行时间）
+        * 1 user （当前登录用户数）
+        * load average: 0.00, 0.03, 0.05 （系统的平均负载数，表示 1分钟、5分钟、15分钟到现在的平均数）
+* 第二行：进程统计信息
+    * Tasks: 216 total,   1 running, 215 sleeping,   0 stopped,   0 zombie
+        * 216 total （系统当前总进程总数）
+        * 1 running （正在运行的进程数）
+        * 215 sleeping （睡眠进程数）
+        * 0 stopped （停止进程数）
+        * 0 zombie （僵尸进程数）
+* 第三行：CPU 统计信息
+    * %Cpu(s):  1.3 us,  0.8 sy,  0.0 ni, 97.8 id,  0.0 wa,  0.0 hi,  0.1 si,  0.0 st
+        * 1.3 us （用户空间CPU占用率）
+        * 0.8 sy （内核空间CPU占用率）
+        * 0.0 ni （用户进程空间改变过优先级的进程CPU的占用率）
+        * 97.8 idd （空闲CPU占有率）
+        * 0.0 wa （等待输入输出的CPU时间百分比）
+        * 0.0 hi （硬件中断请求）
+        * 0.1 si （软件中断请求）
+        * 0.0 st （分配给运行在其它虚拟机上的任务的实际 CPU时间）
+* 第四行：内存状态
+    * MiB Mem :   7948.5 total,    223.4 free,   3399.0 used,   4326.2 buff/cache
+        * 7948.5 total （物理内存总量 7948.5M）
+        * 223.4 used （已使用的内存 223.4M）
+        * 3399.0 free （空闲内存 3399.0M）
+        * 4326.2 buff/cache （内核缓存使用/缓冲交换区 4326.2M）
+* 第五行 swap交换分区信息
+    * MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem 
+        * 0.0 total （交换分区总量 0）
+        * 0.0 free （空闲交换分区 0）
+        * 0.0 used （已使用交换分区内存 0）
+        * 3272.8 avail Mem （可用内存 3272.8M）
+
+##### 4.进程信息
+*  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND 
+    * PID （进程id）
+    * USER （进程所有者的用户名）
+    * PR （进程优先级）
+    * NI （nice值。负值表示高优先级，正值表示低优先级）
+    * VIRT （进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES）
+    * RES （进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA）
+    * SHR （共享内存大小，单位kb）
+    * S （进程状态。D=不可中断的睡眠状态 R=运行 S=睡眠 T=跟踪/停止 Z=僵尸进程）
+    * %CPU （上次更新到现在的CPU时间占用百分比）
+    * %MEM （进程使用的物理内存百分比）
+    * TIME+ （进程使用的CPU时间总计，单位1/100秒）
+    * COMMAND （进程名称[命令名/命令行]）
+
+
 ### 系统升级
+
 #### 1.检查系统上是否有被锁住版本的软件包
 * sudo apt-mark showhold
 
@@ -60,6 +151,12 @@
 
 ### 查看内存
 * cat /proc/meminfo | grep MemTotal
+
+### 查看硬盘
+* df -hl
+
+### 查看目录硬盘占用
+* du -hs dir_name
 
 ### 查看显卡
 * lspci | grep 'VGA'

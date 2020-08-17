@@ -862,6 +862,20 @@ gte | greater than or equal to
 * bin/kibana-keystore remove elasticsearch.name
 
 
+## 图表
+
+### dashboard
+
+
+#### 跳转到另一个dashboard
+* 1.新建Markdown格式的Visualization图表
+* 2.浏览器上打开需要跳转到的dashboard，查看浏览器导航地址
+    * ![](../../img/elastic-stack/kibana/dashboard-01.jpg)
+* 3.将导航地址部分的内容按照markdown风格编写进Visualization图表
+    * [Metricbeat AWS](#dashboard/e6776b10-1534-11ea-841c-01bf20a6c8ba)
+
+
+
 ## 参考文档
 
 ### 教程

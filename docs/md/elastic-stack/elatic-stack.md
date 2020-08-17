@@ -1,3 +1,7 @@
+### 简写
+* ECS(Elastic Compute Service)
+
+
 ### 新增环境变量
 ```
 CERTS_DIR_ES=/usr/share/elasticsearch/config/certs

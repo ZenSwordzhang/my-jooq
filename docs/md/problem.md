@@ -1050,6 +1050,15 @@ services:
 ![](../img/metricbeat/metricbeat-06.jpg)
 
 
+### 问题：Metricbeat收集的postgresql.database.blocks.time.read.ms、postgresql.database.blocks.time.write.ms指标为0
+* [参考链接](https://www.postgresql.org/docs/current/monitoring-stats.html)
+    * blk_read_time：postgresql.database.blocks.time.read.ms
+        * Time spent reading data file blocks by backends in this database, in milliseconds
+    * blk_write_time：postgresql.database.blocks.time.write.ms
+        * Time spent writing data file blocks by backends in this database, in milliseconds
+* SELECT blk_read_time, blk_write_time, * FROM pg_stat_database; 
+
+
 ### 问题：Start-Service : 由于以下错误无法启动服务“metricbeat (metricbeat)”: 无法启动计算机“.”上的服务 metricbeat。
 * 背景：win10下使用PowerShell设置metricbeat为服务后，使用命令Start-Service metricbeat启动metricbeat报错
 * 详情：
