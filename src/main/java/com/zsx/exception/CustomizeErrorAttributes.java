@@ -16,7 +16,7 @@ public class CustomizeErrorAttributes extends DefaultErrorAttributes {
     public Throwable getError(WebRequest webRequest) {
         Throwable exception = super.getError(webRequest);
         if (exception != null) {
-            System.out.println("==========CustomizeErrorAttributes============");
+            System.out.println("==========CustomizeErrorAttributes.getError()============");
         }
         return exception;
     }
