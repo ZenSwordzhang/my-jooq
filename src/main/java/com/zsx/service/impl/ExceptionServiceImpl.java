@@ -1,5 +1,6 @@
 package com.zsx.service.impl;
 
+import com.zsx.exception.NonExistingUserException;
 import com.zsx.service.ExceptionService;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public class ExceptionServiceImpl implements ExceptionService {
 
     @Override
     public void generateNonExistingUserException() {
-        throw new RuntimeException("ExceptionServiceImpl.generateNonExistingUserException()");
+        throw new NonExistingUserException("ExceptionServiceImpl.generateNonExistingUserException()");
     }
 
 }

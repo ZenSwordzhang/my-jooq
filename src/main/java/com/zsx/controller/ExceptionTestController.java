@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/exception")
-public class ExceptionController {
+public class ExceptionTestController {
 
     @Autowired
     private ExceptionService exceptionService;

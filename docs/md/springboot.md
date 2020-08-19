@@ -1,4 +1,14 @@
+## 异常
 
+### 异常优先级
+
+#### 请求路径存在时
+* ExceptionHandler > DefaultErrorAttributes
+
+#### 请求路径不存在时
+* AbstractErrorController > DefaultErrorAttributes > ExceptionHandler
+    * DefaultErrorAttributes
+        * getErrorAttributes() > getError()
 
 
 

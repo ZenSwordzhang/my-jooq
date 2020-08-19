@@ -46,6 +46,11 @@ spring:
     sql-dialect: POSTGRES
     # 配置未生效，原因是未将自定义的schema的bean注入到容器
 
+  errors:
+    controller: true
+    attributes: true
+    controller-advice: true
+
 # ES配置
 es:
   hosts: "zsx-2.local:9200"

@@ -1,10 +1,13 @@
-package com.zsx.exception;
+package com.zsx.error;
 
+import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
 
-@Component
+import java.util.Map;
+
+@Log4j2
 public class CustomizeErrorAttributes extends DefaultErrorAttributes {
 
     /**
@@ -16,9 +19,15 @@ public class CustomizeErrorAttributes extends DefaultErrorAttributes {
     public Throwable getError(WebRequest webRequest) {
         Throwable exception = super.getError(webRequest);
         if (exception != null) {
-            System.out.println("==========CustomizeErrorAttributes.getError()============");
+            log.error("==========CustomizeErrorAttributes.getError()============");
         }
         return exception;
+    }
+
+    @Override
+    public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
+        log.error("==========CustomizeErrorAttributes.getErrorAttributes()============");
+        return super.getErrorAttributes(webRequest, options);
     }
 
 }

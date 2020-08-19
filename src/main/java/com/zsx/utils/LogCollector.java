@@ -3,7 +3,6 @@ package com.zsx.utils;
 import com.google.common.collect.Lists;
 import com.zsx.enumeration.ErrorLevel;
 import com.zsx.enumeration.WeekDay;
-import com.zsx.exception.BizException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -26,20 +25,6 @@ public class LogCollector {
             if (synList.size() !=0 ) {
                 synList.clear();
             }
-        }
-    }
-
-    // 模拟生成日志
-    private void generateLog() {
-        WeekDay weekDay = WeekDay.get(new Random().nextInt(7));
-        if (weekDay == null) {
-            throw new BizException(ErrorLevel.ERROR, "BizException ERROR Null");
-        }
-        switch (weekDay) {
-            case SUN -> throw new RuntimeException("RunTimeException");
-            case MON -> throw new BizException(ErrorLevel.WARNING, "BizException WARNING");
-            case TUE -> throw new BizException(ErrorLevel.ERROR, "BizException ERROR");
-            case WEN, THU, FRI, SAT -> throw new BizException(ErrorLevel.FATAL, "BizException FATAL");
         }
     }
 
