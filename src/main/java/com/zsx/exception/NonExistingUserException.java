@@ -11,6 +11,7 @@ public class NonExistingUserException extends RuntimeException {
 
     public NonExistingUserException(String message) {
         super(message);
+        log.info("=========NonExistingUserException.NonExistingUserException()=========");
         log.error(String.format("%s: %s", NonExistingUserException.class.getName(), message));
     }
 

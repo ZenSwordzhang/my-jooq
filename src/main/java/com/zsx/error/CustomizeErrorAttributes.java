@@ -17,6 +17,7 @@ public class CustomizeErrorAttributes extends DefaultErrorAttributes {
      */
     @Override
     public Throwable getError(WebRequest webRequest) {
+        log.info("=========CustomizeErrorAttributes.getError()=========");
         Throwable exception = super.getError(webRequest);
         if (exception != null) {
             log.error("==========CustomizeErrorAttributes.getError()============");
@@ -26,6 +27,7 @@ public class CustomizeErrorAttributes extends DefaultErrorAttributes {
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
+        log.info("=========CustomizeErrorAttributes.getErrorAttributes()=========");
         log.error("==========CustomizeErrorAttributes.getErrorAttributes()============");
         return super.getErrorAttributes(webRequest, options);
     }
