@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
         log.info("=========GlobalExceptionHandler.nonExistingUserException()=========");
         CustomizeHttpServletRequestWrapper wrapper = new CustomizeHttpServletRequestWrapper(request);
         BufferedReader reader = wrapper.getReader();
+        try {
+            String body = request.getReader().lines().collect(Collectors.joining());
+            log.info(body);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String readStr = reader.lines().collect(Collectors.joining());
         log.info(readStr);
         log.error(String.format("GlobalExceptionHandler.nonExistingUserException(): %s", ex.getMessage()));
