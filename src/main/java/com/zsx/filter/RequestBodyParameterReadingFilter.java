@@ -12,21 +12,21 @@ import java.io.IOException;
 
 @Slf4j
 @Configuration
-public class LogFilter implements Filter {
+public class RequestBodyParameterReadingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("=========LogFilter.init()=========");
+        log.info("=========RequestBodyParameterReadingFilter.init()=========");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.info("=========LogFilter.doFilter()=========");
+        log.info("=========RequestBodyParameterReadingFilter.doFilter()=========");
         if (request instanceof HttpServletRequest) {
             String contentType = request.getContentType();
             // 如果处理上传文件数据，下面方法执行到chain.doFilter()时会出线异常，所以此处只处理@RequestBody数据
             if (!StringUtils.isEmpty(contentType) && contentType.contains(MediaType.APPLICATION_JSON_VALUE)) {
-                log.info("=========LogFilter.doFilter().jsonRequest=========");
+                log.info("=========RequestBodyParameterReadingFilter.doFilter().jsonRequest=========");
                 ServletRequest jsonRequest = new CustomizeHttpServletRequestWrapper((HttpServletRequest) request);
                 chain.doFilter(jsonRequest, response);
                 return;
@@ -37,6 +37,6 @@ public class LogFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("=========LogFilter.destroy()=========");
+        log.info("=========RequestBodyParameterReadingFilter.destroy()=========");
     }
 }

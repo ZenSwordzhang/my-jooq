@@ -1,7 +1,7 @@
 //package com.zsx.config;
 //
 //import com.zsx.adapter.CustomizeHandlerInterceptorAdapter;
-//import com.zsx.filter.LogFilter;
+//import com.zsx.filter.RequestBodyParameterReadingFilter;
 //import com.zsx.filter.ReadBodyHttpServletFilter;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -17,10 +17,10 @@
 //public class CustomizeWebMvcConfigurer implements WebMvcConfigurer {
 //
 //    @Bean
-//    public FilterRegistrationBean<Filter> logFilter() {
+//    public FilterRegistrationBean<Filter> RequestBodyParameterReadingFilter() {
 //        log.info("=========CustomizeWebMvcConfigurer.filterRegistrationBean()=========");
 //        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
-//        registration.setFilter(new LogFilter());
+//        registration.setFilter(new RequestBodyParameterReadingFilter());
 //        registration.addUrlPatterns("/*");
 //        return registration;
 //    }

@@ -23,8 +23,8 @@
 ```
 
 #### 顺序1 
-* 配置 **LogFilter**和 **CustomizeWebMvcConfigurer**
-* 1.> =========LogFilter.doFilter()=========
+* 配置 **RequestBodyParameterReadingFilter**和 **CustomizeWebMvcConfigurer**
+* 1.> =========RequestBodyParameterReadingFilter.doFilter()=========
 * 2.> =========CustomizeHttpServletRequestWrapper.CustomizeHttpServletRequestWrapper()=========
 * 3.> =========CustomizeHandlerInterceptorAdapter.preHandle()=========
 * 4.> =========CustomizeHttpServletRequestWrapper.getInputStream()=========
@@ -46,8 +46,8 @@
 * 10.> =========CustomizeHttpServletRequestWrapper.getInputStream()=========
 * 11.> =========CustomizeHandlerInterceptorAdapter.afterCompletion()=========
 
-#### 顺序3 配置 **LogFilter**、**ReadBodyHttpServletFilter**和 **CustomizeWebMvcConfigurer**
-* 1.> =========LogFilter.doFilter()=========
+#### 顺序3 配置 **RequestBodyParameterReadingFilter**、**ReadBodyHttpServletFilter**和 **CustomizeWebMvcConfigurer**
+* 1.> =========RequestBodyParameterReadingFilter.doFilter()=========
 * 2.> =========CustomizeHttpServletRequestWrapper.CustomizeHttpServletRequestWrapper()=========
 * 3.> =========ReadBodyHttpServletFilter.doFilterInternal()=========
 * 4.> =========CustomizeHttpServletRequestWrapper.CustomizeHttpServletRequestWrapper()=========
@@ -64,7 +64,7 @@
 
 ### 启动加载顺序
 * 1.> =========CustomizeWebMvcConfigurer.filterRegistrationBean()=========
-* 2.> =========LogFilter.init()=========
+* 2.> =========RequestBodyParameterReadingFilter.init()=========
 * 3.> =========WebErrorConfiguration.errorAttributes()=========
 * 4.> =========CustomizeErrorController.CustomizeErrorController()=========
 * 5.> =========CustomizeWebMvcConfigurer.addInterceptors()=========
@@ -102,16 +102,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Slf4j
-public class LogFilter implements Filter {
+public class RequestBodyParameterReadingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("=========LogFilter.init()=========");
+        log.info("=========RequestBodyParameterReadingFilter.init()=========");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.info("=========LogFilter.doFilter()=========");
+        log.info("=========RequestBodyParameterReadingFilter.doFilter()=========");
         ServletRequest req = null;
         if(request instanceof HttpServletRequest) {
             req = new CustomizeHttpServletRequestWrapper((HttpServletRequest) request);
@@ -125,7 +125,7 @@ public class LogFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("=========LogFilter.destroy()=========");
+        log.info("=========RequestBodyParameterReadingFilter.destroy()=========");
     }
 }
 ```
@@ -133,7 +133,7 @@ public class LogFilter implements Filter {
 package com.zsx.config;
 
 import com.zsx.adapter.CustomizeHandlerInterceptorAdapter;
-import com.zsx.filter.LogFilter;
+import com.zsx.filter.RequestBodyParameterReadingFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -148,10 +148,10 @@ import javax.servlet.Filter;
 public class CustomizeWebMvcConfigurer implements WebMvcConfigurer {
 
     @Bean
-    public FilterRegistrationBean<Filter> logFilter() {
+    public FilterRegistrationBean<Filter> RequestBodyParameterReadingFilter() {
         log.info("=========CustomizeWebMvcConfigurer.filterRegistrationBean()=========");
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new LogFilter());
+        registration.setFilter(new RequestBodyParameterReadingFilter());
         registration.addUrlPatterns("/*");
         return registration;
     }
@@ -236,7 +236,7 @@ public class CustomizeWebMvcConfigurer implements WebMvcConfigurer {
 package com.zsx.config;
 
 import com.zsx.adapter.CustomizeHandlerInterceptorAdapter;
-import com.zsx.filter.LogFilter;
+import com.zsx.filter.RequestBodyParameterReadingFilter;
 import com.zsx.filter.ReadBodyHttpServletFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -252,10 +252,10 @@ import javax.servlet.Filter;
 public class CustomizeWebMvcConfigurer implements WebMvcConfigurer {
 
     @Bean
-    public FilterRegistrationBean<Filter> logFilter() {
+    public FilterRegistrationBean<Filter> RequestBodyParameterReadingFilter() {
         log.info("=========CustomizeWebMvcConfigurer.filterRegistrationBean()=========");
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new LogFilter());
+        registration.setFilter(new RequestBodyParameterReadingFilter());
         registration.addUrlPatterns("/*");
         return registration;
     }
