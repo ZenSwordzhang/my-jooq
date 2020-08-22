@@ -11,7 +11,7 @@ import java.io.*;
 @Slf4j
 public class CustomizeHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
-    private byte[] buffer;
+    private byte[] buffer = {};
 
     /**
      * Constructs a request object wrapping the given request.
@@ -24,12 +24,12 @@ public class CustomizeHttpServletRequestWrapper extends HttpServletRequestWrappe
         log.info("=========CustomizeHttpServletRequestWrapper.CustomizeHttpServletRequestWrapper()=========");
         try {
             InputStream is = request.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buff =new byte[1024];
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            byte[] buff = new byte[1024];
             int read = 0;
-            while ((read = is.read(buff)) >0) {
-                baos.write(buff,0, read);
-                this.buffer = baos.toByteArray();
+            while ((read = is.read(buff)) > 0) {
+                os.write(buff, 0, read);
+                this.buffer = os.toByteArray();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,18 +39,18 @@ public class CustomizeHttpServletRequestWrapper extends HttpServletRequestWrappe
     @Override
     public ServletInputStream getInputStream() {
         log.info("=========CustomizeHttpServletRequestWrapper.getInputStream()=========");
-        final ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+        final ByteArrayInputStream is = new ByteArrayInputStream(buffer);
 
         return new ServletInputStream() {
 
             @Override
             public int read() {
-                return bais.read();
+                return is.read();
             }
 
             @Override
             public boolean isFinished() {
-                return bais.available() == 0;
+                return is.available() == 0;
             }
 
             @Override

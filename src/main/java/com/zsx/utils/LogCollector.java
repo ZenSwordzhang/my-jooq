@@ -6,6 +6,7 @@ import com.zsx.enumeration.WeekDay;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -21,28 +22,40 @@ public class LogCollector {
 
     @Scheduled(fixedRate = 10*60*1000)
     public void run() {
-        synchronized (synList) {
-            if (synList.size() !=0 ) {
-                synList.clear();
+        if (synList.size() !=0 ) {
+            synchronized (synList) {
+                if (synList.size() != 0) {
+                    synList.clear();
+                }
             }
         }
     }
 
     public static void sendPost(Object obj) {
-        //create RestTemplate
-        String baseUrl = "http://zsx-2.local:8088";
-        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(baseUrl);
-        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.TEMPLATE_AND_VALUES);
-        RestTemplate restTemplate = new RestTemplateBuilder().basicAuthentication("logstash_writer_user", "123456").build();
-        restTemplate.setUriTemplateHandler(factory);
+        try {
+            //create RestTemplate
+            String baseUrl = "http://zsx-2.local:8088";
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity("/", obj, String.class);
+            DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(baseUrl);
+            factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.TEMPLATE_AND_VALUES);
 
-        //parse response
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            log.info("success:{}", responseEntity.getBody());
-        } else {
-            log.error("error,statusCode:{},return:{}", responseEntity.getStatusCode().value(), responseEntity.getBody());
+            SimpleClientHttpRequestFactory clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+            clientHttpRequestFactory.setConnectTimeout(5000);
+            clientHttpRequestFactory.setReadTimeout(5000);
+
+            RestTemplate restTemplate = new RestTemplateBuilder().basicAuthentication("logstash_writer_user", "123456").build();
+            restTemplate.setUriTemplateHandler(factory);
+
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity("/", obj, String.class);
+
+            //parse response
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                log.info("success:{}", responseEntity.getBody());
+            } else {
+                log.error("error,statusCode:{},return:{}", responseEntity.getStatusCode().value(), responseEntity.getBody());
+            }
+        } catch (Exception e) {
+            log.error("Failed to send error logs to logstash", e);
         }
     }
 

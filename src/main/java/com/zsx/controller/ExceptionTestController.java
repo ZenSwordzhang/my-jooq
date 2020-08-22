@@ -5,6 +5,7 @@ import com.zsx.exception.NonExistingUserException;
 import com.zsx.service.ExceptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/exception")
@@ -13,7 +14,7 @@ public class ExceptionTestController {
     @Autowired
     private ExceptionService exceptionService;
 
-    @PostMapping(value = "/test")
+    @GetMapping(value = "/test")
     public String test(String name) {
         if (name == null) {
             throw new RuntimeException("Name not null");
@@ -30,7 +31,7 @@ public class ExceptionTestController {
         throw new RuntimeException("Test RuntimeException");
     }
 
-    @GetMapping(value = "/user")
+    @PostMapping(value = "/user")
     public String test(@RequestBody User user) {
         if (user == null) {
             throw new RuntimeException("User not null");
@@ -45,5 +46,10 @@ public class ExceptionTestController {
             exceptionService.generateNonExistingUserException();
         }
         throw new RuntimeException("Test RuntimeException");
+    }
+
+    @PostMapping(value = "/file")
+    public String test(@RequestParam("file") MultipartFile file) {
+        throw new RuntimeException("File reading exception");
     }
 }

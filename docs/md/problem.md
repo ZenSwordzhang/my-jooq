@@ -872,6 +872,26 @@ PUT /beats-filebeat-20200730/_settings
     * openssl pkcs8 -in logstash01.key -topk8 -nocrypt -out logstash01.pem
     
 
+### 问题：TOO_MANY_REQUESTS/12/index read-only / allow delete (api)
+* 背景：elk使用过程中，logstash不能正常收集日志到es
+* 原因：硬盘空间不足
+* [参考链接](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-cluster.html#disk-based-shard-allocation)
+* 原因详情
+```
+cluster.routing.allocation.disk.watermark.low logo cloud
+Controls the low watermark for disk usage. It defaults to 85%, meaning that Elasticsearch will not allocate shards to nodes that have more than 85% disk used. It can also be set to an absolute byte value (like 500mb) to prevent Elasticsearch from allocating shards if less than the specified amount of space is available. This setting has no effect on the primary shards of newly-created indices but will prevent their replicas from being allocated.
+
+cluster.routing.allocation.disk.watermark.high logo cloud
+Controls the high watermark. It defaults to 90%, meaning that Elasticsearch will attempt to relocate shards away from a node whose disk usage is above 90%. It can also be set to an absolute byte value (similarly to the low watermark) to relocate shards away from a node if it has less than the specified amount of free space. This setting affects the allocation of all shards, whether previously allocated or not.
+
+cluster.routing.allocation.disk.watermark.enable_for_single_data_node
+For a single data node, the default is to disregard disk watermarks when making an allocation decision. This is deprecated behavior and will be changed in 8.0. This setting can be set to true to enable the disk watermarks for a single data node cluster (will become default in 8.0).
+
+cluster.routing.allocation.disk.watermark.flood_stage logo cloud
+Controls the flood stage watermark, which defaults to 95%. Elasticsearch enforces a read-only index block (index.blocks.read_only_allow_delete) on every index that has one or more shards allocated on the node, and that has at least one disk exceeding the flood stage. This setting is a last resort to prevent nodes from running out of disk space. The index block is automatically released when the disk utilization falls below the high watermark.
+```
+* 解决：释放硬盘空间
+
 
 
 ## <h2 style="text-align: center;"> ------------------**METRICBEAT**------------------ </h2>
