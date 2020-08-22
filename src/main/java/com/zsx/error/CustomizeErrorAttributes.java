@@ -28,7 +28,6 @@ public class CustomizeErrorAttributes extends DefaultErrorAttributes {
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
         log.info("=========CustomizeErrorAttributes.getErrorAttributes()=========");
-        log.error("==========CustomizeErrorAttributes.getErrorAttributes()============");
         return super.getErrorAttributes(webRequest, options);
     }
 
