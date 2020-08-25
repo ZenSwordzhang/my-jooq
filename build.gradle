@@ -148,7 +148,7 @@ jooq {
             }
             target {
                 packageName = 'org.jooq.db'
-//                directory = 'src/main/java'
+                directory = 'src/main/java'
             }
         }
     }

@@ -201,6 +201,9 @@ MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem
     * sudo apt install htop
     * htop
 
+### 查看内核数
+* grep 'model name' /proc/cpuinfo | wc -l
+
 ### 安装上传工具
 * sudo apt-get install lrzsz
 * 下载到本地命令：sz
