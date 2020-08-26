@@ -1,0 +1,18 @@
+heartbeat.monitors:
+  - type: tcp
+    schedule: '@every 5s'
+    hosts: ["es02:9200", "kibana01:5601"]
+    fields:
+      from: heartbeat-monitors-tcp
+    fields_under_root: true
+
+output.logstash:
+  hosts: ["logstash01:5044"]
+  ssl.certificate_authorities: ["${CERTS_DIR_HEARTBEAT}/ca/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_HEARTBEAT}/instance/instance.crt"
+  ssl.key: "${CERTS_DIR_HEARTBEAT}/instance/instance.key"
+  ssl.verification_mode: none
+
+#================================ Logging ======================================
+logging.to_stderr: true
+
