@@ -53,41 +53,62 @@ repositories {
     mavenLocal()
 }
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    jooqRuntime 'org.postgresql:postgresql:42.2.12'
-    implementation 'org.postgresql:postgresql:42.2.12'
-    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+
 
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.73'
 
-    implementation group: 'com.hynnet', name: 'json-lib', version: '2.4'
-//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
-//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
-//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.4.0'
-    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.13.1'
-    implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.13.1'
-    implementation group: 'org.springframework', name: 'spring-tx', version: '5.2.5.RELEASE'
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.3'
-    implementation group: 'org.elasticsearch.client', name: 'elasticsearch-rest-high-level-client', version: '7.8.0'
-    implementation group: 'org.elasticsearch.client', name: 'elasticsearch-rest-client', version: '7.8.0'
-    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.8.0'
+
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+
+
+    jooqRuntime 'org.postgresql:postgresql:42.2.12'
+
+
+
     implementation group: 'com.google.guava', name: 'guava', version: '29.0-jre'
-    implementation group: 'org.json', name: 'json', version: '20200518'
+    implementation group: 'com.hynnet', name: 'json-lib', version: '2.4'
 
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
+    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.3'
 
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation group: 'org.elasticsearch', name: 'elasticsearch', version: '7.8.0'
+    implementation group: 'org.elasticsearch.client', name: 'elasticsearch-rest-client', version: '7.8.0'
+    implementation group: 'org.elasticsearch.client', name: 'elasticsearch-rest-high-level-client', version: '7.8.0'
+
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '6.4.0'
+
+    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.13.1'
+    implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.13.1'
+
+    implementation group: 'org.json', name: 'json', version: '20200518'
+
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+
+    implementation group: 'org.springframework', name: 'spring-tx', version: '5.2.5.RELEASE'
+
+    implementation 'org.postgresql:postgresql:42.2.12'
+
+    implementation 'org.projectlombok:lombok'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+
+
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.7.0-M1'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: 'com.vaadin.external.google', module:'android-json'
     }
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.7.0-M1'
 
 
 }

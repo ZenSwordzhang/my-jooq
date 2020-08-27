@@ -48,9 +48,9 @@ import java.util.Map;
 @Component
 public class ESUtils {
 
-    @Value("${es.hosts}")
+    @Value("${elastic.stack.es.hosts}")
     private String[] hosts;
-    @Value("${es.scheme}")
+    @Value("${elastic.stack.es.scheme}")
     private String scheme;
 
     private RestHighLevelClient restHighLevelClient;

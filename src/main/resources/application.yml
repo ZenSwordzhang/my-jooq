@@ -51,8 +51,15 @@ spring:
     attributes: true
     controller-advice: true
 
-# ES配置
-es:
-  hosts: "zsx-2.local:9200"
-  scheme: http
 
+elastic:
+  stack:
+    es:
+      hosts: "zsx-2.local:9200"
+      scheme: http
+    logstash:
+      url: http://zsx-2.local:8088
+      username: logstash_writer_user
+      password: 123456
+      send-timeout: 5000
+      send-interval: 5000

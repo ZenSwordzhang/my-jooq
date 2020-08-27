@@ -2,9 +2,9 @@ package com.zsx.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
-import com.zsx.enumeration.ErrorLevel;
-import com.zsx.enumeration.WeekDay;
+import com.zsx.config.ElasticStackConfig;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,19 +12,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.util.*;
 
 @Log4j2
-@Component
 public class LogCollector {
 
     private final static List<Object> synList = Collections.synchronizedList(Lists.newArrayList());
 
-    @Scheduled(fixedRate = 10*60*1000)
+    @Autowired
+    private ElasticStackConfig elasticStackConfig;
+
+    @Scheduled(fixedDelayString = "${elastic.stack.logstash.send-interval:600000}")
     public void run() {
         consume();
     }
@@ -47,16 +48,16 @@ public class LogCollector {
     private void sendPost(Object obj) {
         try {
             //create RestTemplate
-            String baseUrl = "http://zsx-2.local:8088";
+            String baseUrl = elasticStackConfig.getLogstash().getUrl();
 
             DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(baseUrl);
             factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.TEMPLATE_AND_VALUES);
 
             SimpleClientHttpRequestFactory clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-            clientHttpRequestFactory.setConnectTimeout(5000);
-            clientHttpRequestFactory.setReadTimeout(5000);
+            clientHttpRequestFactory.setConnectTimeout(elasticStackConfig.getLogstash().getSendTimeout());
+            clientHttpRequestFactory.setReadTimeout(elasticStackConfig.getLogstash().getSendTimeout());
 
-            RestTemplate restTemplate = new RestTemplateBuilder().basicAuthentication("logstash_writer_user", "123456").build();
+            RestTemplate restTemplate = new RestTemplateBuilder().basicAuthentication(elasticStackConfig.getLogstash().getUsername(), elasticStackConfig.getLogstash().getPassword()).build();
             restTemplate.setUriTemplateHandler(factory);
 
             // Solve the Chinese garbled problem
