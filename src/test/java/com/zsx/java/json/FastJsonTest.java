@@ -2,7 +2,6 @@ package com.zsx.java.json;
 
 import com.alibaba.fastjson.JSON;
 import com.zsx.entity.Author;
-import net.sf.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -17,10 +16,11 @@ public class FastJsonTest {
         Author author2 = Author.of("lisisi", 18, false, "2");
         Author author3 = Author.of("wangzhaojun", 18, false, "3");
         List<Author> authors = List.of(author1, author2, author3);
-        String authorStr = JSON.toJSONString(authors);
-        assertTrue(authorStr.contains("zsx"));
-        assertTrue(authorStr.contains("lisisi"));
-        assertTrue(authorStr.contains("wangzhaojun"));
+        String authorsStr = JSON.toJSONString(authors);
+        System.out.println(authorsStr);
+        assertTrue(authorsStr.contains("zsx"));
+        assertTrue(authorsStr.contains("lisisi"));
+        assertTrue(authorsStr.contains("wangzhaojun"));
     }
 
     @Test

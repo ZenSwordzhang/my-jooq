@@ -1,6 +1,5 @@
 package com.zsx.java.json;
 
-import com.alibaba.fastjson.JSON;
 import com.zsx.entity.Author;
 import net.sf.json.JSONArray;
 import org.junit.jupiter.api.Test;

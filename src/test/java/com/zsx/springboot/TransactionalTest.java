@@ -1,4 +1,4 @@
-package com.zsx.java;
+package com.zsx.springboot;
 
 import com.google.common.collect.Lists;
 import com.zsx.MyJooqApplication;

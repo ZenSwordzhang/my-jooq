@@ -17,7 +17,7 @@ public class LogCollectorTest {
     private LogCollector logCollector;
 
     @Test
-    void testSendPost() {
+    void testProduce() {
         List<String> list = Lists.newArrayList();
         String json1 = " { \"msg\":\"BizException FATAL\",\"level\":\"FATAL\"} ";
         String json2 = " { \"msg\":\"RunTimeException\",\"level\":\"Error\"} ";
@@ -27,6 +27,6 @@ public class LogCollectorTest {
         list.add(json3);
         System.out.println(list);
         // logstash通过codec => "json"会将json数组拆分成多个文档保存
-        logCollector.sendPost(list.toString());
+        logCollector.produce(list.toString());
     }
 }

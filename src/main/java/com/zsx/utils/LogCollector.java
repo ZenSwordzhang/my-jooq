@@ -1,10 +1,14 @@
 package com.zsx.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.zsx.enumeration.ErrorLevel;
 import com.zsx.enumeration.WeekDay;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,20 +22,29 @@ import java.util.*;
 @Component
 public class LogCollector {
 
-    private final static List<String> synList = Collections.synchronizedList(Lists.newArrayList());
+    private final static List<Object> synList = Collections.synchronizedList(Lists.newArrayList());
 
     @Scheduled(fixedRate = 10*60*1000)
     public void run() {
+        consume();
+    }
+
+    public void produce(Object obj) {
+        synList.add(obj);
+    }
+
+    private void consume() {
         if (synList.size() !=0 ) {
             synchronized (synList) {
                 if (synList.size() != 0) {
+                    sendPost(JSON.toJSONString(synList));
                     synList.clear();
                 }
             }
         }
     }
 
-    public static void sendPost(Object obj) {
+    private void sendPost(Object obj) {
         try {
             //create RestTemplate
             String baseUrl = "http://zsx-2.local:8088";
@@ -46,7 +59,13 @@ public class LogCollector {
             RestTemplate restTemplate = new RestTemplateBuilder().basicAuthentication("logstash_writer_user", "123456").build();
             restTemplate.setUriTemplateHandler(factory);
 
-            ResponseEntity<String> responseEntity = restTemplate.postForEntity("/", obj, String.class);
+            // Solve the Chinese garbled problem
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/json; charset=UTF-8"));
+            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+            HttpEntity<Object> sendEntity = new HttpEntity<>(obj, headers);
+
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity("/", sendEntity, String.class);
 
             //parse response
             if (responseEntity.getStatusCode().is2xxSuccessful()) {
