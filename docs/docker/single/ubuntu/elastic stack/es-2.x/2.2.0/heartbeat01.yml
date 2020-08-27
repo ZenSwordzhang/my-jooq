@@ -4,7 +4,10 @@ heartbeat.monitors:
     hosts: ["es02:9200", "kibana01:5601"]
     fields:
       from: heartbeat-monitors-tcp
+      monitors_type: tcp
     fields_under_root: true
+
+#============================== Outputs =====================================
 
 output.logstash:
   hosts: ["logstash01:5044"]
@@ -12,6 +15,39 @@ output.logstash:
   ssl.certificate: "${CERTS_DIR_HEARTBEAT}/instance/instance.crt"
   ssl.key: "${CERTS_DIR_HEARTBEAT}/instance/instance.key"
   ssl.verification_mode: none
+  # 如果要使自定义index生效，必须在logstash的output下的elasticsearch中，
+  # 设置index的格式为index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+  # This is needed because when you set the value of index in the Filebeat configuration,
+  # that value is passed to Logstash from Filebeat via the @metadata.beat JSON field
+  # 参考：https://www.elastic.co/guide/en/beats/filebeat/current/logstash-output.html
+  index: "heartbeat"
+
+#output.elasticsearch:
+#  hosts: ["http://es01:9200"]
+#  username: "logstash_writer_user"
+#  password: "123456"
+#  # 如果要使自定义index生效，必须设置setup.ilm.enabled为false，参考：https://github.com/elastic/beats/issues/11866
+#  index: "heartbeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+#setup.template.name: "heartbeat-%{[agent.version]}"
+#setup.template.pattern: "heartbeat-%{[agent.version]}-*"
+#
+##============================== Setup ILM =====================================
+#setup.ilm.enabled: false
+
+
+#============================== Kibana =====================================
+setup.kibana:
+  host: "kibana01:5601"
+  username: "logstash_writer_user"
+  password: "123456"
+#  ssl.certificate_authorities: ["${CERTS_DIR_HEARTBEAT}/ca/ca.crt"]
+#  ssl.certificate: "${CERTS_DIR_HEARTBEAT}/instance/instance.crt"
+#  ssl.key: "${CERTS_DIR_HEARTBEAT}/instance/instance.key"
+#  ssl.verification_mode: none
+
+#============================== Dashboards =====================================
+# 此处设为true时，配置报错
+#setup.dashboards.enabled: false
 
 #================================ Logging ======================================
 logging.to_stderr: true

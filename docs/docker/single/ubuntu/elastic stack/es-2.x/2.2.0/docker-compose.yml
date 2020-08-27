@@ -131,7 +131,9 @@ services:
     command: ["--strict.perms=false"]
     volumes:
       - ${PWD}/config/heartbeat01.yml:/usr/share/heartbeat/heartbeat.yml:ro
-      - ${PWD}/data/heartbeat01:/usr/share/heartbeat/data
+      - ${PWD}/data/heartbeat01/data:/usr/share/heartbeat/data
+      - ${PWD}/data/heartbeat01/kibana:/usr/share/heartbeat/kibana
+      - ${PWD}/data/heartbeat01/kibana/7:/usr/share/heartbeat/kibana/7
       - ${PWD}/config/certs:${CERTS_DIR_HEARTBEAT}
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
