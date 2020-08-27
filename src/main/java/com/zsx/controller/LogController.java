@@ -1,8 +1,10 @@
 package com.zsx.controller;
 
+import com.zsx.entity.LogMessage;
 import com.zsx.utils.LogCollector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +18,12 @@ public class LogController {
     @Autowired
     private LogCollector logCollector;
 
-    @GetMapping("/{msg}")
-    public String getLog(@PathVariable("msg") String msg) {
-        String str = String.format("%s--%s",msg, UUID.randomUUID().toString());
-        log.info(str);
-        return str;
+    @GetMapping("/msg")
+    public LogMessage getLog() {
+        LogMessage logMessage = LogMessage.of("test", UUID.randomUUID().toString(), LogLevel.DEBUG);
+        log.info(logMessage.toString());
+        logCollector.produce(logMessage);
+        return logMessage;
     }
 
     @GetMapping("/test")
