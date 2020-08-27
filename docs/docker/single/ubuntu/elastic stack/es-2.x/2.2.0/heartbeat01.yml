@@ -6,6 +6,12 @@ heartbeat.monitors:
       from: heartbeat-monitors-tcp
       monitors_type: tcp
     fields_under_root: true
+  - type: http
+    id: service-status
+    name: Service Status
+    hosts: ["http://192.168.1.110:8088/service/status"]
+    check.response.status: [200]
+    schedule: '@every 5s'
 
 #============================== Outputs =====================================
 
