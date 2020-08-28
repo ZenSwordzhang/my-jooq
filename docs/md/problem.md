@@ -2,6 +2,16 @@
 
 
 
+## <h2 style="text-align: center;"> ------------------**APM SERVER**------------------ </h2>
+
+### 问题：beater/beater.go:180    failed to listen:listen tcp 172.21.75.201:8201: bind: cannot assign requested address
+* 背景：docker容器启动apm-server失败，日志报错
+* 解决：修改172.21.75.201:8201为0.0.0.0:8201
+```apm-server.yml
+apm-server:
+  host: "0.0.0.0:8201"
+```
+
 ## <h2 style="text-align: center;"> ------------------**CURL**------------------ </h2>
 
 ### 问题：Perl: curl: (1) Protocol 'http not supported or disabled in libcurl

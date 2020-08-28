@@ -122,7 +122,7 @@ services:
     networks:
       - es-shared
 
-  heartbeat:
+  heartbeat01:
     image: elastic/heartbeat:7.7.0
     container_name: heartbeat01
     user: heartbeat
@@ -137,6 +137,24 @@ services:
       - ${PWD}/config/certs:${CERTS_DIR_HEARTBEAT}
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared
+
+  apm-server01:
+    image: elastic/apm-server:7.7.0
+    container_name: apm-server01
+    user: apm-server
+    environment:
+      CERTS_DIR_APM_SERVER: ${CERTS_DIR_APM_SERVER}
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/apm-server01.yml:/usr/share/apm-server/apm-server.yml:ro
+      - ${PWD}/data/apm-server01:/usr/share/apm-server/data
+      - ${PWD}/config/certs:${CERTS_DIR_APM_SERVER}
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8201:8200
     networks:
       - es-shared
 

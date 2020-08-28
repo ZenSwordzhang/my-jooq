@@ -70,6 +70,9 @@ dependencies {
     jooqRuntime 'org.postgresql:postgresql:42.2.12'
 
 
+    implementation group: 'co.elastic.apm', name: 'apm-agent-api', version: '1.18.0.RC1'
+    compileOnly group: 'co.elastic.apm', name: 'apm-agent-attach', version: '1.18.0.RC1'
+
 
     implementation group: 'com.google.guava', name: 'guava', version: '29.0-jre'
     implementation group: 'com.hynnet', name: 'json-lib', version: '2.4'

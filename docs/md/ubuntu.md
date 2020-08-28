@@ -184,6 +184,7 @@ MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem
 
 ### 显示正在监听的服务端口
 * netstat -lntup
+* netstat -lntup | grep LISTEN
 
 ### 使用nc(NetCat)命令发送消息
 * echo "test nc command" | nc 192.168.1.110 8080

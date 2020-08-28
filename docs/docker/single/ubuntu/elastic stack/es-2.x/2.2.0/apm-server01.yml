@@ -1,0 +1,30 @@
+################################ APM Server ################################
+
+apm-server:
+  host: "0.0.0.0:8201"
+  ssl:
+    enabled: false
+  kibana:
+    enabled: true
+    host: "kibana01:5601"
+    username: "elastic"
+    password: "123456"
+
+output.elasticsearch:
+  hosts: ["http://es01:9200"]
+  username: "elastic"
+  password: "123456"
+  indices:
+    - index: "%{[processor.event]}"
+      mappings:
+        sourcemap:    "apm-sourcemap"
+        error:        "apm-error"
+        transaction:  "apm-transaction"
+        span:         "apm-span"
+        metric:       "apm-metric"
+        onboarding:   "apm-onboarding"
+      default:        "apm"
+
+#================================= Logging =================================
+logging.to_stderr: true
+
