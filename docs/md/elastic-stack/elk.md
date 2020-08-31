@@ -103,6 +103,8 @@ services:
 * [配置 SSL、TLS 以及 HTTPS 来确保 Elasticsearch、Kibana、Beats 和 Logstash 的安全](https://www.elastic.co/cn/blog/configuring-ssl-tls-and-https-to-secure-elasticsearch-kibana-beats-and-logstash#preparations)
 * [How To Secure Your Elastic Stack](https://blog.pythian.com/how-to-secure-your-elastic-stack-plus-kibana-logstash-and-beats/)
 
+* [kibana-elasticsearch](https://www.elastic.co/guide/en/kibana/current/elasticsearch-mutual-tls.html)
+
 ### 第三方
 * [ELKStack](http://docs.flycloud.me/docs/ELKStack/index.html)
 

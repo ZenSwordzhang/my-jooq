@@ -1,7 +1,7 @@
 ################################ APM Server ################################
 
 apm-server:
-  host: "0.0.0.0:8201"
+  host: "0.0.0.0:8200"
   ssl:
     enabled: false
   kibana:
@@ -15,15 +15,39 @@ output.elasticsearch:
   username: "elastic"
   password: "123456"
   indices:
-    - index: "%{[processor.event]}"
-      mappings:
-        sourcemap:    "apm-sourcemap"
-        error:        "apm-error"
-        transaction:  "apm-transaction"
-        span:         "apm-span"
-        metric:       "apm-metric"
-        onboarding:   "apm-onboarding"
-      default:        "apm"
+    - index: "apm-sourcemap"
+      when.contains:
+        processor.event: "sourcemap"
+
+    - index: "apm-error-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "error"
+
+    - index: "apm-transaction-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "transaction"
+
+    - index: "apm-span-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "span"
+
+    - index: "apm-metric-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "metric"
+
+    - index: "apm-onboarding-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "onboarding"
+
+#    - index: "%{[processor.event]}"
+#      mappings:
+#        sourcemap:    "apm-sourcemap"
+#        error:        "apm-error"
+#        transaction:  "apm-transaction"
+#        span:         "apm-span"
+#        metric:       "apm-metric"
+#        onboarding:   "apm-onboarding"
+#      default:        "apm"
 
 #================================= Logging =================================
 logging.to_stderr: true
