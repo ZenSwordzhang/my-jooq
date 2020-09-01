@@ -17,6 +17,16 @@ RSA key ok
 #### 
 * openssl pkcs12 -in elastic-certificates.p12 -cacerts -nokeys -out elasticsearch-ca.pem
 
+#### 将crt转换成pem
+* openssl x509 -in ca.crt -out ca.pem
+
+#### 根据key文件(http.key)生成ca文件(ca.crt)
+* openssl req -new -x509 -key http.key -out ca.crt -days 3650
+
+#### 根据csr文件、ca文件、key文件生成crt文件
+* openssl x509 -req -days 3650 -in http.csr -CA ca.crt -CAkey http.key -CAcreateserial -out http.crt
+
+
 ## 参考链接
 
 ### pkcs8

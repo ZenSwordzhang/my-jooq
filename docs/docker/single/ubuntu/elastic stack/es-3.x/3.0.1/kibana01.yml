@@ -1,0 +1,19 @@
+server.host: "0.0.0.0"
+server.name: "kibana01"
+# es配置了http.ssl认证后，此处需用https请求
+elasticsearch.hosts: ["https://es02:9200"]
+# es配置了transport.ssl认证后，此处需指定账号密码
+elasticsearch.username: "elastic"
+elasticsearch.password: "123456"
+
+
+# 配置ssl认证后，需使用https访问https://localhost:5601/
+# Configure Kibana to enable TLS for inbound connections.
+# Encrypt traffic between the browser and Kibana
+server.ssl.enabled: true
+server.ssl.certificate: ${CERTS_DIR_KIBANA}/instance/instance.crt
+server.ssl.key: ${CERTS_DIR_KIBANA}/instance/instance.key
+
+# es配置了ssl认证后，需指定证书路径，此处指定用于 Elasticsearch 实例的 PEM 证书文件路径
+# Configure Kibana to trust the Elasticsearch CA certificate chain for the HTTP layer
+elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]

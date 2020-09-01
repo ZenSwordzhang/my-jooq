@@ -6,13 +6,16 @@ discovery.seed_hosts: ["es01", "es02"]
 cluster.initial_master_nodes: ["node-1", "node-2"]
 # 必须设置为true才能启用安全认证
 xpack.security.enabled: true
+
+# Enable TLS on the HTTP layer.
 xpack.security.http.ssl.enabled: true
-xpack.security.http.ssl.key: ${CERTS_DIR_ES}/es02/es02.key
-xpack.security.http.ssl.certificate_authorities: ${CERTS_DIR_ES}/ca/ca.crt
-xpack.security.http.ssl.certificate: ${CERTS_DIR_ES}/es02/es02.crt
+xpack.security.http.ssl.certificate_authorities: ${CERTS_DIR_ES}/http/ca.crt
+xpack.security.http.ssl.key: ${CERTS_DIR_ES}/http/http.key
+xpack.security.http.ssl.certificate: ${CERTS_DIR_ES}/http/http.crt
+
+# Enable TLS on the transport layer.
 xpack.security.transport.ssl.enabled: true
 xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.certificate_authorities: ${CERTS_DIR_ES}/ca/ca.crt
-xpack.security.transport.ssl.certificate: ${CERTS_DIR_ES}/es02/es02.crt
-xpack.security.transport.ssl.key: ${CERTS_DIR_ES}/es02/es02.key
-
+xpack.security.transport.ssl.certificate: ${CERTS_DIR_ES}/instance/instance.crt
+xpack.security.transport.ssl.key: ${CERTS_DIR_ES}/instance/instance.key
