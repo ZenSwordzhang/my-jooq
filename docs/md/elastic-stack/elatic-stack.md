@@ -346,7 +346,9 @@ Signature ok
 subject=CN = es02
 Getting CA Private Key
 ```
-
+* CAcreateserial参数的作用是用来生成一个ca.srl文件
+    * 这个文件的作用是记录当前CA生成的证书的序列号。
+    * 如果再次在同样的位置进行命令，OpenSSL会去读取这个文件中的序列号，并自动+1作为下一个证书的序列号
 
 ### 二、ES配置
 
