@@ -16,4 +16,4 @@ server.ssl.key: ${CERTS_DIR_KIBANA}/instance/instance.key
 
 # es配置了ssl认证后，需指定证书路径，此处指定用于 Elasticsearch 实例的 PEM 证书文件路径
 # Configure Kibana to trust the Elasticsearch CA certificate chain for the HTTP layer
-elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
+elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/tsl_ssl/ca.crt"]
