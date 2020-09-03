@@ -748,6 +748,7 @@ PUT posts/_doc/1
 
 ```
 
+
 ## 相关信息
 
 ### 查看集群健康状态
@@ -756,6 +757,7 @@ PUT posts/_doc/1
 epoch      timestamp cluster status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
 1594641112 11:51:52  es      green           2         2     10   5    0    0        0             0                  -                100.0%
 ```
+
 
 ## es目录下操作
 
@@ -1109,10 +1111,166 @@ Verifying - Enter Encryption Password:
 ```
 * openssl pkcs8 -in instance.key -topk8 -nocrypt -out instance.pem
 
+
+## 安全认证
+
+### Configuring security in Elasticsearch
+
+* 1.Verify that you are using a license that includes the specific security features you want.
+
+* 2.Verify that the xpack.security.enabled setting is true on each node in your cluster.
+
+* 3.If you plan to run Elasticsearch in a Federal Information Processing Standard (FIPS) 140-2 enabled JVM, see FIPS 140-2.
+
+* 4.Configure Transport Layer Security (TLS/SSL) for internode-communication.
+
+* 5.If it is not already running, start Elasticsearch.
+
+* 6.Set the passwords for all built-in users.
+    * bin/elasticsearch-setup-passwords interactive
+
+* 7.Choose which types of realms you want to use to authenticate users.
+
+* 8.Set up roles and users to control access to Elasticsearch.
+```
+curl -XPOST -u elastic 'localhost:9200/_security/role/events_admin' -H "Content-Type: application/json" -d '{
+  "indices" : [
+    {
+      "names" : [ "events*" ],
+      "privileges" : [ "all" ]
+    },
+    {
+      "names" : [ ".kibana*" ],
+      "privileges" : [ "manage", "read", "index" ]
+    }
+  ]
+}'
+
+curl -XPOST -u elastic 'localhost:9200/_security/user/johndoe' -H "Content-Type: application/json" -d '{
+  "password" : "userpassword",
+  "full_name" : "John Doe",
+  "email" : "john.doe@anony.mous",
+  "roles" : [ "events_admin" ]
+}'
+```
+
+* 9.(Optional) Enable auditing to keep track of attempted and successful interactions with your Elasticsearch cluster
+```
+xpack.security.audit.enabled: true
+```
+
+
+### Encrypting communications in Elasticsearch
+
+* 1.Verify that the xpack.security.enabled setting is true
+
+* 2.Generate a private key and X.509 certificate
+
+* 3.Configure each node to
+    * Required: Enable TLS on the transport layer.
+    * Recommended: Enable TLS on the HTTP layer.
+
+* 4.If you are using Active Directory user authentication, encrypt communications between Elasticsearch and your Active Directory server.
+
+* 5.If you are using LDAP user authentication, encrypt communications between Elasticsearch and your LDAP server.
+
+
+### Encrypting communications between nodes in a cluster
+
+* 1.Generate node certificates.
+
+* 2.Enable TLS and specify the information required to access the node’s certificate
+* 2.1 PKCS#12 format
+```elasticsearch.yml
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12 
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+```
+
+* 2.2 PEM format
+```elasticsearch.yml
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.certificate_authorities: ${CERTS_DIR_ES}/ca/ca.crt
+xpack.security.transport.ssl.certificate: ${CERTS_DIR_ES}/instance/instance.crt
+xpack.security.transport.ssl.key: ${CERTS_DIR_ES}/instance/instance.key
+```
+
+* 3.If you secured the node’s certificate with a password, add the password to your Elasticsearch keystore
+```PKCS#12 format
+bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+
+bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+```
+
+```PEM format
+bin/elasticsearch-keystore add xpack.security.transport.ssl.secure_key_passphrase
+```
+
+* 4.Restart Elasticsearch
+
+
+### Encrypting HTTP client communications
+* When security features are enabled, you can optionally use TLS to ensure that communication between HTTP clients and the cluster is encrypted.
+
+* 1.If you have not done so already, generate node certificates.
+
+* 2.Verify that you’ve copied the output files to the appropriate locations, as specified in the readme files.
+
+* 3.Enable TLS and specify the information required to access the node’s certificate.
+* 3.1 PKCS#12 format
+```elasticsearch.yml
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: "http.p12"
+```
+
+* 3.2 PEM format
+```elasticsearch.yml
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.key:  /home/es/config/node1_http.key 
+xpack.security.http.ssl.certificate: /home/es/config/node1_http.crt 
+xpack.security.http.ssl.certificate_authorities: [ "/home/es/config/ca.crt" ]
+```
+* 3.3 If you secured the keystore or the private key with a password, add that password to a secure setting in Elasticsearch.
+```PKCS#12 format
+bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
+
+```
+
+```PEM format
+bin/elasticsearch-keystore add xpack.security.http.ssl.secure_key_passphrase
+```
+
+* 4. Optional: If you want to use Kibana, follow the instructions in the readme provided by the elasticsearch-certutil http command or see Encrypting communications in Kibana.
+
+* 5.Restart Elasticsearch
+
+
+### PKI authentication for clients connecting directly to Elasticsearch
+
+* 1.Add a realm configuration for a pki realm to elasticsearch.yml under the xpack.security.authc.realms.pki namespace.
+
+* 2.Optional: If you want to use something other than the CN of the Subject DN as the username, you can specify a regex to extract the desired username. 
+
+* 3.Optional: If you want the same users to also be authenticated using certificates when they connect to Kibana, you must configure the Elasticsearch PKI realm to allow delegation. 
+
+* 4.Restart Elasticsearch because realm configuration is not reloaded automatically.
+
+* 5.Enable SSL/TLS.
+
+* 6.Enable client authentication on the desired network layers (transport or http).
+
+* 7.Map roles for PKI users.
+
+
+
 ## 集成
 
 ### springboot集成es
 * [ESUtilsTest](../../../src/test/java/com/zsx/utils/ESUtilsTest.java)
+
+
 
 ## 参考链接
 

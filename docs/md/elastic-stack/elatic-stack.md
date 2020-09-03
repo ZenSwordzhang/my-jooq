@@ -2,7 +2,10 @@
 
 ### 简写
 * ECS(Elastic Compute Service)
-
+* PKI(Public key infrastructure)
+* LDAP(Lightweight Directory Access Protocol)
+* ILM(Index lifecycle management).
+* DNs(Distinguished Names)
 
 ### 新增环境变量
 ```

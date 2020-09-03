@@ -1,0 +1,14 @@
+POST /_security/role_mapping/kibana_client_certificate
+{
+  "roles": [ "superuser", "kibana_system", "logstash_writer_role"],
+  "enabled": true,
+    "rules" : { "any" : [
+      { "field" : { "dn" : "cn=es01" } },
+      { "field" : { "dn" : "cn=es02" } },
+      { "field" : { "dn" : "cn=kibana01" } },
+      { "field" : { "dn" : "cn=logstash01" } },
+      { "field" : { "dn" : "cn=metricbeat01" } },
+      { "field" : { "dn" : "cn=heartbeat01" } },
+      { "field" : { "dn" : "cn=apm-server01"} }
+  ] }
+}

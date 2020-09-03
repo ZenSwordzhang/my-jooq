@@ -3,6 +3,8 @@
 ### 查看服务状态
 * curl -I http://localhost:5601/status
 
+
+
 ## kibana界面的Dev Tools控制台进行增删改查
 
 ### 获取索引信息
@@ -15,7 +17,7 @@
 
 ### 插入索引信息
 * (/{index}/_doc/{id}, /{index}/_doc, or /{index}/_create/{id})
-# 已弃用：POST /library/books/1
+* 已弃用：POST /library/books/1
 * POST /library/_doc
 * POST /library/_doc/1
 * POST /library/_create/1
@@ -33,7 +35,7 @@ POST /library/_doc/1
 ```
 
 ### 查询索引信息
-* 已启用：GET /library/books/1
+* 已弃用：GET /library/books/1
 * GET /library/_doc/1
 
 ### 更新索引信息
@@ -243,6 +245,8 @@ POST /library/_doc
 * DELETE /library/_doc/_mapping
 * DELETE /library/_doc/_mapping?pretty=true
 
+
+
 ## 基本查询
 
 ### 合并查询
@@ -255,6 +259,8 @@ GET /library/_mget
 ### 简单查询
 * 带索引：GET /library/_search?q=title:elasticsearch
 * 不带索引：GET /_search?q=title:elasticsearch
+
+
 
 ## term查询
 
@@ -315,6 +321,9 @@ GET /library/_search
   }
 }
 ```
+
+
+
 ## match查询
 * match跟term区别是,match查询的时候,elasticsearch会根据你给定的字段提供合适的分析器,而term查询不会有分析器分析过程
 
@@ -515,6 +524,8 @@ GET /library/_search
   }
 }
 ```
+
+
 
 ## 可视化操作
 
@@ -849,6 +860,7 @@ gte | greater than or equal to
 * .wb(): .worldbanck() 的简写
 
 
+
 ## kibana目录下操作
 
 ### 创建秘钥库
@@ -858,14 +870,16 @@ gte | greater than or equal to
 * bin/kibana-keystore add elasticsearch.name
 * bin/kibana-keystore add elasticsearch.password
 
-# 从秘钥库删除信息
+### 从秘钥库删除信息
 * bin/kibana-keystore remove elasticsearch.name
+
 
 
 ## 图表
 
-### dashboard
 
+
+### dashboard
 
 #### 跳转到另一个dashboard
 * 1.新建Markdown格式的Visualization图表
@@ -874,6 +888,105 @@ gte | greater than or equal to
 * 3.将导航地址部分的内容按照markdown风格编写进Visualization图表
     * [Metricbeat AWS](#dashboard/e6776b10-1534-11ea-841c-01bf20a6c8ba)
 
+
+
+## 安全认证
+
+
+### Configure security in Kibana
+
+* 1.Configure security in Elasticsearch.
+
+* 2.Configure Kibana to use the appropriate built-in user
+    * es配置了transport.ssl认证后，此处需指定账号密码
+```kibana.yml
+elasticsearch.username: "elastic"
+elasticsearch.password: "123456"
+```
+* 3. Set the xpack.security.encryptionKey property in the kibana.yml configuration file
+    * An arbitrary string of 32 characters or more that is used to encrypt credentials in a cookie.
+    * It is crucial that this key is not exposed to users of Kibana.
+    * By default, a value is automatically generated in memory.
+    * If you use that default behavior, all sessions are invalidated when Kibana restarts.
+```kibana.yml
+xpack.security.encryptionKey: "9993cdc9-883c-404a-9309-d54824fc8eac"
+```
+
+* 4.Optional: Set a timeout to expire idle sessions.
+    * By default, a session stays active until the browser is closed.
+    * The idle timeout is formatted as a duration of <count>[ms|s|m|h|d|w|M|Y] (e.g. 70ms, 5s, 3d, 1Y). 
+```kibana.yml
+xpack.security.session.idleTimeout: "30d"
+```
+
+* 5.Optional: Change the maximum session duration or "lifespan" — also known as the "absolute timeout". 
+    * By default, a session stays active until the browser is closed.
+    * The lifespan is formatted as a duration of <count>[ms|s|m|h|d|w|M|Y] (e.g. 70ms, 5s, 3d, 1Y).
+```kibana.yml
+xpack.security.session.lifespan: "8h"
+```
+
+* 6.Optional: Configure Kibana to encrypt communications.
+
+* 7.Optional: Configure Kibana to authenticate to Elasticsearch with a client certificate.
+
+* 8.Restart Kibana.
+
+* 9.Choose an authentication mechanism and grant users the privileges they need to use Kibana.
+```
+POST /_security/user/jacknich
+{
+  "password" : "t0pS3cr3t",
+  "roles" : [ "kibana_admin" ]
+}
+```
+
+* 10.Grant users access to the indices that they will be working with in Kibana.
+
+* 11.Verify that you can log in as a user.
+    * https://localhost:5601
+
+
+### Encrypt communications in Kibana
+
+#### -------------------- Encrypt traffic between the browser and Kibana --------------------
+* 配置ssl认证后，需使用https访问，如 https://localhost:5601/
+
+* 1.Obtain a server certificate and private key for Kibana
+
+* 2.Configure Kibana to access the server certificate and private key.
+```kibana.yml
+server.ssl.certificate: ${CERTS_DIR_KIBANA}/instance/instance.crt
+server.ssl.key: ${CERTS_DIR_KIBANA}/instance/instance.key
+```
+
+* 3.Configure Kibana to enable TLS for inbound connections.
+```kibana.yml
+server.ssl.enabled: true
+```
+
+* 4.Restart Kibana.
+
+
+#### -------------------- Encrypt traffic between Kibana and Elasticsearch --------------------
+
+* 1.Enable TLS on the HTTP layer in Elasticsearch.
+
+* 2.Obtain the certificate authority (CA) certificate chain for Elasticsearch.
+
+* 3.Configure Kibana to trust the Elasticsearch CA certificate chain for the HTTP layer.
+```kibana.yml
+elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/tsl_ssl/ca.crt"]
+```
+
+* 4.Configure Kibana to enable TLS for outbound connections to Elasticsearch
+    * es配置了http.ssl认证后，此处需用https请求
+```kibana.yml
+elasticsearch.hosts: ["https://es02:9200"]
+```
+
+
+### PKI authentication for clients connecting to Kibana
 
 
 ## 参考文档
@@ -905,6 +1018,7 @@ gte | greater than or equal to
 ### 告警
 * [watcher-ui](https://www.elastic.co/guide/en/kibana/current/watcher-ui.html)
 * [alerting](https://www.elastic.co/guide/en/kibana/current/alerting-getting-started.html)
+* [Alerting and action settings](https://www.elastic.co/guide/en/kibana/current/alert-action-settings-kb.html#general-alert-action-settings)
 
 ### Kibana可视化中的JSON输入(JSON Input in Kibana Visualization)
 * [JSON Input in Kibana Visualization](https://discuss.elastic.co/t/json-input-in-kibana-visualization/217723)

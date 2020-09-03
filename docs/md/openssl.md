@@ -2,6 +2,8 @@
 
 * CSR(Certificate Signing Request)
 * CA(Certificate Authority)
+* SAN(Subject Alternative Name)
+* DNS(Domain Name System)
 
 
 ## 操作

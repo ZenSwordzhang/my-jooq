@@ -1,19 +1,75 @@
 server.host: "0.0.0.0"
 server.name: "kibana01"
-# es配置了http.ssl认证后，此处需用https请求
-elasticsearch.hosts: ["https://es02:9200"]
+
+# -------------------- Configure security in Kibana --------------------
+# 1.Configure security in Elasticsearch.
+
+# 2.Configure Kibana to use the appropriate built-in user
 # es配置了transport.ssl认证后，此处需指定账号密码
 elasticsearch.username: "elastic"
 elasticsearch.password: "123456"
 
+# 3.Set the xpack.security.encryptionKey property in the kibana.yml configuration file
+# An arbitrary string of 32 characters or more that is used to encrypt credentials in a cookie.
+# It is crucial that this key is not exposed to users of Kibana.
+# By default, a value is automatically generated in memory.
+# If you use that default behavior, all sessions are invalidated when Kibana restarts.
+xpack.security.encryptionKey: "9993cdc9-883c-404a-9309-d54824fc8eac"
 
-# 配置ssl认证后，需使用https访问https://localhost:5601/
-# Configure Kibana to enable TLS for inbound connections.
-# Encrypt traffic between the browser and Kibana
-server.ssl.enabled: true
+# 4.Optional: Set a timeout to expire idle sessions.
+# By default, a session stays active until the browser is closed.
+# The idle timeout is formatted as a duration of <count>[ms|s|m|h|d|w|M|Y] (e.g. 70ms, 5s, 3d, 1Y).
+# xpack.security.session.idleTimeout: "30d"
+
+# 5.Optional: Change the maximum session duration or "lifespan" — also known as the "absolute timeout".
+# By default, a session stays active until the browser is closed.
+# The lifespan is formatted as a duration of <count>[ms|s|m|h|d|w|M|Y] (e.g. 70ms, 5s, 3d, 1Y).
+# xpack.security.session.lifespan: "8h"
+
+# 6.Optional: Configure Kibana to encrypt communications.
+
+# 7.Optional: Configure Kibana to authenticate to Elasticsearch with a client certificate.
+
+# 8.Restart Kibana.
+
+# 9.Choose an authentication mechanism and grant users the privileges they need to use Kibana.
+
+# 10.Grant users access to the indices that they will be working with in Kibana.
+
+# 11.Verify that you can log in as a user.
+
+
+# -------------------- Encrypt traffic between the browser and Kibana --------------------
+# 配置ssl认证后，需使用https访问，如 https://localhost:5601/
+
+# 1.Obtain a server certificate and private key for Kibana
+
+# 2.Configure Kibana to access the server certificate and private key.
 server.ssl.certificate: ${CERTS_DIR_KIBANA}/instance/instance.crt
 server.ssl.key: ${CERTS_DIR_KIBANA}/instance/instance.key
 
-# es配置了ssl认证后，需指定证书路径，此处指定用于 Elasticsearch 实例的 PEM 证书文件路径
-# Configure Kibana to trust the Elasticsearch CA certificate chain for the HTTP layer
+# 3.Configure Kibana to enable TLS for inbound connections.
+server.ssl.enabled: true
+
+# 4.Restart Kibana.
+
+
+# -------------------- Encrypt traffic between Kibana and Elasticsearch --------------------
+
+# 1.Enable TLS on the HTTP layer in Elasticsearch.
+
+# 2.Obtain the certificate authority (CA) certificate chain for Elasticsearch.
+
+# 3.Configure Kibana to trust the Elasticsearch CA certificate chain for the HTTP layer.
 elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/tsl_ssl/ca.crt"]
+
+# 4.Configure Kibana to enable TLS for outbound connections to Elasticsearch
+# es配置了http.ssl认证后，此处需用https请求
+elasticsearch.hosts: ["https://es02:9200"]
+
+
+server.ssl.certificateAuthorities: /path/to/your/cacert.pem
+server.ssl.clientAuthentication: required
+xpack.security.authc.providers:
+  pki.pki1:
+    order: 0
