@@ -1,0 +1,52 @@
+################################ APM Server ################################
+
+apm-server:
+  host: "0.0.0.0:8200"
+  ssl:
+    enabled: false
+
+  #---------------------------- APM Server - Agent Configuration ----------------------------
+  kibana:
+    # For APM Agent configuration in Kibana, enabled must be true.
+    enabled: true
+    protocol: "https"
+    host: "kibana01:5601"
+    #    username: "elastic"
+    #    password: "123456"
+    ssl.enabled: true
+    ssl.certificate: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.crt"
+    ssl.key: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.key"
+
+output.elasticsearch:
+  hosts: ["https://es01:9200"]
+  username: "elastic"
+  password: "123456"
+  ssl.certificate_authorities: ["${CERTS_DIR_APM_SERVER}/tsl_ssl/ca.crt"]
+  indices:
+    - index: "apm-sourcemap-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "sourcemap"
+
+    - index: "apm-error-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "error"
+
+    - index: "apm-onboarding-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "onboarding"
+
+    - index: "apm-transaction-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "transaction"
+
+    - index: "apm-span-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "span"
+
+    - index: "apm-metric-%{+yyyy.MM.dd}"
+      when.contains:
+        processor.event: "metric"
+
+#================================= Logging =================================
+logging.to_stderr: true
+

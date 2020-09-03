@@ -2,6 +2,7 @@ metricbeat.config.modules:
 
   # Glob pattern for configuration reloading
   # path: ${path.config}/modules.d/*.yml
+  path: /usr/share/metricbeat/metricbeat.yml
 
   # Period on which files under path should be checked for changes
   reload.period: 10s
@@ -15,6 +16,35 @@ metricbeat.max_start_delay: 10s
 
 
 metricbeat.modules:
+  #-------------------------------- System Module --------------------------------
+  - module: system
+    metricsets:
+      - cpu             # CPU usage
+      - load            # CPU load averages
+      - memory          # Memory usage
+      - network         # Network IO
+      - process         # Per process metrics
+      - process_summary # Process summary
+      - uptime          # System Uptime
+      - socket_summary  # Socket summary
+      - core           # Per CPU core usage
+      - diskio         # Disk IO
+      - filesystem     # File system usage for each mountpoint
+      - fsstat         # File system summary metrics
+      #- raid           # Raid
+      - socket         # Sockets and connection info (linux only)
+      #- service        # systemd service information
+    period: 10s
+    process.include_top_n:
+      by_cpu: 5
+      by_memory: 5
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: system
+
   #--------------------------------- HTTP Module ---------------------------------
   - module: http
     metricsets:
@@ -27,7 +57,32 @@ metricbeat.modules:
       - add_fields:
           target: ''
           fields:
-            from: http
+            from: metricbeat
+            source: http
+
+  #--------------------------------- Elasticsearch Module ---------------------------------
+  - module: elasticsearch
+    metricsets:
+      - ccr
+      - cluster_stats
+      - index
+      - index_recovery
+      - index_summary
+      - ml_job
+      - node_stats
+      - shard
+      - enrich
+    period: 10s
+    hosts: ["es02:9200"]
+    username: "elastic"
+    password: "123456"
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: elasticsearch
 
   #--------------------------------- Logstash Module ---------------------------------
   # Collect Logstash monitoring data with Metricbeate
@@ -37,46 +92,70 @@ metricbeat.modules:
       - node_stats
     period: 10s
     hosts: ["logstash01:9600"]
-    #username: "user"
-    #password: "secret"
+    # username: "test_kibana_monitor"
+    # password: "123456"
     xpack.enabled: true
     processors:
       - add_fields:
           target: ''
           fields:
-            from: logstash
+            from: metricbeat
+            source: logstash
 
-#  #--------------------------------- Beat Module ---------------------------------
-#  - module: beat
-#    metricsets:
-#      - stats
-#      - state
-#    period: 10s
-#    hosts: ["http://filebeat01:5066"]
-#    #username: "user"
-#    #password: "secret"
-#    xpack.enabled: true
-#    processors:
-#      - add_fields:
-#          target: ''
-#          fields:
-#            from: filebeat
+  #--------------------------------- Beat Module ---------------------------------
+  - module: beat
+    metricsets:
+      - stats
+      - state
+    period: 10s
+    hosts: ["filebeat01:5166"]
+    # username: "test_kibana_monitor"
+    # password: "123456"
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: filebeat
+
+  #---------------------------- docker Status Module ----------------------------
+  - module: docker
+    metricsets:
+      # - "container"
+      # - "cpu"
+      - "diskio"
+      # - "event"
+      # - "healthcheck"
+      # - "info"
+      # - "image"
+      # - "memory"
+      - "network"
+    hosts: ["unix:///var/run/docker.sock"]
+    period: 10s
+    enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: docker
 
 #================================ Logging ======================================
 # Send all logging output to stderr. The default is false.
-# logging.to_stderr: true
+logging.to_stderr: true
 
-#----------------------------- Logging -----------------------------
-logging.level: info
-logging.to_files: true
-logging.files:
-  path: /usr/share/metricbeat/logs
-  name: metricbeat
-  keepfiles: 7
-  permissions: 0644
+  # logging.level: info
+  # logging.to_files: true
+  # logging.files:
+  # path: /usr/share/metricbeat/logs
+  # name: metricbeat
+  # keepfiles: 7
+# permissions: 0644
 
 output.logstash:
-  hosts: ["logstash01:5044"]
+  hosts: ["zsx-2.local:5044"]
   ssl.certificate_authorities: ["${CERTS_DIR_METRICBEAT}/ca/ca.crt"]
-  ssl.certificate: "${CERTS_DIR_METRICBEAT}/metricbeat01/metricbeat01.crt"
-  ssl.key: "${CERTS_DIR_METRICBEAT}/metricbeat01/metricbeat01.key"
+  ssl.certificate: "${CERTS_DIR_METRICBEAT}/instance/instance.crt"
+  ssl.key: "${CERTS_DIR_METRICBEAT}/instance/instance.key"
+  ssl.verification_mode: none
