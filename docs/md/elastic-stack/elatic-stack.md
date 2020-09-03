@@ -144,6 +144,50 @@ output.logstash:
 * 8.再依次启动logstash、filebeat、metricbeat
 
 
+## 安全认证
+
+### Mutual TLS authentication between Kibana and Elasticsearch
+
+* 1.Set up Kibana to work with Elastic Stack security features with a username and password.
+
+* 2.Set up TLS encryption between Kibana and Elasticsearch.
+    * This entails generating a "server certificate" for Elasticsearch to use on the HTTP layer.
+
+* 3.Obtain a client certificate and private key for Kibana.
+    * Kibana must this "client certificate" and corresponding private key when connecting to Elasticsearch.
+
+* 4.Obtain the certificate authority (CA) certificate chain for Kibana.
+
+* 5.Configure Elasticsearch with a PKI realm and a native realm.
+```elsticsearch.yml
+xpack.security.authc.realms.pki.realm1.order: 1
+xpack.security.authc.realms.pki.realm1.certificate_authorities: "/path/to/kibana-ca.crt"
+xpack.security.authc.realms.native.realm2.order: 2
+```
+
+* 6.Configure Elasticsearch to request client certificates.
+```elsticsearch.yml
+xpack.security.http.ssl.client_authentication: "optional"
+
+```
+
+* 7.Restart Elasticsearch
+
+* 8.Use Kibana to create a role mapping in Elasticsearch for the client certificate.
+
+* 9.Configure Kibana to use the client certificate and private key.
+```elsticsearch.yml
+elasticsearch.ssl.certificate: "/path/to/kibana-client.crt"
+elasticsearch.ssl.key: "/path/to/kibana-client.key"
+```
+
+* 10.Configure Kibana not to use a username and password for Elasticsearch.
+    * You must remove the elasticsearch.username and elasticsearch.password settings from kibana.yml. 
+    * If these are present, Kibana will attempt to use them to authenticate to Elasticsearch via the native realm.
+
+* 11.Restart Kibana.
+
+
 ## Mutual TLS authentication between Kibana and Elasticsearch
 * [主要参考链接](https://www.elastic.co/guide/en/kibana/current/elasticsearch-mutual-tls.html)
 * [证书部分参考链接](https://segmentfault.com/a/1190000022102940)

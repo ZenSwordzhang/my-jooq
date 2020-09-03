@@ -6,15 +6,15 @@ server.name: "kibana01"
 
 # 2.Configure Kibana to use the appropriate built-in user
 # es配置了transport.ssl认证后，此处需指定账号密码
-elasticsearch.username: "elastic"
-elasticsearch.password: "123456"
+# elasticsearch.username: "elastic"
+# elasticsearch.password: "123456"
 
 # 3.Set the xpack.security.encryptionKey property in the kibana.yml configuration file
 # An arbitrary string of 32 characters or more that is used to encrypt credentials in a cookie.
 # It is crucial that this key is not exposed to users of Kibana.
 # By default, a value is automatically generated in memory.
 # If you use that default behavior, all sessions are invalidated when Kibana restarts.
-xpack.security.encryptionKey: "9993cdc9-883c-404a-9309-d54824fc8eac"
+# xpack.security.encryptionKey: "9993cdc9-883c-404a-9309-d54824fc8eac"
 
 # 4.Optional: Set a timeout to expire idle sessions.
 # By default, a session stays active until the browser is closed.
@@ -45,8 +45,8 @@ xpack.security.encryptionKey: "9993cdc9-883c-404a-9309-d54824fc8eac"
 # 1.Obtain a server certificate and private key for Kibana
 
 # 2.Configure Kibana to access the server certificate and private key.
-server.ssl.certificate: ${CERTS_DIR_KIBANA}/instance/instance.crt
-server.ssl.key: ${CERTS_DIR_KIBANA}/instance/instance.key
+server.ssl.certificate: ${CERTS_DIR_KIBANA}/tsl_ssl/client.crt
+server.ssl.key: ${CERTS_DIR_KIBANA}/tsl_ssl/client.key
 
 # 3.Configure Kibana to enable TLS for inbound connections.
 server.ssl.enabled: true
@@ -68,8 +68,11 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/tsl_ssl/ca.crt"]
 elasticsearch.hosts: ["https://es02:9200"]
 
 
-server.ssl.certificateAuthorities: /path/to/your/cacert.pem
-server.ssl.clientAuthentication: required
-xpack.security.authc.providers:
-  pki.pki1:
-    order: 0
+## -------------------- Public key infrastructure (PKI) authentication --------------------
+## Using a PKI realm is a gold feature.
+#
+#server.ssl.certificateAuthorities: ${CERTS_DIR_KIBANA}/tsl_ssl/ca.crt
+#server.ssl.clientAuthentication: required
+#xpack.security.authc.providers:
+#  pki.pki1:
+#    order: 0
