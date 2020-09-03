@@ -1,0 +1,12 @@
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = es01
+DNS.2 = es02
+DNS.3 = kibana01
+DNS.4 = logstash01
+DNS.5 = metricbeat01
+DNS.6 = heartbeat01
+DNS.7 = apm-server01
