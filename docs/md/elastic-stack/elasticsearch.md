@@ -411,6 +411,23 @@ xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 
 ## 命令操作
 
+### 查看集群健康状况
+
+#### https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html
+* GET /_cluster/health
+* GET /_cluster/health?pretty
+* GET /_cluster/health?wait_for_status=yellow&timeout=50s
+* GET /_cluster/health/metricbeat-system-20200904?level=shards
+
+
+#### https://www.elastic.co/guide/en/elasticsearch/reference/current/cat.html
+* GET /_cat/health
+* GET /_cat/master?help
+* GET /_cat/nodes?h=ip,port,heapPercent,name
+* GET /_cat/indices?bytes=b&s=store.size:desc&v
+* GET _cat/templates?v&s=order:desc,index_patterns
+
+
 ### 删除索引
 * curl -X DELETE http://localhost:9200/{indexName}
 
@@ -757,6 +774,8 @@ PUT posts/_doc/1
 epoch      timestamp cluster status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
 1594641112 11:51:52  es      green           2         2     10   5    0    0        0             0                  -                100.0%
 ```
+
+* curl https://zsx-2.local:9201/_cluster/health?pretty -u kibana:123456
 
 
 ## es目录下操作
