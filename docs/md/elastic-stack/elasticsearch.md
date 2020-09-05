@@ -1323,6 +1323,6 @@ bin/elasticsearch-keystore add xpack.security.http.ssl.secure_key_passphrase
 ### 第三方
 * [secure-settings](https://learnku.com/docs/elasticsearch73/7.3/322-secure-settings/6591)
 * [elasticsearch技术解析与实战(四) 聚合](https://pdf.us/2018/05/16/1050.html)
-
+* [search-guard](https://docs.search-guard.com/latest/offline-tls-tool)
 
 

@@ -482,3 +482,8 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
 ### 五、查看结果
 * [kibana](https://zsx-2.local:5601/)
     * ![](../../img/elastic-stack/kibana/kibana-02.jpg)
+
+
+
+## 参考网站
+* [get-started-docker](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)

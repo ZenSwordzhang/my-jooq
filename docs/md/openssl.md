@@ -4,6 +4,8 @@
 * CA(Certificate Authority)
 * SAN(Subject Alternative Name)
 * DNS(Domain Name System)
+* SSL(Secure Sockets Layer)
+* TSL(Transport Layer Security)
 
 
 ## 操作
@@ -103,6 +105,7 @@ Getting Private key
 ```
 * 查看证书详细信息
     * openssl x509 -noout -text -in ca.crt
+    * keytool -printcert -file ca.crt
 * 查看证书的颁发机构
     * openssl x509 -in ca.crt -noout -issuer
 * 查看根证书的subject信息
