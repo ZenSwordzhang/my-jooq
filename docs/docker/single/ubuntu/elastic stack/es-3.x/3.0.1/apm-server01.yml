@@ -10,12 +10,12 @@ apm-server:
     # For APM Agent configuration in Kibana, enabled must be true.
     enabled: true
     protocol: "https"
-    host: "kibana01:5601"
-    #    username: "elastic"
-    #    password: "123456"
-    ssl.enabled: true
-    ssl.certificate: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.crt"
-    ssl.key: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.key"
+    host: "zsx-2.local:5601"
+    username: "elastic"
+    password: "123456"
+    ssl.certificate_authorities: ["${CERTS_DIR_APM_SERVER}/tsl_ssl/ca.crt"]
+    # ssl.certificate: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.crt"
+    # ssl.key: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.key"
 
 output.elasticsearch:
   hosts: ["https://es01:9200"]

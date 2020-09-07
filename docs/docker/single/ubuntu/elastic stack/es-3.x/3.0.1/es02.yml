@@ -9,16 +9,17 @@ xpack.security.enabled: true
 
 # Enable TLS on the HTTP layer.
 xpack.security.http.ssl.enabled: true
-xpack.security.http.ssl.certificate_authorities: ${CERTS_DIR_ES}/tsl_ssl/ca.crt
+# xpack.security.http.ssl.certificate_authorities: ${CERTS_DIR_ES}/tsl_ssl/ca.crt
 xpack.security.http.ssl.key: ${CERTS_DIR_ES}/tsl_ssl/server.key
 xpack.security.http.ssl.certificate: ${CERTS_DIR_ES}/tsl_ssl/server.crt
 
 # Enable TLS on the transport layer.
 xpack.security.transport.ssl.enabled: true
 xpack.security.transport.ssl.verification_mode: certificate
-xpack.security.transport.ssl.certificate_authorities: ${CERTS_DIR_ES}/ca/ca.crt
-xpack.security.transport.ssl.certificate: ${CERTS_DIR_ES}/instance/instance.crt
-xpack.security.transport.ssl.key: ${CERTS_DIR_ES}/instance/instance.key
+# xpack.security.transport.ssl.certificate_authorities: ${CERTS_DIR_ES}/tsl_ssl/ca.crt
+xpack.security.transport.ssl.certificate: ${CERTS_DIR_ES}/tsl_ssl/server.crt
+xpack.security.transport.ssl.key: ${CERTS_DIR_ES}/tsl_ssl/server.key
+
 
 
 # -------------------- Public key infrastructure (PKI) authentication --------------------

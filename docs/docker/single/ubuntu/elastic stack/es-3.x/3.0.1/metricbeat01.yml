@@ -73,9 +73,10 @@ metricbeat.modules:
       - shard
       - enrich
     period: 10s
-    hosts: ["es02:9200"]
+    hosts: ["https://es02:9200"]
     username: "elastic"
     password: "123456"
+    ssl.certificate_authorities: ["${CERTS_DIR_METRICBEAT}/tsl_ssl/ca.crt"]
     xpack.enabled: true
     processors:
       - add_fields:
@@ -158,4 +159,6 @@ output.logstash:
   ssl.certificate_authorities: ["${CERTS_DIR_METRICBEAT}/ca/ca.crt"]
   ssl.certificate: "${CERTS_DIR_METRICBEAT}/instance/instance.crt"
   ssl.key: "${CERTS_DIR_METRICBEAT}/instance/instance.key"
+  # 此处默认值为full，会验证IP
+  # x509: certificate is valid for instance, not zsx-2.local
   ssl.verification_mode: none

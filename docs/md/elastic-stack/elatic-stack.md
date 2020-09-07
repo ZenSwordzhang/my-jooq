@@ -485,5 +485,61 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
 
 
 
+## 认证流程
+* ES -> 浏览器
+    * ES
+        * key
+        * certificate
+    * 浏览器
+        * certificate_authorities
+
+* ES -> logstash
+    * ES
+        * key
+        * certificate
+    * logstash
+        * certificate_authorities
+
+* ES -> kibana
+    * ES
+        * key
+        * certificate
+    * kibana
+        * certificate_authorities
+
+* logstash -> ES
+    * logstash
+        * username
+        * password
+    * ES
+        * 
+* logstash -> beats
+    * logstash
+        * key
+        * certificate
+    * beats
+        * certificate_authorities
+
+* kibana -> ES
+    * kibana
+        * username
+        * password
+    * ES
+        * 
+
+* kibana -> 浏览器
+    * kibana
+        * key
+        * certificate
+    * 浏览器
+        * certificate_authorities
+
+* beats -> logstash
+    * beats
+        * key
+        * certificate
+    * logstash
+        * certificate_authorities
+
 ## 参考网站
 * [get-started-docker](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)

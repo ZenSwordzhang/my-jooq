@@ -76,3 +76,6 @@ elasticsearch.hosts: ["https://es02:9200"]
 #xpack.security.authc.providers:
 #  pki.pki1:
 #    order: 0
+
+# 配置alert时需要
+xpack.encryptedSavedObjects.encryptionKey: "9993cdc9-883c-404a-9309-d54824fc8eac"

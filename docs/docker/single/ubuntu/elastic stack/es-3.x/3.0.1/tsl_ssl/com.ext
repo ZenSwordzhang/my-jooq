@@ -10,3 +10,5 @@ DNS.4 = logstash01
 DNS.5 = metricbeat01
 DNS.6 = heartbeat01
 DNS.7 = apm-server01
+DNS.8 = localhost
+DNS.9 = zsx-2.local
