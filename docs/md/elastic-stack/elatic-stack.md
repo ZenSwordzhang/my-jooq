@@ -541,5 +541,46 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
     * logstash
         * certificate_authorities
 
+
+## 告警
+```
+{
+    "alert_id": "{{alertId}}",
+    "alert_name": "{{alertName}}",
+    "space_id": "{{spaceId}}",
+    "tags": "{{tags}}",
+    "alert_instance_id": "{{alertInstanceId}}",
+    "context_message": "{{context.message}}",
+    "context_title": "{{context.title}}",
+    "context_group": "{{context.group}}",
+    "context_date": "{{context.date}}",
+    "context_value": "{{context.value}}"
+}
+
+PUT alert-info
+{
+    "settings" : {
+        "number_of_shards" : 1
+    },
+    "mappings" : {
+      "properties" : {
+          "@timestamp" : {"type" : "date" },
+          "alert_id" : { "type" : "keyword" },
+          "alert_name" : { "type" : "keyword" },
+          "space_id" : { "type" : "keyword" },
+          "tags" : { "type" : "keyword" },
+          "alert_instance_id" : { "type" : "keyword" },
+          "context_message": { "type" : "keyword" },
+          "context_title" : { "type" : "keyword" },
+          "context_group" : { "type" : "keyword" },
+          "context_date" : { "type" : "date" },
+          "context_value" : { "type" : "keyword" }
+
+      }
+    }
+}
+```
+
 ## 参考网站
 * [get-started-docker](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)
+* [watcher-ui](https://www.elastic.co/guide/en/kibana/master/watcher-ui.html)

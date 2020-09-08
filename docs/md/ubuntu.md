@@ -2,6 +2,39 @@
 
 ### 参数详解
 
+#### htop命令
+```console
+ 1[             28.8*] 4 [                 3.9%]   7[                        6.7%]  10 [                                  6.8%]
+ 2[              4.0%] 5 [                 7.7%]   8[                        4.6%]  11 [                                  6.7%]                                                                                    
+ 3[              9.3%] 6 [                 7.7%]   9[                        2.6%]  12 [                                  3.3%]
+ Mem[                               11.5G/31.2G]   Tasks:52, 488 thr; 1 running
+ Swp[                                4.5m/8.00G]   Load average: 6.17 6.48 0.76
+                                                   Uptime: 4 days, 17:42:13
+
+   PID USER      PRI  NI    VIRT    RES    SHR S  CPU%  MEM%     TIME+ COMMAND                                                                                                                                                      
+  1108 postgres   20   0  248432  27264  25136 S   0.0   0.3   0:20.52 postgres   
+503913 ubuntu     20   0   71.4G  15.5G  6512M S  99.9   49.7  5:16.41 usr/share/elasticsearch/jdk/bin/java -Xshare:auto
+```
+
+* CPU使用情况
+```console
+ 1[             28.8*] 4 [                 3.9%]   7[                        6.7%]  10 [                                  6.8%]
+ 2[              4.0%] 5 [                 7.7%]   8[                        4.6%]  11 [                                  6.7%]                                                                                    
+ 3[              9.3%] 6 [                 7.7%]   9[                        2.6%]  12 [                                  3.3%]
+```
+* 内存使用情况
+    * Mem[                               11.5G/31.2G] 
+* 交换分区使用情况
+    * Swp[                                4.5m/8.00G]
+* Tasks为进程总数
+    * Tasks:52
+* 系统1分钟、5分钟、10分钟的平均负载情况
+    * Load average: 6.17 6.48 0.76
+* Uptime为系统运行的时间
+    * Uptime: 4 days, 17:42:13
+* 进程信息
+    * PID USER      PRI  NI    VIRT    RES    SHR S  CPU%  MEM%     TIME+ COMMAND
+
 #### top命令 
 * [参考链接](https://www.jianshu.com/p/608c63268f52)
 
@@ -64,8 +97,8 @@ MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem
 * 第四行：内存状态
     * MiB Mem :   7948.5 total,    223.4 free,   3399.0 used,   4326.2 buff/cache
         * 7948.5 total （物理内存总量 7948.5M）
-        * 223.4 used （已使用的内存 223.4M）
-        * 3399.0 free （空闲内存 3399.0M）
+        * 223.4 free （空闲内存 223.4M）
+        * 3399.0 used （已使用的内存 3399.0M）
         * 4326.2 buff/cache （内核缓存使用/缓冲交换区 4326.2M）
 * 第五行 swap交换分区信息
     * MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem 

@@ -748,6 +748,15 @@ filter {
 ```logstash.conf
 ssl_verify_mode => "peer"
 ```
+* **修改解决方案(2020-09-08)**
+    * 如果设置ssl_verify_mode => "peer"配置后，客户端提供的证书不匹配时，连接未关闭，仍然能够将数据发送到logstash
+    * 报错原因：想要发送数据到logstash的客户端提供的证书不匹配
+    * 解决：
+        * ssl_verify_mode => "force_peer"配置仍然保留
+        * 提供与logstash中CA匹配证书和秘钥
+        * 如果开启了双向认证，logstash提供的秘钥和证书也必须跟客户端中的CA匹配
+
+
 
 ### 问题：Could not execute action: PipelineAction::Create
 * 问题详情：
