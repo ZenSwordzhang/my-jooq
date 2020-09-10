@@ -65,6 +65,8 @@ POST /library/books/1/_update
 ### 删除索引信息
 * 已弃用：DELETE /library/books/1
 * DELETE /library/_doc/1
+
+### 删除索引所有数据
 ```
 POST indexName/_delete_by_query
 {

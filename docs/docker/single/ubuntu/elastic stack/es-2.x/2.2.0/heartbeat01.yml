@@ -1,6 +1,7 @@
 heartbeat.monitors:
   - type: tcp
     schedule: '@every 5s'
+    # 此处配置为 【容器名：容器内部端口】
     hosts: ["es02:9200", "kibana01:5601"]
     fields:
       from: heartbeat-monitors-tcp

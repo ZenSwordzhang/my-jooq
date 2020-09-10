@@ -6,6 +6,8 @@
 * LDAP(Lightweight Directory Access Protocol)
 * ILM(Index lifecycle management).
 * DNs(Distinguished Names)
+* ILM(Index lifecycle management)
+* ICMP(Internet Control Message Protocol)
 
 ### 新增环境变量
 ```
@@ -543,6 +545,9 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
 
 
 ## 告警
+
+### metricbeat告警
+* 配置
 ```
 {
     "alert_id": "{{alertId}}",
@@ -556,7 +561,9 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
     "context_date": "{{context.date}}",
     "context_value": "{{context.value}}"
 }
-
+```
+* 创建索引alert-info
+```
 PUT alert-info
 {
     "settings" : {
@@ -576,6 +583,53 @@ PUT alert-info
           "context_date" : { "type" : "date" },
           "context_value" : { "type" : "keyword" }
 
+      }
+    }
+}
+```
+### heartbeat 告警
+```
+{
+    "alert_id": "{{alertId}}",
+    "alert_name": "{{alertName}}",
+    "space_id": "{{spaceId}}",
+    "tags": "{{tags}}",
+    "alert_instance_id": "{{alertInstanceId}}",
+    "context_message": "{{context.message}}",
+    "context_down_monitors_with_geo": "{{context.downMonitorsWithGeo}}",
+    "state_first_checked_at": "{{state.firstCheckedAt}}",
+    "state_first_triggered_at": "{{state.firstTriggeredAt}}",
+    "state_current_trigger_started": "{{state.currentTriggerStarted}}",
+    "state_is_triggered": "{{state.isTriggered}}",
+    "state_last_checked_at": "{{state.lastCheckedAt}}",
+    "state_last_resolved_at": "{{state.lastResolvedAt}}",
+    "state_last_triggered_at": "{{state.lastTriggeredAt}}"
+}
+```
+* 创建索引down-alert-info
+```
+PUT down-alert-info
+{
+    "settings" : {
+        "number_of_shards" : 1
+    },
+    "mappings" : {
+      "properties" : {
+          "@timestamp" : {"type" : "date" },
+          "alert_id" : { "type" : "keyword" },
+          "alert_name" : { "type" : "keyword" },
+          "space_id" : { "type" : "keyword" },
+          "tags" : { "type" : "keyword" },
+          "alert_instance_id" : { "type" : "keyword" },
+          "context_message": { "type" : "keyword" },
+          "context_down_monitors_with_geo" : { "type" : "geo_point" },
+          "state_first_checked_at" : { "type" : "date" },
+          "state_first_triggered_at" : { "type" : "date" },
+          "state_current_trigger_started" : { "type" : "date" },
+          "state_is_triggered" : { "type" : "boolean" },
+          "state_last_checked_at" : { "type" : "date" },
+          "state_last_resolved_at" : { "type" : "date" },
+          "state_last_triggered_at" : { "type" : "date" }
       }
     }
 }

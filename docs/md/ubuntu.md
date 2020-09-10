@@ -1,3 +1,10 @@
+## 简写
+* HDD(Hard Disk Driver)
+* SSD(Solid State Disk)
+* CPU(Central Processing Unit)
+* LVM(Logical Volume Manager)
+* NFS(Network File System)
+
 ## 命令
 
 ### 参数详解
@@ -123,6 +130,128 @@ MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem
     * COMMAND （进程名称[命令名/命令行]）
 
 
+### iostat命令
+* [参考链接](https://www.man7.org/linux/man-pages/man1/iostat.1.html)
+* 可以通过命令获取参数详情
+    * man iostat
+
+#### 命令格式
+* iostat[参数][时间][次数]
+
+#### 命令参数
+* -C 显示CPU使用情况
+* -d 显示磁盘使用情况
+* -k 以 KB 为单位显示
+* -m 以 M 为单位显示
+* -N 显示磁盘阵列(LVM) 信息
+* -n 显示NFS 使用情况
+* -p[磁盘] 显示磁盘和分区的情况
+* -t 显示终端和CPU的信息
+* -x 显示详细信息
+* -V 显示版本信息
+
+
+#### CPU Utilization Report
+
+##### 查看CPU命令
+* iostat -c
+```console
+ubuntu@ubuntu-backup:~ » iostat -c                                                                                                                                                                                                        1 ↵
+Linux 5.4.0-42-generic (ubuntu-backup) 	09/09/2020 	_x86_64_	(12 CPU)
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           6.48    0.00    0.83    0.25    0.00   92.44
+
+```
+* %user：Show the percentage of CPU utilization that occurred while executing at the user level (application).
+* %nice：Show the percentage of CPU utilization that occurred while executing at the user level with nice priority.
+* %system： Show the percentage of CPU utilization that occurred while executing at the system level (kernel).
+* %iowait： Show the percentage of time that the CPU or CPUs were idle during which the system had an outstanding disk I/O request.
+* %steal：Show the percentage of time spent in involuntary wait by the virtual CPU or CPUs while the hypervisor was servicing another virtual processor.
+* %idle：Show the percentage of time that the CPU or CPUs were idle and the system did not have an outstanding disk I/O request.
+
+
+#### Device Utilization Report
+
+##### 查看磁盘命令
+* iostat -d
+```console
+ubuntu@ubuntu-backup:~ » iostat -d
+Linux 5.4.0-42-generic (ubuntu-backup) 	09/09/2020 	_x86_64_	(12 CPU)
+
+Device             tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd
+loop0             0.00         0.00         0.00         0.00        739          0          0
+loop1             0.00         0.00         0.00         0.00       2135          0          0
+loop2             0.00         0.00         0.00         0.00       1464          0          0
+loop3             0.00         0.00         0.00         0.00        739          0          0
+loop4             0.00         0.00         0.00         0.00       1483          0          0
+loop5             0.02         0.03         0.00         0.00      12799          0          0
+loop6             0.00         0.00         0.00         0.00          4          0          0
+sda             111.95        46.84      1785.77       698.22   22704936  865538056  338419840
+
+```
+* Device: Device: This column gives the device (or partition) name as listed in the /dev directory.
+* tps: Indicate the number of transfers per second that wereissued to the device. 
+    * A transfer is an I/O request to the device. 
+    * Multiple logical requests can be combined into a single I/O request to the device. 
+    * A transfer is of indeterminate size
+* kB_read/s：Indicate the amount of data read from the deviceexpressed in a number of blocks per second.(KB/s)
+    * Blocks are equivalent to sectors and therefore have a size of 512 bytes.
+* kB_wrtn/s：Indicate the amount of data written to the device expressed in a number of blocks per second.(KB/s)
+* kB_dscd/s：Indicate the amount of data discarded for the device expressed in a number of blocks per second.(KB/s)
+* kB_read：The total number of blocks read.(KB)
+* kB_wrtn：The total number of blocks written.(KB)
+* kB_dscd：The total number of blocks discarded.(KB)
+
+
+##### 查看磁盘详情命令
+* iostat -dx
+ ```console
+ ubuntu@ubuntu-backup:~ » iostat -dx
+ Linux 5.4.0-42-generic (ubuntu-backup) 	09/09/2020 	_x86_64_	(12 CPU)
+ 
+ Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz  aqu-sz  %util
+ loop0            0.00      0.00     0.00   0.00    0.10    14.21    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+ loop1            0.00      0.00     0.00   0.00    0.25     1.47    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+ loop2            0.00      0.00     0.00   0.00    0.18    22.52    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+ loop3            0.00      0.00     0.00   0.00    0.17    14.22    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+ loop4            0.00      0.00     0.00   0.00    0.29    17.65    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+ loop5            0.02      0.03     0.00   0.00    0.21     1.06    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+ loop6            0.00      0.00     0.00   0.00    0.00     1.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00
+ sda              0.91     46.84     0.15  14.13    0.61    51.61  110.98   1785.72   159.71  59.00    0.95    16.09    0.06    698.16     0.00   0.00    0.58 12217.76    0.01   7.97
+ 
+ ```
+* Device: This column gives the device (or partition) name as listed in the /dev directory.
+* r/s: The number (after merges) of read requests completed per second for the device.
+* rkB/s: The number of sectors read from the device per second.(KB)
+* rrqm/s: The number of read requests merged per second that were queued to the device.
+* %rrqm: The percentage of read requests merged together before being sent to the device.
+* r_await：The average time (in milliseconds) for read requests issued to the device to be served. 
+    * This includes the time spent by the requests in queue and the time spent servicing them.
+* rareq-sz：The average size (in kilobytes) of the read requests that were issued to the device.
+* w/s：The number (after merges) of write requests completed per second for the device.
+* wkB/s：The number of sectors written to the device per second.(KB)
+* wrqm/s：The number of write requests merged per second that were queued to the device.
+* %wrqm：The percentage of write requests merged together before being sent to the device.
+* w_await：The average time (in milliseconds) for write requests issued to the device to be served. 
+    * This includes the time spent by the requests in queue and the time spent servicing them.
+* wareq-sz：The average size (in kilobytes) of the write requests that were issued to the device.
+* d/s：The number (after merges) of discard requests completed per second for the device.
+* dkB/s：The number of sectors discarded for the device per second(KB)
+* drqm/s：The number of discard requests merged per second that were queued to the device.
+* %drqm：The percentage of discard requests merged together before being sent to the device.
+* d_await：The average time (in milliseconds) for discard requests issued to the device to be served. 
+    * This includes the time spent by the requests in queue and the time spent servicing them.
+* dareq-sz：The average size (in kilobytes) of the discard requests that were issued to the device.
+* aqu-sz：The average queue length of the requests that were issued to the device.
+    * Note: In previous versions, this field was known as avgqu-sz.
+* %util: Percentage of elapsed time during which I/O requests were issued to the device (bandwidth utilization for the device). 
+    * Device saturation occurs when this value is close to 100% for devices serving requests serially.
+    * But for devices serving requests in parallel, such as RAID arrays and modern SSDs, this number does not reflect their performance limits.
+
+
+
+
 ### 系统升级
 
 #### 1.检查系统上是否有被锁住版本的软件包
@@ -234,6 +363,26 @@ MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3272.8 avail Mem
 * 方式2：使用htop命令
     * sudo apt install htop
     * htop
+
+### 查看磁盘活动情况
+* sudo iotop
+
+### iostat命令
+* iostat[参数][时间][次数]
+
+#### 查看磁盘IO
+* iostat
+* iostat -d
+* iostat -dx
+
+#### 查看TPS和吞吐量
+* iostat -d -k 1 10
+
+#### 查看设备使用率、响应时间
+* iostat -d -x -k 1 10
+
+#### 查看CPU状态
+* iostat -c 1 10
 
 ### 查看内核数
 * grep 'model name' /proc/cpuinfo | wc -l
