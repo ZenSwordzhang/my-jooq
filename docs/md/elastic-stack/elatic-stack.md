@@ -562,9 +562,9 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
     "context_value": "{{context.value}}"
 }
 ```
-* 创建索引alert-info
+* 创建索引host-performance-threshold-alert
 ```
-PUT alert-info
+PUT host-performance-threshold-alert
 {
     "settings" : {
         "number_of_shards" : 1
@@ -575,17 +575,18 @@ PUT alert-info
           "alert_id" : { "type" : "keyword" },
           "alert_name" : { "type" : "keyword" },
           "space_id" : { "type" : "keyword" },
-          "tags" : { "type" : "keyword" },
+          "tags" : { "type" : "text" },
           "alert_instance_id" : { "type" : "keyword" },
-          "context_message": { "type" : "keyword" },
-          "context_title" : { "type" : "keyword" },
-          "context_group" : { "type" : "keyword" },
+          "context_message": { "type" : "text" },
+          "context_title" : { "type" : "text" },
+          "context_group" : { "type" : "text" },
           "context_date" : { "type" : "date" },
-          "context_value" : { "type" : "keyword" }
+          "context_value" : { "type" : "text" }
 
       }
     }
 }
+
 ```
 ### heartbeat 告警
 ```
@@ -606,9 +607,10 @@ PUT alert-info
     "state_last_triggered_at": "{{state.lastTriggeredAt}}"
 }
 ```
-* 创建索引down-alert-info
+* 创建索引service-down-alert
+    * state_last_resolved_at属性字段值可能会为空，设置为date类型时，会收不到告警信息
 ```
-PUT down-alert-info
+PUT service-down-alert
 {
     "settings" : {
         "number_of_shards" : 1
@@ -619,21 +621,24 @@ PUT down-alert-info
           "alert_id" : { "type" : "keyword" },
           "alert_name" : { "type" : "keyword" },
           "space_id" : { "type" : "keyword" },
-          "tags" : { "type" : "keyword" },
+          "tags" : { "type" : "text" },
           "alert_instance_id" : { "type" : "keyword" },
-          "context_message": { "type" : "keyword" },
-          "context_down_monitors_with_geo" : { "type" : "geo_point" },
+          "context_message": { "type" : "text" },
+          "context_down_monitors_with_geo" : { "type" : "text" },
           "state_first_checked_at" : { "type" : "date" },
           "state_first_triggered_at" : { "type" : "date" },
           "state_current_trigger_started" : { "type" : "date" },
           "state_is_triggered" : { "type" : "boolean" },
           "state_last_checked_at" : { "type" : "date" },
-          "state_last_resolved_at" : { "type" : "date" },
+          "state_last_resolved_at" : { "type" : "keyword" },
           "state_last_triggered_at" : { "type" : "date" }
       }
     }
 }
 ```
+
+### 安装模板
+* curl -k  -u "elastic:123456" -XPUT -H 'Content-Type: application/json' https://zsx-2.local:9201/_template/metricbeat-* -d '@metricbeat.template.json'
 
 ## 参考网站
 * [get-started-docker](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)

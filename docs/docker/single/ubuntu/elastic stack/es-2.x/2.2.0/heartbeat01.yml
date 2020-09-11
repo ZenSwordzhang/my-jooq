@@ -14,6 +14,32 @@ heartbeat.monitors:
     check.response.status: [200]
     schedule: '@every 5s'
 
+
+
+# ================================= Processors =================================
+processors:
+#  - add_observer_metadata:
+#      cache.ttl: 5m
+#      geo:
+#        name: nyc-dc1-rack1
+#        location: 40.7128, -74.0060
+#        continent_name: North America
+#        country_iso_code: US
+#        region_name: New York
+#        region_iso_code: NY
+#        city_name: New York
+  - add_observer_metadata:
+      cache.ttl: 5m
+      geo:
+        name: szs
+        # Latitude, Longitude (Latitude is between -90 and 90, Longitude is between -180 and 180 )
+        location: 22.533978, 113.960549
+        continent_name: North China
+        country_iso_code: CN
+        region_name: Shen Zhen
+        region_iso_code: SZ
+        city_name: Shen Zhen
+
 #============================== Outputs =====================================
 
 output.logstash:
