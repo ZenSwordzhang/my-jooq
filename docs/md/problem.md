@@ -1089,6 +1089,34 @@ services:
 ![](../img/metricbeat/metricbeat-06.jpg)
 
 
+### Kibana Metrics – 500 Internal Server Error
+* 背景：kibana中导航到metrics模块时报500错误
+* [参考链接](https://discuss.elastic.co/t/kibana-metrics-500-internal-server-error/238260/3)
+* 解决：
+    * 1.停止logstash、metricbeat，删除原有metricbeat模板以及指标数据
+    * 2.从安装的metricbeat中导出模板
+        * metricbeat export template > metricbeat.template.json 
+        * [导出模板](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-template.html#load-template-manually-alternate)
+    * 3.导入模板到es
+        * curl -k -u "elastic:123456" -XPUT -H 'Content-Type: application/json' https://zsx-2.local:9201/_template/metricbeat-* -d '@metricbeat.template.json'
+    * 4.修改logstash中关于metricbeat收集的指标索引配置
+        * 4.1 通过logstash指定的es索引必须与metricbeat模板中的Index patterns匹配，并启用模板
+            * ![](../img/metricbeat/metricbeat-11.jpg)
+            ```
+          elasticsearch {
+              hosts => ["https://es01:9200"]
+              index => "metricbeat-7.7.0-%{[source_module]}-%{+YYYYMMdd}"
+              ssl => true
+              cacert => "${CERTS_DIR_LOGSTASH}/tsl_ssl/ca.crt"
+              user => "logstash_writer_user"
+              password => "123456"
+              manage_template => true
+          }
+          ```
+        * 4.2 **注:不能自定义source字段，否则日志会报错，无法正常保存索引数据**
+    * 1.修改完成后，重启logstash、metricbeat
+
+
 ### 问题：Metricbeat收集的postgresql.database.blocks.time.read.ms、postgresql.database.blocks.time.write.ms指标为0
 * [参考链接](https://www.postgresql.org/docs/current/monitoring-stats.html)
     * blk_read_time：postgresql.database.blocks.time.read.ms

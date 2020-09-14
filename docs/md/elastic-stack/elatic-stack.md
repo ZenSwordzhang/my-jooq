@@ -637,6 +637,46 @@ PUT service-down-alert
 }
 ```
 
+### metrics告警
+* 配置
+```
+{
+    "alert_id": "{{alertId}}",
+    "alert_name": "{{alertName}}",
+    "space_id": "{{spaceId}}",
+    "tags": "{{tags}}",
+    "alert_instance_id": "{{alertInstanceId}}",
+    "context_group": "{{context.group}}",
+    "context_value_of": "{{context.valueOf}}",
+    "context_threshold_of": "{{context.thresholdOf}}",
+    "context_metric_of": "{{context.metricOf}}"
+}
+```
+* 创建索引
+```
+PUT metric-alert
+{
+    "settings" : {
+        "number_of_shards" : 1
+    },
+    "mappings" : {
+      "properties" : {
+          "@timestamp" : {"type" : "date" },
+          "alert_id" : { "type" : "keyword" },
+          "alert_name" : { "type" : "keyword" },
+          "space_id" : { "type" : "keyword" },
+          "tags" : { "type" : "text" },
+          "alert_instance_id" : { "type" : "keyword" },
+          "context_group" : { "type" : "text" },
+          "context_value_of": { "type" : "text" },
+          "context_threshold_of" : { "type" : "text" },
+          "context_metric_of" : { "type" : "text" }
+
+      }
+    }
+}
+```
+
 ### 安装模板
 * curl -k  -u "elastic:123456" -XPUT -H 'Content-Type: application/json' https://zsx-2.local:9201/_template/metricbeat-* -d '@metricbeat.template.json'
 
