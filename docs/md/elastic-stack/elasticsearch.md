@@ -411,6 +411,19 @@ xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 
 ## 命令操作
 
+### 获取所有模板
+* GET _template
+
+### 查看模板
+* GET _/_template/<template_name>
+* GET /_template/<template_name1,template_name2>
+
+### 获取模板版本号
+* GET /_template/<template_name>?filter_path=*.version
+
+### 删除模板
+* DELETE /_template/template_name
+
 ### 查看集群健康状况
 
 #### https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html

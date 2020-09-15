@@ -680,7 +680,16 @@ PUT metric-alert
 
 ### 安装模板
 * curl -k  -u "elastic:123456" -XPUT -H 'Content-Type: application/json' https://zsx-2.local:9201/_template/metricbeat-* -d '@metricbeat.template.json'
+* docker run docker.elastic.co/beats/metricbeat:7.7.0 setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]'
+* docker run docker.elastic.co/beats/heartbeat:7.7.0 setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]'
+
 
 ## 参考网站
 * [get-started-docker](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)
 * [watcher-ui](https://www.elastic.co/guide/en/kibana/master/watcher-ui.html)
+
+### metricbeat模板
+* [metricbeat-template](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-template.html)
+
+### heartbeat模板
+* [heartbeat-template](https://www.elastic.co/guide/en/beats/heartbeat/current/heartbeat-template.html)

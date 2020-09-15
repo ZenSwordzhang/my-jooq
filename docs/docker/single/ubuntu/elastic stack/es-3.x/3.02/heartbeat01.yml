@@ -1,0 +1,60 @@
+heartbeat.monitors:
+  - type: tcp
+    id: Container-status
+    name: Container Status
+    schedule: '@every 5s'
+    hosts: ["es02:9200", "kibana01:5601"]
+    fields:
+      from: heartbeat
+      source_module: tcp
+    fields_under_root: true
+  - type: http
+    id: service-status
+    name: Service Status
+    hosts: ["http://192.168.1.110:8088/service/status"]
+    check.response.status: [200]
+    schedule: '@every 5s'
+    fields:
+      from: heartbeat
+      source_module: http
+    fields_under_root: true
+
+# ================================= Processors =================================
+processors:
+  - add_observer_metadata:
+      cache.ttl: 5m
+      geo:
+        name: szs-dc1-rack1
+        location: 13.9605, 22.5339
+        continent_name: North China
+        country_iso_code: CN
+        region_name: Shen Zhen
+        region_iso_code: SZ
+        city_name: Shen Zhen
+
+#============================== Outputs =====================================
+
+output.logstash:
+  hosts: ["logstash01:5044"]
+  ssl.certificate_authorities: ["${CERTS_DIR_HEARTBEAT}/tsl_ssl/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_HEARTBEAT}/tsl_ssl/client.crt"
+  ssl.key: "${CERTS_DIR_HEARTBEAT}/tsl_ssl/client.key"
+
+
+#output.elasticsearch:
+#  hosts: ["https://es01:9200"]
+#  username: "logstash_writer_user"
+#  password: "123456"
+#  ssl.certificate_authorities: ["${CERTS_DIR_HEARTBEAT}/tsl_ssl/ca.crt"]
+#  index: "heartbeat-%{+yyyy.MM.dd}"
+#
+#setup.template.name: "heartbeat"
+#setup.template.pattern: "heartbeat-*"
+#
+##============================== Setup ILM =====================================
+#setup.ilm.enabled: false
+
+
+#================================ Logging ======================================
+logging.to_stderr: true
+
