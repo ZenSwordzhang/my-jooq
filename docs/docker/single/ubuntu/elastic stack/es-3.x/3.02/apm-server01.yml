@@ -17,8 +17,12 @@ apm-server:
     # ssl.certificate: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.crt"
     # ssl.key: "${CERTS_DIR_APM_SERVER}/tsl_ssl/client.key"
 
+  #---------------------------- APM Server - ILM Index Lifecycle Management ----------------------------
+  ilm.enabled: false
+
 
 #================================= Template =================================
+setup.template.enabled: true
 setup.template.name: "apm-server"
 setup.template.pattern: "apm-*"
 

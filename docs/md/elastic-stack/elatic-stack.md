@@ -8,6 +8,7 @@
 * DNs(Distinguished Names)
 * ILM(Index lifecycle management)
 * ICMP(Internet Control Message Protocol)
+* APM(Application Performance Management)
 
 ### 新增环境变量
 ```
