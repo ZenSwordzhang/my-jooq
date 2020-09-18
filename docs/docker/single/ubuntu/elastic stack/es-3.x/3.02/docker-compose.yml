@@ -1,0 +1,237 @@
+version: '3.8'
+
+networks:
+  es-shared:
+    external:
+      name: es-shared
+
+services:
+  es01:
+    container_name: es01
+    image: elasticsearch:7.7.0
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      CERTS_DIR_ES: ${CERTS_DIR_ES}
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      # xpack.license.self_generated.type: trial
+    volumes:
+      - ${PWD}/data/es01:/usr/share/elasticsearch/data
+      - ${PWD}/config/certs:${CERTS_DIR_ES}
+      - ${PWD}/config/es01.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9201:9200
+      - 9301:9300
+    networks:
+      - es-shared
+    healthcheck:
+      test: curl --cacert ${CERTS_DIR_ES}/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  es02:
+    container_name: es02
+    image: elasticsearch:7.7.0
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      CERTS_DIR_ES: ${CERTS_DIR_ES}
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      # xpack.license.self_generated.type: trial
+    volumes:
+      - ${PWD}/data/es02:/usr/share/elasticsearch/data
+      - ${PWD}/config/certs:${CERTS_DIR_ES}
+      - ${PWD}/config/es02.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9202:9200
+      - 9302:9300
+    networks:
+      - es-shared
+
+  kibana01:
+    image: docker.elastic.co/kibana/kibana:7.7.0
+    container_name: kibana01
+    environment:
+      CERTS_DIR_KIBANA: ${CERTS_DIR_KIBANA}
+    volumes:
+      - ${PWD}/config/kibana01.yml:/usr/share/kibana/config/kibana.yml
+      - ${PWD}/config/certs:${CERTS_DIR_KIBANA}
+    ports:
+      - 5601:5601
+    networks:
+      - es-shared
+
+  logstash01:
+    image: logstash:7.7.0
+    container_name: logstash01
+    environment:
+      CERTS_DIR_LOGSTASH: ${CERTS_DIR_LOGSTASH}
+    # restart: always
+    command: bash -c "bin/logstash -f /usr/share/logstash/config/logstash.conf --config.reload.automatic"
+    volumes:
+      - ${PWD}/log/test.log:/usr/share/logstash/logs/test.log
+      - ${PWD}/config/logstash01.yml:/usr/share/logstash/config/logstash.yml
+      - ${PWD}/config/logstash01.conf:/usr/share/logstash/config/logstash.conf
+      - ${PWD}/config/certs:${CERTS_DIR_LOGSTASH}
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - es01
+    ports:
+      - 5044:5044
+      - 8088:8088
+      - 9700:9600
+    networks:
+      - es-shared
+
+  filebeat01:
+    image: elastic/filebeat:7.7.0
+    container_name: filebeat01
+    environment:
+      CERTS_DIR_FILEBEAT: ${CERTS_DIR_FILEBEAT}
+    command: /usr/local/bin/docker-entrypoint filebeat -e -strict.perms=false
+    volumes:
+      - ${PWD}/log/test.log:/usr/share/filebeat/logs/test.log
+      - ${PWD}/config/filebeat01.yml:/usr/share/filebeat/filebeat.yml
+      - ${PWD}/data/filebeat01:/usr/share/filebeat/data
+      - ${PWD}/config/certs:${CERTS_DIR_FILEBEAT}
+    depends_on:
+      - es01
+    ports:
+      - 5167:5167
+      - 5166:5066
+    networks:
+      - es-shared
+
+  metricbeat01:
+    image: elastic/metricbeat:7.7.0
+    container_name: metricbeat01
+    user: root
+    environment:
+      CERTS_DIR_METRICBEAT: ${CERTS_DIR_METRICBEAT}
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/metricbeat01.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - ${PWD}/config/certs:${CERTS_DIR_METRICBEAT}
+      - ${PWD}/log/metricbeat01:/usr/share/metricbeat/logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared
+
+  metricbeat02:
+    image: elastic/metricbeat:7.7.0
+    container_name: metricbeat02
+    user: root
+    environment:
+      CERTS_DIR_METRICBEAT: ${CERTS_DIR_METRICBEAT}
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/metricbeat02.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - ${PWD}/config/certs:${CERTS_DIR_METRICBEAT}
+      - ${PWD}/log/metricbeat02:/usr/share/metricbeat/logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared
+
+  heartbeat01:
+    image: elastic/heartbeat:7.7.0
+    container_name: heartbeat01
+    user: heartbeat
+    environment:
+      CERTS_DIR_HEARTBEAT: ${CERTS_DIR_HEARTBEAT}
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/heartbeat01.yml:/usr/share/heartbeat/heartbeat.yml:ro
+      - ${PWD}/data/heartbeat01/data:/usr/share/heartbeat/data
+      - ${PWD}/data/heartbeat01/kibana:/usr/share/heartbeat/kibana
+      - ${PWD}/data/heartbeat01/kibana/7:/usr/share/heartbeat/kibana/7
+      - ${PWD}/config/certs:${CERTS_DIR_HEARTBEAT}
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared
+
+  apm-server01:
+    image: elastic/apm-server:7.7.0
+    container_name: apm-server01
+    user: apm-server
+    environment:
+      CERTS_DIR_APM_SERVER: ${CERTS_DIR_APM_SERVER}
+    command: ["--strict.perms=false"]
+    volumes:
+      - ${PWD}/config/apm-server01.yml:/usr/share/apm-server/apm-server.yml:ro
+      - ${PWD}/data/apm-server01:/usr/share/apm-server/data
+      - ${PWD}/config/certs:${CERTS_DIR_APM_SERVER}
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8201:8200
+    networks:
+      - es-shared
+
+  postgres01:
+    image: postgres:13
+    container_name: postgres01
+    # restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5433:5432
+    volumes:
+      - ${PWD}/data/postgres01:/var/lib/postgresql/data
+      - ${PWD}/config/postgres01.conf:/etc/postgresql/postgresql.conf
+      - ${PWD}/log/postgres01:/var/log/postgres
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    networks:
+      - es-shared
+
+  netdata01:
+    image: netdata/netdata
+    container_name: netdata01
+    hostname: zsx-2.local # set to fqdn of host
+    ports:
+      - 19999:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - ${PWD}/data/netdata01:/var/lib/netdata
+      - ${PWD}/config/netdata01.conf:/etc/netdata/netdata.conf
+      - ${PWD}/log/netdata01:/var/log/netdata
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared
+
+  cadvisor01:
+    container_name: cadvisor01
+    image: registry.cn-hangzhou.aliyuncs.com/zsx_test/cadvisor:v0.36.0
+    restart: always
+    ports:
+      - "8900:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - es-shared

@@ -1,0 +1,4 @@
+http.host: "0.0.0.0"
+node.name: logstash-node01
+monitoring.enabled: false
+monitoring.cluster_uuid: 5h8aFnt4R8WRYP_OCpd9gA

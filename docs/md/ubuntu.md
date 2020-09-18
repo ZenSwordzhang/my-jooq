@@ -662,6 +662,9 @@ sudo dpkg -i metricbeat-7.7.0-amd64.deb
 #### 删除安装包和配置文件
 * sudo dpkg -P metricbeat
 
+#### 查看日志
+* journalctl -u metricbeat.service
+
 ## 参考链接
 
 ### dumpe2fs命令

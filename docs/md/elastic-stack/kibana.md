@@ -5,6 +5,13 @@
 
 
 
+## Visualizations
+
+### Visualizations修改
+* https://zsx-2.local:5601/app/kibana#/management/kibana/objects/savedVisualizations/<Visualizations-ID>
+
+
+
 ## kibana界面的Dev Tools控制台进行增删改查
 
 ### 获取索引信息
@@ -14,6 +21,7 @@
 
 ### 获取所有索引信息
 * GET /_all/_settings
+
 
 ### 插入索引信息
 * (/{index}/_doc/{id}, /{index}/_doc, or /{index}/_create/{id})
@@ -1055,6 +1063,8 @@ elasticsearch.hosts: ["https://es02:9200"]
 * [secure-cluster](https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-cluster.html)
 * [security-settings-kb](https://www.elastic.co/guide/en/kibana/current/security-settings-kb.html)
 
-
+### 导入导出数据
+* [import](https://www.elastic.co/guide/en/kibana/current/dashboard-import-api.html)
+* [export](https://www.elastic.co/guide/en/kibana/current/saved-objects-api-export.html)
 
 

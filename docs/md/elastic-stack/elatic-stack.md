@@ -9,6 +9,8 @@
 * ILM(Index lifecycle management)
 * ICMP(Internet Control Message Protocol)
 * APM(Application Performance Management)
+* CMD(Concurrent Mark Sweep)
+* G1(Garbage First)
 
 ### 新增环境变量
 ```

@@ -12,3 +12,4 @@ DNS.6 = heartbeat01
 DNS.7 = apm-server01
 DNS.8 = localhost
 DNS.9 = zsx-2.local
+DNS.10 = metricbeat02

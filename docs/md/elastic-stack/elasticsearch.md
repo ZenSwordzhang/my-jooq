@@ -1,3 +1,36 @@
+## 理论部分
+
+### Elasticsearch nodes come under 4 flavors:
+* (Eligible) master nodes: controls the cluster.
+* Http nodes: to run your queries to.
+* Data nodes: the place data is stored, obviously.
+* Coordinating nodes: see them as smart load balancers.
+
+### What you should actually care about is, in no particular order
+* CPU
+* Memory
+* Network
+* Storage
+
+
+### Speaking of CPU, Elasticsearch divides the CPU use into thread pools of various types:
+* generic: for standard operations such as discovery
+* index: for indexing
+* get: for get operations, obviously
+* bulk: for bulk operations such as bulk indexing
+* percolate: for percolation
+
+
+### ES内存消耗
+* 不超过32G
+    * jvm在内存小于32G的时候会采用一个内存对象指针压缩技术
+* 排序和聚合
+* Lucene
+    * Lucene的设计目的是把底层OS里的数据缓存到内存中
+        * Lucene的段是分别存储到单个文件中的，这些文件都是不会变化的，所以很利于缓存，同时操作系统也会把这些段文件缓存起来，以便更快的访问
+    * Lucene的性能取决于和OS的交互，如果你把所有的内存都分配给Elasticsearch，不留一点给Lucene，那你的全文检索性能会很差的
+    * 最后标准的建议是把50%的内存给elasticsearch，剩下的50%也不会没有用处的，Lucene会很快吞噬剩下的这部分内存用于文件缓存
+
 ## 教程
 
 ### Docker配置Security认证
@@ -439,6 +472,15 @@ xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 * GET /_cat/nodes?h=ip,port,heapPercent,name
 * GET /_cat/indices?bytes=b&s=store.size:desc&v
 * GET _cat/templates?v&s=order:desc,index_patterns
+
+
+### 查看索引分片信息
+* GET /_cat/segments
+* GET /_cat/segments?v&h=shard,segment,size,size.memory
+* GET /_cat/segments/<index_name>?v&h=shard,segment,size,size.memory
+
+### 获取线程池信息
+* GET /_cat/thread_pool/search?v&h=host,name,active,rejected,completed
 
 
 ### 删除索引
@@ -1337,5 +1379,6 @@ bin/elasticsearch-keystore add xpack.security.http.ssl.secure_key_passphrase
 * [secure-settings](https://learnku.com/docs/elasticsearch73/7.3/322-secure-settings/6591)
 * [elasticsearch技术解析与实战(四) 聚合](https://pdf.us/2018/05/16/1050.html)
 * [search-guard](https://docs.search-guard.com/latest/offline-tls-tool)
+* [ELK](https://thoughts.t37.net/designing-the-perfect-elasticsearch-cluster-the-almost-definitive-guide-e614eabc1a87)
 
 

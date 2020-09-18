@@ -1,0 +1,99 @@
+metricbeat.config.modules:
+
+  # Glob pattern for configuration reloading
+  # path: ${path.config}/modules.d/*.yml
+  path: /usr/share/metricbeat/metricbeat.yml
+
+  # Period on which files under path should be checked for changes
+  reload.period: 10s
+
+  # Set to true to enable config reloading
+  reload.enabled: true
+
+# Maximum amount of time to randomly delay the start of a metricset. Use 0 to
+# disable startup delay.
+metricbeat.max_start_delay: 10s
+
+
+metricbeat.modules:
+  #--------------------------------- Elasticsearch Module ---------------------------------
+  - module: elasticsearch
+    metricsets:
+      - ccr
+      - cluster_stats
+      - index
+      - index_recovery
+      - index_summary
+      - ml_job
+      - node_stats
+      - shard
+      - enrich
+    period: 10s
+    hosts: ["https://es02:9200"]
+    username: "elastic"
+    password: "123456"
+    ssl.certificate_authorities: ["${CERTS_DIR_METRICBEAT}/tsl_ssl/ca.crt"]
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: elasticsearch
+
+  #--------------------------------- Logstash Module ---------------------------------
+  # Collect Logstash monitoring data with Metricbeate
+  - module: logstash
+    metricsets:
+      - node
+      - node_stats
+    period: 10s
+    hosts: ["logstash01:9600"]
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: logstash
+
+  #--------------------------------- Beat Module ---------------------------------
+  - module: beat
+    metricsets:
+      - stats
+      - state
+    period: 10s
+    hosts: ["filebeat01:5166"]
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: filebeat
+
+#================================ Logging ======================================
+# Send all logging output to stderr. The default is false.
+logging.to_stderr: true
+
+  # logging.level: info
+  # logging.to_files: true
+  # logging.files:
+  # path: /usr/share/metricbeat/logs
+  # name: metricbeat
+  # keepfiles: 7
+# permissions: 0644
+
+output.elasticsearch:
+  hosts: ["https://es01:9200"]
+  username: "logstash_writer_user"
+  password: "123456"
+#  ssl.certificate_authorities: ["${CERTS_DIR_HEARTBEAT}/tsl_ssl/ca.crt"]
+  ssl.verification_mode: none
+  index: "metricbeat-%{+yyyy.MM.dd}"
+
+setup.template.name: "metricbeat"
+setup.template.pattern: "metricbeat-*"
+
+#============================== Setup ILM =====================================
+setup.ilm.enabled: false
