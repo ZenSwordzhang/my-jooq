@@ -17,6 +17,8 @@ output.logstash:
   ssl.key: "${CERTS_DIR_FILEBEAT}/tsl_ssl/client.key"
   # ssl.verification_mode: none
 
+#============================== X-Pack Monitoring ===============================
+
 # Enable the HTTP endpoint to allow external collection of monitoring data
 http.enabled: true
 
@@ -27,3 +29,5 @@ http.port: 5166
 
 # Disable the default collection of Filebeat monitoring metrics
 monitoring.enabled: false
+
+monitoring.cluster_uuid: 5h8aFnt4R8WRYP_OCpd9gA
