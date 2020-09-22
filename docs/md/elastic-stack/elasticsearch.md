@@ -457,6 +457,16 @@ xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 ### 删除模板
 * DELETE /_template/template_name
 
+### 修改索引占用缓存大小
+```console
+PUT _cluster/settings
+{
+  "persistent" : {
+    "indices.breaker.fielddata.limit" : "20%" 
+  }
+}
+```
+
 ### 查看集群健康状况
 
 #### https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html

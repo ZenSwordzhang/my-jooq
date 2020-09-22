@@ -2,6 +2,7 @@
 
 ### 简写
 * ECS(Elastic Compute Service)
+* ECS(Elastic Common Schema)
 * PKI(Public key infrastructure)
 * LDAP(Lightweight Directory Access Protocol)
 * ILM(Index lifecycle management).
@@ -11,6 +12,7 @@
 * APM(Application Performance Management)
 * CMD(Concurrent Mark Sweep)
 * G1(Garbage First)
+* DLQ(dead letter queue)
 
 ### 新增环境变量
 ```
@@ -489,7 +491,6 @@ elasticsearch.ssl.certificateAuthorities: ["${CERTS_DIR_KIBANA}/http/ca.crt"]
     * ![](../../img/elastic-stack/kibana/kibana-02.jpg)
 
 
-
 ## 认证流程
 * ES -> 浏览器
     * ES
@@ -685,6 +686,66 @@ PUT metric-alert
 * docker run docker.elastic.co/beats/metricbeat:7.7.0 setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]'
 * docker run docker.elastic.co/beats/heartbeat:7.7.0 setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]'
 
+
+## 生命周期管理
+
+### 创建生命周期管理策略
+```
+PUT _ilm/policy/heartbeat-policy
+{
+  "policy": {
+    "phases": {
+      "hot": {
+        "min_age": "0ms",
+        "actions": {
+          "rollover": {
+            "max_age": "1m",
+            "max_size": "5mb",
+            "max_docs": 100
+          },
+          "set_priority": {
+            "priority": 50
+          }
+        }
+      },
+      "warm": {
+        "min_age": "60s",
+        "actions": {
+          "shrink": {
+            "number_of_shards": 1
+          },
+          "forcemerge": {
+            "max_num_segments": 1
+          },
+          "set_priority": {
+            "priority": 25
+          }
+        }
+      },
+      "cold": {
+        "min_age": "60s",
+        "actions": {
+          "allocate": {
+            "include": {
+              "box_type": "warm"
+            },
+            "exclude": {}
+          },
+          "set_priority": {
+            "priority": 0
+          }
+        }
+      },
+      "delete": {
+        "min_age": "60s",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
+  }
+}
+```
 
 ## 参考网站
 * [get-started-docker](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)
