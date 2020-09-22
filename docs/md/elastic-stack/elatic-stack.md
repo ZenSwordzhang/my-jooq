@@ -747,6 +747,65 @@ PUT _ilm/policy/heartbeat-policy
 }
 ```
 
+### 删除生命周期策略
+* DELETE _ilm/policy/<policy_name>
+
+### 查看生命周期管理状态 
+* GET _ilm/status
+
+### 开启生命周期管理 
+* POST _ilm/start
+
+### 停止生命周期管理
+* POST _ilm/stop
+
+### 查看生命周期策略
+* GET <index_name>/_ilm/explain
+
+### 策略失败后重试
+* POST /<index_name>/_ilm/retry
+
+### 查看生命周期
+* GET _ilm/policy
+* GET _ilm/policy/<policy_id>
+
+### 设置策略检查频率
+* 索引生命周期策略默认是10分钟检查一次符合策略的索引，但是在这10分钟内索引中的数据可能会超出指定的阈值
+```
+PUT _cluster/settings
+{
+  "transient": {
+    "indices.lifecycle.poll_interval":"1m"
+  }
+}
+```
+
+### 索引关联生命周期
+```
+PUT <index_name>/_settings
+ {
+  "index.lifecycle.name": "delete-policy"
+}
+
+```
+
+### 设置模板策略
+* 此方法会覆盖模板原有的配置
+```
+PUT _template/metricbeat
+{
+  "index_patterns": ["metricbeat-*"],                 
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "index.lifecycle.name": "delete-policy",      
+    "index.lifecycle.rollover_alias": "delete"    
+  }
+}
+```
+
+
+
 ## 参考网站
 * [get-started-docker](https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html)
 * [watcher-ui](https://www.elastic.co/guide/en/kibana/master/watcher-ui.html)

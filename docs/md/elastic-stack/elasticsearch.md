@@ -451,6 +451,9 @@ xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
 * GET _/_template/<template_name>
 * GET /_template/<template_name1,template_name2>
 
+### 查看模板是否存在
+* HEAD _template/<template_name>
+
 ### 获取模板版本号
 * GET /_template/<template_name>?filter_path=*.version
 
@@ -492,6 +495,11 @@ PUT _cluster/settings
 ### 获取线程池信息
 * GET /_cat/thread_pool/search?v&h=host,name,active,rejected,completed
 
+### 打开索引
+* POST /index_name/_open
+
+### 关闭索引
+* POST /index_name/_close
 
 ### 删除索引
 * curl -X DELETE http://localhost:9200/{indexName}
