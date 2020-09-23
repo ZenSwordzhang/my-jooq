@@ -688,6 +688,13 @@ PUT metric-alert
 
 
 ## 生命周期管理
+* [lifecycle-management](https://www.elastic.co/cn/blog/implementing-hot-warm-cold-in-elasticsearch-with-index-lifecycle-management)
+
+### ILM 策略分为四个主要阶段
+* hot
+* warm
+* cold
+* delete
 
 ### 创建生命周期管理策略
 ```

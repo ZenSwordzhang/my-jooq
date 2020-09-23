@@ -1,0 +1,48 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /usr/share/filebeat/logs/test.log
+    fields:
+      from: filebeat
+      source_module: spring
+    fields_under_root: true
+
+output.logstash:
+  hosts: ["logstash01:5044"]
+  # The maximum number of events to bulk in a single Logstash request. The default is 2048.
+  bulk_max_size: 1024
+  ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/tsl_ssl/ca.crt"]
+  ssl.certificate: "${CERTS_DIR_FILEBEAT}/tsl_ssl/client.crt"
+  ssl.key: "${CERTS_DIR_FILEBEAT}/tsl_ssl/client.key"
+  # ssl.verification_mode: none
+
+#============================== X-Pack Monitoring ===============================
+
+# Enable the HTTP endpoint to allow external collection of monitoring data
+http.enabled: true
+
+http.host: "0.0.0.0"
+
+# By default, metrics are exposed on port 5066
+http.port: 5166
+
+# Disable the default collection of Filebeat monitoring metrics
+monitoring.enabled: false
+
+monitoring.cluster_uuid: 5h8aFnt4R8WRYP_OCpd9gA
+
+#output.elasticsearch:
+#  hosts: ["https://es01:9200"]
+#  username: "logstash_writer_user"
+#  password: "123456"
+#  ssl.certificate_authorities: ["${CERTS_DIR_FILEBEAT}/tsl_ssl/ca.crt"]
+#  index: "filebeat-%{+yyyy.MM.dd}"
+#
+##============================== Template =====================================
+#
+#setup.template.name: "filebeat"
+#setup.template.pattern: "filebeat-*"
+#
+##============================== Setup ILM =====================================
+#setup.ilm.enabled: false

@@ -72,6 +72,20 @@ metricbeat.modules:
             from: metricbeat
             source: filebeat-monitor
 
+  - module: beat
+    metricsets:
+      - stats
+      - state
+    period: 10s
+    hosts: ["heartbeat01:5366"]
+    xpack.enabled: true
+    processors:
+      - add_fields:
+          target: ''
+          fields:
+            from: metricbeat
+            source: heartbeat-monitor
+
 #================================ Logging ======================================
 # Send all logging output to stderr. The default is false.
 logging.to_stderr: true
