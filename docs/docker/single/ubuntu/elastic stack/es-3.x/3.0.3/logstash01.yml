@@ -1,0 +1,5 @@
+http.host: "0.0.0.0"
+node.name: logstash-node01
+monitoring.enabled: false
+http.port: 9600-9700
+monitoring.cluster_uuid: 5h8aFnt4R8WRYP_OCpd9gA

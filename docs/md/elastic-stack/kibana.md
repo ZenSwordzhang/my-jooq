@@ -535,6 +535,20 @@ GET /library/_search
 }
 ```
 
+### 分组查询查看指定元素
+```
+GET /test-20200924/_search
+{
+  "_source": ["host.name"],
+  "aggs": {
+    "group_by_host_name": {
+      "terms": {
+          "field": "host.name"
+      }
+    }
+  }
+}
+```
 
 
 ## 可视化操作

@@ -838,6 +838,24 @@ PUT posts/_doc/1
 
 ```
 
+### SQL方式查询
+* 例1
+```console
+GET /_sql?format=txt
+{
+  "query": "SELECT \"@timestamp\", \"host.name\" FROM \"demo-20200923\" LIMIT 5"
+}
+```
+* 例2
+```console
+GET /_sql?format=txt
+{
+  "query": """
+            SELECT "@timestamp", "host.name" FROM "demo-20200923 LIMIT 5"
+          """
+}
+```
+
 
 ## 相关信息
 
