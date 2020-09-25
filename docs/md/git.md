@@ -54,6 +54,30 @@
 ### 在github远程端删除一个分支
 * git push origin :branchName
 
+### 添加所有文件
+* git add . 
+
+### 修改commit注释
+* git commit --amend
+
+### 版本回退
+
+#### 回退到上一个版本（取消commit操作）
+* git reset --soft HEAD^
+
+#### 回退n次commit
+* git reset --soft HEAD^n
+
+#### 参数
+* --mixed：不删除工作空间改动代码，撤销commit，并且撤销git add 操作
+    * 这个为默认参数，git reset --mixed HEAD^ 和 git reset HEAD^ 效果一样
+
+* --soft：不删除工作空间改动代码，撤销commit，不撤销git add 操作
+
+* --hard：删除工作空间改动代码，撤销commit，撤销git add . 
+    * 注意完成这个操作后，就恢复到了上一次的commit状态
+
+
 
 ## 设置
 
