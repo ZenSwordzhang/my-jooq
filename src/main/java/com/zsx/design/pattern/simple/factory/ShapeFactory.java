@@ -3,7 +3,7 @@ package com.zsx.design.pattern.simple.factory;
 public class ShapeFactory {
 
     //根据传入的对象获取图形
-    public IShape getShap(String shapeType) {
+    public IShape getShape(String shapeType) {
 
         shapeType = shapeType.toLowerCase();
         switch (shapeType) {

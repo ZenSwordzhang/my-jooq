@@ -1,0 +1,34 @@
+@startuml
+
+interface IShape
+
+IShape <|.. Circle
+IShape <|.. Rectangle
+'IShape <|.. Square
+
+IShape <.. ShapeFactory
+Circle <.. ShapeFactory
+Rectangle <.. ShapeFactory
+Square <.. ShapeFactory
+
+interface IShape {
+    +String draw();
+}
+
+class Circle {
+    +public String draw()
+}
+
+class Rectangle {
+    +public String draw()
+}
+
+class Square implements IShape {
+    +public String draw()
+}
+
+class ShapeFactory {
+    +public IShape getShape(String shapeType) {}
+}
+
+@enduml

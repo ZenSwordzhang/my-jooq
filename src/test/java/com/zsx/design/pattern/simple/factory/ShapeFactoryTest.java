@@ -10,13 +10,13 @@ public class ShapeFactoryTest {
     void testDraw() {
         ShapeFactory shapeFactory = new ShapeFactory();
 
-        IShape shape = shapeFactory.getShap("CIRCLE");
+        IShape shape = shapeFactory.getShape("CIRCLE");
         assertEquals("circle", shape.draw());
 
-        IShape shape1 = shapeFactory.getShap("RECTANGLE");
+        IShape shape1 = shapeFactory.getShape("RECTANGLE");
         assertEquals("rectangle", shape1.draw());
 
-        IShape shape2 = shapeFactory.getShap("SQUARE");
+        IShape shape2 = shapeFactory.getShape("SQUARE");
         assertEquals("square", shape2.draw());
     }
 }
