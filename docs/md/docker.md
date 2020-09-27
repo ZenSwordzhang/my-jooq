@@ -1,5 +1,12 @@
 ## 相关命令
 
+### 查看容器内部磁盘情况
+* docker exec -it container-name df -h
+
+### 查看容器共享内存
+* docker exec -it container-name df -h /dev/shm
+* docker exec -it container-name df -h | grep shm
+
 ### 从docker中拷贝文件(复制文件)到宿主机
 * docker cp [OPTIONS] [CONTAINER_ID]:[SRC_PATH] [DEST_PATH]
 * docker cp <container_id | container_name>:/xxx/xxx/xxx/common.log /home/yyy.log
