@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertLinesMatch;
+
 @Slf4j
 public class ListTest {
 
@@ -49,5 +51,12 @@ public class ListTest {
             list4.add(str);
         });
         log.info(list4.toString());
+    }
+
+    @Test
+    void testSubList() {
+        List<String> list = List.of("abc", "efgh", "ijklm", "ABCDE", "FGHIJK");
+        List<String> subList = list.subList(0, 2);
+        assertLinesMatch(List.of("abc", "efgh"), subList);
     }
 }
