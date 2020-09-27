@@ -1,5 +1,7 @@
 @startuml
 
+Title "简单工厂模式UML类图"
+
 interface IShape
 
 IShape <|.. Circle

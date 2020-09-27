@@ -1,0 +1,43 @@
+@startuml
+
+Title "工厂方法模式UML类图"
+
+interface IFactory
+interface IProduct
+
+IFactory <|..CarFactory
+IFactory <|..TVFactory
+
+IProduct <|..Car
+IProduct <|..TV
+
+IProduct <..IFactory
+IProduct <..CarFactory
+IProduct <..TVFactory
+
+interface IFactory {
+    +IProduct produce();
+}
+
+interface IProduct {
+    +String getProduct();
+}
+
+class CarFactory {
+    +public IProduct produce() {}
+}
+
+class TVFactory {
+    +public IProduct produce() {}
+}
+
+class Car {
+    +public String getProduct() {}
+}
+
+class TV {
+    +public String getProduct() {}
+}
+
+
+@enduml
