@@ -1,4 +1,4 @@
-## UML 类图
+## UML
 
 ### 参考链接
 * [参考链接](https://juejin.im/post/6844903795017646094)
@@ -56,21 +56,61 @@
 
 #### 继承（generalization）
 * 继承用一条带空心箭头的直接表示
+* +代表public，#代表protected，-代表private，~代表default
+```puml
+@startuml
+Title "继承关系图"
+
+Father <|-- Son
+
+class Father {
++ public String name
++ public void sayHello()
+}
+
+class Son {
++ public String name
+- private String alias
+
++ public void sayHello()
+# protect void say()
+- private void sayHi()
+~ void sayByeby()
+}
+@enduml
+```
 
 #### 实现（realize）
 * 实现关系用一条带空心箭头的虚线表示
+```puml
+Title "实现关系图"
+
+abstract class AbstractList
+interface List
+List <|.. AbstractList
+```
 
 #### 组合（composition）
 * 与聚合关系一样，组合关系同样表示整体由部分构成的语义
     * 比如公司由多个部门组成，但组合关系是一种强依赖的特殊聚合关系
     * 如果整体不存在了，则部分也不存在了
     * 例如，公司不存在了，部门也将不存在了
+```puml
+Title "组合关系图"
+
+Company *-- Department
+```
 
 #### 聚合（aggregation）
 * 聚合关系用于表示实体对象之间的关系，表示整体由部分构成的语义
     * 例如一个部门由多个员工组成
     * 与组合关系不同的是，整体和部分不是强依赖的，即使整体不存在了，部分仍然存在
     * 例如，部门撤销了，人员不会消失，他们依然存在
+```puml
+Title "聚合关系图"
+
+Department o-- Staff
+```
 
 #### 关联（association）
 * 关联关系是用一条直线表示的
@@ -78,12 +118,24 @@
     * 它一般用来定义对象之间静态的、天然的结构， 所以，关联关系是一种“强关联”的关系
     * 比如，乘车人和车票之间就是一种关联关系，学生和学校就是一种关联关系，关联关系默认不强调方向，表示对象间相互知道
     * 如果特别强调方向，使用直线带箭头
+```puml
+Title "关联关系图"
+
+class Water
+class Human
+Human --> Water
+```
 
 #### 依赖（dependency）
 * 依赖关系是用一套带箭头的虚线表示的
     * 如A依赖于B，他描述一个对象在运行期间会用到另一个对象的关系
     * 与关联关系不同的是，它是一种临时性的关系，通常在运行期间产生，并且随着运行时的变化，依赖关系也可能发生变化
     * 显然，依赖也有方向，双向依赖是一种非常糟糕的结构，我们总是应该保持单向依赖，杜绝双向依赖的产生
+```puml
+Title "依赖关系图"
+
+Person ..> Cigarette
+```
 
 ## 六大原则
 
