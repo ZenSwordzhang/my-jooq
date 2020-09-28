@@ -53,6 +53,29 @@
 
 ### 类之间的关系
 * ![](../../docs/img/uml/uml-01.jpg)
+```puml
+@startuml
+object Subclass
+object Superclass
+object  ImplementationClass
+object Interface
+object WholeClass
+object PartialClass
+object WholeClass1
+object PartialClass1
+object ReferenceClass
+object ReferencedClass
+object ReferenceClass1
+object DependentClass
+
+Superclass <|-- "generalization" Subclass
+Interface <|.. "realize" ImplementationClass
+WholeClass *-- "composition" PartialClass
+WholeClass1 o-- "aggregation" PartialClass1
+ReferencedClass <-- "association" ReferenceClass
+DependentClass <.. "dependency" ReferenceClass1
+@enduml
+```
 
 #### 继承（generalization）
 * 继承用一条带空心箭头的直接表示

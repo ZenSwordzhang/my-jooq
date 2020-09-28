@@ -1,0 +1,74 @@
+@startuml
+
+Title "抽象工厂模式UML类图"
+
+abstract class AbstractFactory
+interface IKeyboard
+interface IMouse
+
+AbstractFactory <|-- DellFactory
+AbstractFactory <|-- LenovoFactory
+
+IKeyboard <.. AbstractFactory
+IKeyboard <.. DellFactory
+IKeyboard <.. LenovoFactory
+IKeyboard <|.. DellKeyboard
+IKeyboard <|.. LenovoKeyboard
+
+IMouse <.. AbstractFactory
+IMouse <.. DellFactory
+IMouse <.. LenovoFactory
+IMouse <|.. DellMouse
+IMouse <|.. LenovoMouse
+
+DellKeyboard <.. DellFactory
+LenovoKeyboard <.. DellFactory
+DellMouse <.. LenovoFactory
+LenovoMouse <.. LenovoFactory
+
+abstract class AbstractFactory {
+    +public abstract IMouse createMouse();
+
+    +public abstract IKeyboard creatKeyboard();
+}
+
+interface IKeyboard {
+    +String getKeyboard();
+}
+
+interface IMouse {
+    +String getMouse();
+}
+
+class DellFactory {
+    +public IMouse createMouse() {}
+
+    +public IKeyboard creatKeyboard() {}
+
+}
+
+class LenovoFactory {
+    +public IMouse createMouse() {}
+
+    +public IKeyboard creatKeyboard() {}
+
+}
+
+class DellKeyboard {
+    +public String getKeyboard() {}
+}
+
+class LenovoKeyboard {
+    +public String getKeyboard() {}
+}
+
+class DellMouse {
+    +public String getMouse() {}
+}
+
+class LenovoMouse {
+    +public String getMouse() {}
+}
+
+
+@enduml
