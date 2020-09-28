@@ -3,6 +3,7 @@
 ### 参考链接
 * [参考链接](https://juejin.im/post/6844903795017646094)
 * [uml_tutorial](https://www.w3cschool.cn/uml_tutorial/)
+* [plantuml](https://plantuml.com/)
 
 ### 介绍
 * 1997年，OMG 组织（Object Management Group对象管理组织）发布了统一建模语言（Unified Modeling Language，UML）
@@ -162,25 +163,25 @@ Person ..> Cigarette
 
 ## 六大原则
 
-### 开闭原则
+### 开闭原则（Opened Closed Principle）
 * 一个软件实体应当对扩展开放，对修改关闭
     * 即软件实体应尽量在不修改原有代码的情况下进行扩展
 
-### 里氏替换原则
+### 里氏替换原则（Liskov Substitution Principle）
 * 所有引用基类对象的地方都能够透明地使用其子类的对象
 
-### 依赖倒置原则
+### 依赖倒置原则（Dependency Inversion Principle）
 * 抽象不应该依赖于具体类，具体类应当依赖于抽象
     * 换言之，要针对接口编程，而不是针对实现编程
 
-### 单一职责原则
+### 单一职责原则（Single Responsibility Principle）
 * 一个类只负责一个功能领域中的相应职责
     * 或者可以定义为：就一个类而言，应该只有一个引起它变化的原因
 
 ### 迪米特法则
 * 一个软件实体应当尽可能少地与其他实体发生相互作用
 
-### 接口分离原则
+### 接口分离原则（Interface Segregation Principle）
 * 使用多个专门的接口，而不使用单一的总接口
     * 即客户端不应该依赖那些它不需要的接口
 

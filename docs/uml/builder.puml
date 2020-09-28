@@ -1,0 +1,51 @@
+@startuml
+
+Title "建造者模式UML类图"
+
+interface IBuilder
+
+IBuilder <|.. ConcreteBuilder
+IBuilder <-- Director
+
+Product <-- ConcreteBuilder
+
+interface IBuilder {
+    +void buildWheel();
+
+    +void buildSkeleton();
+
+    +void buildEngine();
+
+    +Product buildProduct();
+}
+
+
+class ConcreteBuilder {
+    +private Product product;
+
+    +public ConcreteBuilder() {}
+
+    +public void buildWheel() {}
+
+    +public void buildSkeleton() {}
+
+    +public void buildEngine() {}
+
+    +public Product buildProduct() {}
+}
+
+class Product {
+    -private String wheel;
+
+    -private String skeleton;
+
+    -private String engine;
+}
+
+class Director {
+    '-private IBuilder builder;
+    -builder: IBuilder
+    +public Product buildProduct() {}
+}
+
+@enduml
