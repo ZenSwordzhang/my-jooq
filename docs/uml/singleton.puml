@@ -1,0 +1,14 @@
+@startuml
+
+Title "单例模式UML类图"
+
+class Singleton {
+
+    private static final Singleton instance = new Singleton();
+
+    private Singleton (){}
+
+    public static Singleton getInstance() {}
+}
+
+@enduml
