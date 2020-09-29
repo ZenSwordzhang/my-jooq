@@ -5,10 +5,11 @@ import com.google.common.collect.Lists;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReflectUtil {
 
-    public static List<Field> getAllField(Class<?> clazz) {
+    public static List<Field> getAllFields(Class<?> clazz) {
         List<Field> list = Lists.newArrayList();
 
         Field[] declaredFields = clazz.getDeclaredFields();
@@ -16,9 +17,9 @@ public class ReflectUtil {
 
         Class<?> superclass = clazz.getSuperclass();
         if (superclass != null ) {
-            list.addAll(getAllField(superclass));
+            list.addAll(getAllFields(superclass));
         }
 
-        return list;
+        return list.stream().distinct().collect(Collectors.toList());
     }
 }

@@ -42,13 +42,13 @@ public class ReflectTest {
 
     @Test
     void testGetAllField() {
-        List<Field> allField = ReflectUtil.getAllField(TestB.class);
-        List<String> fieldNames = allField.stream().map(Field :: getName).collect(Collectors.toList());
+        List<Field> allFields = ReflectUtil.getAllFields(TestB.class);
+        List<String> fieldNames = allFields.stream().map(Field :: getName).collect(Collectors.toList());
         List<String> list = List.of("height1", "height2", "height3", "height4", "alias1", "alias2", "alias3", "alias4");
         Assertions.assertLinesMatch(list, fieldNames);
 
-        List<Field> allField2 = ReflectUtil.getAllField(TestC.class);
-        List<String> fieldNames2 = allField2.stream().map(Field :: getName).collect(Collectors.toList());
+        List<Field> allFields2 = ReflectUtil.getAllFields(TestC.class);
+        List<String> fieldNames2 = allFields2.stream().map(Field :: getName).collect(Collectors.toList());
         List<String> list2 = List.of("color1", "color2", "color3", "color4", "height1", "height2", "height3", "height4", "alias1", "alias2", "alias3", "alias4");
         Assertions.assertLinesMatch(list2, fieldNames2);
     }
