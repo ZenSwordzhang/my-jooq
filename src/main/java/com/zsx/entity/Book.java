@@ -1,5 +1,6 @@
 package com.zsx.entity;
 
+import com.zsx.model.BaseModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class Book implements Serializable {
-
-    private Integer id;
+public class Book extends BaseModel {
 
     private String title;
 
@@ -24,8 +23,6 @@ public class Book implements Serializable {
     private List<Author> authors;
 
     private Integer page;
-
-    private LocalDateTime modified;
 
     private Boolean deleted;
 }
