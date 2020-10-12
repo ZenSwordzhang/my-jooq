@@ -189,12 +189,18 @@ Person ..> Cigarette
 ## 模式分类
 
 ### 创建型(Creational)
-* 1.简单工厂模式（Simple Factory Pattern）
-* 2.工厂方法模式（Factory Method Pattern）
-* 3.抽象工厂模式（Abstract Factory Pattern）
-* 4.单例模式（Singleton Pattern）
-* 5.建造者模式（Builder Pattern）
-* 6.原型模式（Prototype Pattern）
+#### 1.简单工厂模式（Simple Factory Pattern）
+#### 2.工厂方法模式（Factory Method Pattern）
+#### 3.抽象工厂模式（Abstract Factory Pattern）
+#### 4.单例模式（Singleton Pattern）
+#### 5.建造者模式（Builder Pattern）
+
+#### 6.原型模式（Prototype Pattern）
+
+##### 包含角色
+* 客户角色：客户类提出创建对象的请求
+* 抽象原型角色：这是一个抽象角色，通常由一个java接口或抽象类实现，具体原型都需要实现该接口
+* 具体原型角色：客户端所需要的被复制的对象
 
 
 

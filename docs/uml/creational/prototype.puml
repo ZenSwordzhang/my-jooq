@@ -1,0 +1,12 @@
+@startuml
+
+Title "原型模式UML类图"
+
+class Prototype implements Cloneable {
+
+    +public String name;
+
+    #protected Object clone() {}
+}
+
+@enduml
