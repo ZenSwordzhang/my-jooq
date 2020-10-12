@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseModel implements Serializable {
 
-    protected Integer id;
+    public Integer id;
 
     @CreatedBy
     public String createdBy;
