@@ -199,12 +199,21 @@ Person ..> Cigarette
 
 
 ### 结构型(Structural)
-* 1.外观模式(Facade Pattern)
-* 2.适配器模式(Adapter Pattern)
-* 3.桥接模式(Bridge Pattern)
-* 4.代理模式(Proxy Pattern)
-* 5.装饰器模式（Decorator Pattern）
-* 6.享元模式（Flyweight Pattern）
+####  1.外观模式(Facade Pattern)
+####  2.适配器模式(Adapter Pattern)
+####  3.桥接模式(Bridge Pattern)
+
+#### 4.代理模式(Proxy Pattern)
+
+##### 包含角色
+* Subject（抽象主题角色）：定义代理类和真实主题的公共对外方法，也是代理类代理真实主题的方法
+* RealSubject（真实主题角色）：真正实现业务逻辑的类
+* Proxy（代理主题角色）：用来代理和封装真实主题
+
+
+
+####  5.装饰器模式（Decorator Pattern）
+####  6.享元模式（Flyweight Pattern）
 
 
 
