@@ -1,0 +1,26 @@
+@startuml
+
+Title "静态代理模式UML图"
+
+interface ISell
+
+ISell <|.. Official
+ISell <|.. ThirdParty
+
+interface ISell {
+
+    +String sellTicket();
+}
+
+class Official {
+
+    +public String sellTicket() {}
+}
+
+class ThirdParty {
+
+    +public String sellTicket() {}
+}
+
+
+@enduml

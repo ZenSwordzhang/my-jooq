@@ -1,0 +1,34 @@
+@startuml
+
+Title "Cglib代理模式UML图"
+
+interface MethodInterceptor
+
+
+MethodInterceptor <|.. LogProxyFactory
+
+
+class TaoBaoPlatform {
+
+    +public String sellTicket() {}
+}
+
+
+class LogProxyFactory {
+
+    -private Object target;
+
+    +public LogInvocationHandler(Object target) {}
+
+    +public Object getProxyInstance() {}
+
+    +public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {}
+
+    -private void before() {}
+
+    -private void after() {}
+}
+
+
+
+@enduml

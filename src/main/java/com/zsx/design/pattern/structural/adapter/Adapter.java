@@ -1,7 +1,7 @@
 package com.zsx.design.pattern.structural.adapter;
 
 
-public class Adapter implements Target {
+public class Adapter implements ITarget {
 
     private Adaptee adaptee;
 
