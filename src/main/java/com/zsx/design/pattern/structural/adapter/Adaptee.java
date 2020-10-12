@@ -1,4 +1,4 @@
-package com.zsx.design.pattern.creational.adapter;
+package com.zsx.design.pattern.structural.adapter;
 
 public class Adaptee {
 
