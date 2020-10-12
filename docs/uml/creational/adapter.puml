@@ -1,0 +1,31 @@
+@startuml
+
+Title "适配器模式UML图"
+
+interface Target
+
+Adaptee <-- Adapter
+Target <|.. Adapter
+
+interface Target {
+    String demand();
+
+}
+
+class Adaptee {
+
+    public String specialRequirements() {}
+
+}
+
+class Adapter {
+
+    private Adaptee adaptee;
+
+    public Adapter(Adaptee adaptee) {}
+
+    public String demand() {}
+
+}
+
+@enduml
