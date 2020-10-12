@@ -2,11 +2,14 @@ package com.zsx.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.EntityListeners;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class BaseModel implements Serializable {
 
     protected Integer id;

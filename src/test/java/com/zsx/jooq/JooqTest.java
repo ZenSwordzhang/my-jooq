@@ -1,18 +1,32 @@
 package com.zsx.jooq;
 
+import com.zsx.MyJooqApplication;
+import com.zsx.entity.Book;
 import org.jooq.*;
 import org.jooq.Record;
 import org.jooq.db.Tables;
 import org.jooq.db.tables.records.BookRecord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
+@SpringBootTest(classes = MyJooqApplication.class)
+@ExtendWith(SpringExtension.class)
 public class JooqTest {
+
+    @Autowired
+    private DSLContext dslContext;
 
     @Test
     void testGetReferences() {
@@ -71,5 +85,78 @@ public class JooqTest {
             assertTrue(joinSqlList.contains(step.toString()));
 
         });
+    }
+
+    @Test
+    @Rollback
+    @Transactional
+    void testCRUD() {
+        String name = "ZhangSan";
+        String title = "ZhangSan Drifting";
+
+        var map = new HashMap<>();
+        map.put("name", name);
+        map.put("title", title);
+
+        Condition condition = Tables.BOOK.NAME.eq(name);
+
+        // 为了不影响测试，测试前删除满足条件的数据
+        dslContext.delete(Tables.BOOK).where(condition).execute();
+
+        /** =========SAVE========= */
+        dslContext.insertInto(Tables.BOOK).set(map).execute();
+
+
+        /** =========SELECT========= */
+        int existsNum = dslContext.selectFrom(Tables.BOOK).where(condition).execute();
+        assertNotEquals(0, existsNum);
+
+        SelectQuery<BookRecord> bookRecords = dslContext.selectQuery(Tables.BOOK);
+        bookRecords.addConditions(condition);
+        int existsNum1 = bookRecords.execute();
+        assertNotEquals(0, existsNum1);
+
+        String selectSql = String.format("SELECT name, title FROM jooq.book Where name = '%s'", name);
+        List<Book> books = dslContext.fetch(selectSql).into(Book.class);
+        assert books != null;
+        Book book = books.get(0);
+        assert book != null;
+        assertEquals(book.getName(), name);
+        assertEquals(book.getTitle(), title);
+
+        Book book1 = dslContext.fetchOne(selectSql).into(Book.class);
+        assert book1 != null;
+        assertEquals(book1.getName(), name);
+        assertEquals(book1.getTitle(), title);
+
+        Book book2 = dslContext.fetchOne(Tables.BOOK, condition).into(Book.class);
+        assert book2 != null;
+        assertEquals(book2.getName(), name);
+        assertEquals(book2.getTitle(), title);
+
+        List<Book> books1 = dslContext.fetch(Tables.BOOK, condition).into(Book.class);
+        assert books1 != null;
+        Book book3 = books1.get(0);
+        assert book3 != null;
+        assertEquals(book3.getName(), name);
+        assertEquals(book3.getTitle(), title);
+
+        /** =========UPDATE========= */
+        String title1 = "ZhangSan Drifting 1";
+        int updateNum = dslContext.update(Tables.BOOK).set(Tables.BOOK.TITLE, title1).where(condition).execute();
+        assertNotEquals(0, updateNum);
+
+        Book book4 = dslContext.fetchOne(selectSql).into(Book.class);
+        assert book4 != null;
+        assertEquals(book4.getName(), name);
+        assertEquals(book4.getTitle(), title1);
+
+        /** =========DELETE========= */
+
+        int deleteNum = dslContext.delete(Tables.BOOK).where(condition).execute();
+        assertNotEquals(0, deleteNum);
+
+        Record record = dslContext.fetchOne(selectSql);
+        assertNull(record);
     }
 }
