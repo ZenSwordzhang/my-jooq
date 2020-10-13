@@ -1,0 +1,47 @@
+@startuml
+
+Title "装饰器模式UML图"
+
+interface Component
+
+Component <|.. ConcreteComponent
+Component <|.. Decorator
+Component <-- Decorator
+Decorator <|-- ConcreteDecoratorA
+Decorator <|-- ConcreteDecoratorB
+
+
+interface Component {
+
+    +String operation();
+}
+
+class Decorator {
+
+    -private final Component component;
+
+    +public Decorator(Component component) {}
+
+    +public String operation() {}
+}
+
+class ConcreteDecoratorA {
+
+    +public ConcreteDecoratorA(Component component) {}
+
+    +public String operation() {}
+}
+
+class ConcreteDecoratorB {
+
+    +public ConcreteDecoratorA(Component component) {}
+
+    +public String operation() {}
+}
+
+class ConcreteComponent {
+
+    +public String operation() {}
+}
+
+@enduml

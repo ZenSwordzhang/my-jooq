@@ -221,6 +221,14 @@ Person ..> Cigarette
 
 
 ####  5.装饰器模式（Decorator Pattern）
+
+##### 包含角色
+* Component（抽象构件角色）：给出一个抽象接口，已规范准备接收附加责任的对象
+* ConcreteComponent（具体构件角：定义一个将要接收附加责任的类
+* Decorator（装饰角色）：持有一个构件对象的实例，并定义一个与抽象构件接口一致的接口
+* ConcreteDecorator（具体装饰角色）：负责给构件对象贴上附加的责任
+
+
 ####  6.享元模式（Flyweight Pattern）
 
 
