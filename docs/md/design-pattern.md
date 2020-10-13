@@ -189,6 +189,7 @@ Person ..> Cigarette
 ## 模式分类
 
 ### 创建型(Creational)
+
 #### 1.简单工厂模式（Simple Factory Pattern）
 #### 2.工厂方法模式（Factory Method Pattern）
 #### 3.抽象工厂模式（Abstract Factory Pattern）
@@ -205,6 +206,7 @@ Person ..> Cigarette
 
 
 ### 结构型(Structural)
+
 ####  1.外观模式(Facade Pattern)
 ####  2.适配器模式(Adapter Pattern)
 ####  3.桥接模式(Bridge Pattern)
@@ -224,17 +226,25 @@ Person ..> Cigarette
 
 
 ### 行为型(Behavioral)
-* 1.责任链模式（Chain of Responsibility Pattern）
-* 2.命令模式（Command Pattern）
-* 3.解释器模式（Interpreter Pattern）
-* 4.迭代器模式（Iterator Pattern）
-* 5.中介者模式（Mediator Pattern）
-* 6.备忘录模式（Memento Pattern）
-* 7.观察者模式（Observer Pattern）
-* 8.状态模式（State Pattern）
-* 9.策略模式（Strategy Pattern）
-* 10.模板模式（Template Pattern）
-* 11.访问者模式（Visitor Pattern）
+
+#### 1.责任链模式（Chain of Responsibility Pattern）
+#### 2.命令模式（Command Pattern）
+#### 3.解释器模式（Interpreter Pattern）
+#### 4.迭代器模式（Iterator Pattern）
+#### 5.中介者模式（Mediator Pattern）
+#### 6.备忘录模式（Memento Pattern）
+#### 7.观察者模式（Observer Pattern）
+#### 8.状态模式（State Pattern）
+
+#### 9.策略模式（Strategy Pattern）
+
+##### 包含角色
+* 上层访问策略的入口，它持有抽象策略角色的引用
+* 抽象策略角色：提供接口或者抽象类，定义策略组必须拥有的方法和属性
+* 具体策略角色：实现抽象策略，定义具体的算法逻辑
+
+#### 10.模板模式（Template Pattern）
+#### 11.访问者模式（Visitor Pattern）
 
 
 
