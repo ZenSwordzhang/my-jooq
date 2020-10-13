@@ -1,0 +1,43 @@
+@startuml
+
+Title "策略模式UML类图"
+
+interface Strategy
+
+Strategy <|.. ConcreteStrategyA
+Strategy <|.. ConcreteStrategyB
+Strategy <|.. ConcreteStrategyC
+
+Strategy <-- Context
+
+interface Strategy {
+
+    +String strategyInterface();
+}
+
+class ConcreteStrategyA {
+
+    +public String strategyInterface() {}
+}
+
+class ConcreteStrategyB {
+
+    +public String strategyInterface() {}
+}
+
+class ConcreteStrategyC {
+
+    +public String strategyInterface() {}
+}
+
+
+class Context {
+
+    -private final Strategy strategy;
+
+    +public Context(Strategy strategy) {}
+
+    +public String contextInterface() {}
+}
+
+@enduml
