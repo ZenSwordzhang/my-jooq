@@ -1,8 +1,5 @@
-package com.zsx.design.pattern.behavioral;
+package com.zsx.design.pattern.behavioral.iterator;
 
-import com.zsx.design.pattern.behavioral.iterator.ConcreteContainer;
-import com.zsx.design.pattern.behavioral.iterator.Container;
-import com.zsx.design.pattern.behavioral.iterator.Iterator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
