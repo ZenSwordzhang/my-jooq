@@ -1,0 +1,52 @@
+@startuml
+
+Title "迭代器模式UML类图"
+
+interface Iterator<E>
+interface Container<T>
+
+Iterator <|.. ConcreteIterator
+Container <|.. ConcreteContainer
+ConcreteContainer *-- ConcreteIterator : belong
+
+interface Iterator<E> {
+
+    +boolean hasNext();
+
+    +E next();
+}
+
+interface Container<T> {
+
+    +Iterator<T> iterator();
+
+    +void add(T t);
+}
+
+
++class ConcreteContainer<E> {
+
+    -private final Object[] elements;
+
+    -private int size = 0;
+
+    +public ConcreteContainer() {}
+
+    +public Iterator<E> iterator() {}
+
+    +public void add(E e) {}
+
+
+}
+
+-class ConcreteIterator {
+
+    -private int cursor;
+
+    +public boolean hasNext() {}
+
+    +public E next() {}
+}
+
+
+@enduml

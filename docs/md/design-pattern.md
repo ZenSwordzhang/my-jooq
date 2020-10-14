@@ -238,7 +238,16 @@ Person ..> Cigarette
 #### 1.责任链模式（Chain of Responsibility Pattern）
 #### 2.命令模式（Command Pattern）
 #### 3.解释器模式（Interpreter Pattern）
+
 #### 4.迭代器模式（Iterator Pattern）
+
+##### 包含角色
+* Iterator（迭代器角色）：迭代器角色负责定义访问和遍历元素的接口
+* Concrete Iterator（具体迭代器角色）：具体迭代器角色要实现迭代器接口，并要记录遍历中的当前位置
+* Container（容器角色）：容器角色负责提供创建具体迭代器角色的接口
+* Concrete Container（具体容器角色）：具体容器角色实现创建具体迭代器角色的接口
+
+
 #### 5.中介者模式（Mediator Pattern）
 #### 6.备忘录模式（Memento Pattern）
 #### 7.观察者模式（Observer Pattern）
@@ -250,6 +259,7 @@ Person ..> Cigarette
 * Context（环境类角色）：上层访问策略的入口，它持有抽象策略角色的引用
 * Strategy（抽象策略角色）：提供接口或者抽象类，定义策略组必须拥有的方法和属性
 * ConcreteStrategy（具体策略角色）：实现抽象策略，定义具体的算法逻辑
+
 
 #### 10.模板模式（Template Pattern）
 #### 11.访问者模式（Visitor Pattern）
