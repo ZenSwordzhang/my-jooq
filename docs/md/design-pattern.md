@@ -262,6 +262,12 @@ Person ..> Cigarette
 
 
 #### 10.模板模式（Template Pattern）
+
+##### 包含角色
+* Abstract Template（抽象模板角色）：定义一组基本方法供子类实现，定义并实现组合了基本方法的模板方法
+* Concrete Template（具体模板角色）：实现抽象模板角色定义的基本方法
+
+
 #### 11.访问者模式（Visitor Pattern）
 
 

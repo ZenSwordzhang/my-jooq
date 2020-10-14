@@ -1,0 +1,41 @@
+@startuml
+
+Title "模板模式UML类图"
+
+
+abstract class Game
+
+Game <|-- LOL
+Game <|-- ZhengTu
+
+abstract class Game {
+
+    #abstract void initialize();
+
+    #abstract void startPlay();
+
+    #abstract String endPlay();
+
+    +public final String play() {}
+}
+
+class LOL {
+
+    #void initialize() {}
+
+    #void startPlay() {}
+
+    #String endPlay() {}
+}
+
+class ZhengTu {
+
+    #void initialize() {}
+
+    #void startPlay() {}
+
+    #String endPlay() {}
+}
+
+
+@enduml
