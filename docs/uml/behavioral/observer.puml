@@ -1,0 +1,52 @@
+@startuml
+
+Title "观察者模式UML类图"
+
+interface Subject
+interface Observer
+
+Subject <|.. ConcreteSubject
+Observer <|.. ConcreteObserverA
+Observer <|.. ConcreteObserverB
+Observer <-- ConcreteSubject
+
+interface Subject {
+
+    +List<String> changeState();
+
+    +void addObserver(Observer observer);
+
+    +void removeObserver(Observer observer);
+}
+
+interface Observer {
+
+    String update();
+}
+
+class ConcreteSubject {
+
+    -private final List<Observer> observers = new ArrayList<>();
+
+    +public List<String> changeState() {}
+
+    +public void addObserver(Observer observer) {}
+
+    +public void removeObserver(Observer observer) {}
+
+    -private List<String> notifyAllObservers() {}
+}
+
+class ConcreteObserverA {
+
+    +public String update() {}
+}
+
+class ConcreteObserverB {
+
+    +public String update() {}
+}
+
+
+
+@enduml
