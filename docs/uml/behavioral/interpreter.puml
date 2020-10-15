@@ -1,0 +1,53 @@
+@startuml
+
+Title "解释器模式UML类图"
+
+interface Expression
+
+Expression <|.. TerminalExpression
+Expression <|.. OrExpression
+Expression <|.. AndExpression
+
+interface Expression {
+    +boolean interpret(String context);
+}
+
+class TerminalExpression {
+
+    -private String data;
+
+    +public TerminalExpression(String data) {}
+
+    +public boolean interpret(String context) {}
+}
+
+
+class OrExpression {
+
+    -private Expression expr1 = null;
+    -private Expression expr2 = null;
+
+    +public OrExpression(Expression expr1, Expression expr2) {}
+
+    +public boolean interpret(String context) {}
+}
+
+class AndExpression {
+
+    -private Expression expr1 = null;
+    -private Expression expr2 = null;
+
+    +public AndExpression(Expression expr1, Expression expr2) {}
+
+    +public boolean interpret(String context) {}
+}
+
+class Context {
+
+    +public static Expression getMaleExpression(String name1, String name2) {}
+
+    +public static Expression getMarriedWomanExpression(String name, String maritalStatus) {}
+}
+
+
+@enduml
