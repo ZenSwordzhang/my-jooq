@@ -1,0 +1,65 @@
+@startuml
+
+Title "状态模式UML类图"
+
+interface State
+
+State <|.. Draft
+State <|.. Moderation
+State <|.. Published
+
+State <|--o Document
+
+interface State {
+
+    +void render();
+
+    +String publish();
+}
+
+class Document {
+
+    -private State state;
+
+    +public void render() {}
+
+    +public String publish() {}
+
+    +public void changeState(State state) {}
+}
+
+class Draft {
+                                                                                                  
+    -private final Document document;
+
+    +public Draft(Document document) {}
+
+    +public void render() {}
+
+    +public String publish() {}
+}
+
+class Moderation {
+
+    -private final Document document;
+
+    +public Draft(Document document) {}
+
+    +public void render() {}
+
+    +public String publish() {}
+}
+
+class Published {
+
+    private final Document document;
+
+    public Draft(Document document) {}
+
+    public void render() {}
+
+    public String publish() {}
+}
+
+
+@enduml

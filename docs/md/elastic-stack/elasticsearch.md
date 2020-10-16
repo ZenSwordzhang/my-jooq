@@ -470,6 +470,19 @@ PUT _cluster/settings
 }
 ```
 
+### 修改集群分片数
+```console
+PUT /_cluster/settings
+{
+  "transient": {
+    "cluster": {
+      "max_shards_per_node": 1000
+    }
+  }
+}
+```
+
+
 ### 查看集群健康状况
 
 #### https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html
